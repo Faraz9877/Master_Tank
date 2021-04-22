@@ -3,6 +3,7 @@ package com.wztlei.tanktrouble.cannonball;
 import android.graphics.Canvas;
 import android.util.SparseArray;
 
+import com.wztlei.tanktrouble.datahouse.GameData;
 import com.wztlei.tanktrouble.tank.UserTank;
 
 import java.util.ArrayList;
@@ -28,6 +29,10 @@ public class CannonballSet {
      */
     public void addCannonball(Cannonball cannonball) {
         mCannonballSet.put(cannonball.getUUID(), cannonball);
+    }
+
+    public int getCannonballShooter(int uuid) {
+        return mCannonballSet.get(uuid).getShooterID();
     }
 
     /**
@@ -81,6 +86,7 @@ public class CannonballSet {
         }
 
         for (int i = 0; i < keysToRemove.size(); i++) {
+            GameData.getInstance().decrementUserAliveBullets();
             mCannonballSet.remove(keysToRemove.get(i));
         }
 

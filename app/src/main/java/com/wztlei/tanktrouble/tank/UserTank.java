@@ -194,13 +194,15 @@ public class UserTank extends Tank {
         PointF[] tankPolygon = Tank.tankPolygon(mX, mY, mDeg, mWidth, mHeight);
 
         Cannonball c = new Cannonball((int) tankPolygon[0].x, (int) tankPolygon[0].y, mDeg,
-                UserUtils.randomInt(1, Integer.MAX_VALUE-10));
+                UserUtils.randomInt(1, Integer.MAX_VALUE-10), GameData.getInstance().getThisPlayer());
 
         return c;
     }
 
     public void kill(int killingCannonball) {
-        incrementScore();
+//        if (GameData.getInstance().getCannonballSet().getCannonballShooter(killingCannonball)
+//                == GameData.getInstance().getThisPlayer())
+            incrementScore();
         mIsAlive = false;
     }
 

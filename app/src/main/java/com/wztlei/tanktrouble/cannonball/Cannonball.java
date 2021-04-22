@@ -15,7 +15,7 @@ public class Cannonball {
     private int mPrevPathIndex;
     private float mX, mY;
     private long mFiringTime, mLastTime;
-    private int mUUID;
+    private int mUUID, mShooterID;
 
     //private static final String TAG = "WL/Cannonball";
     private static final float SPEED =
@@ -34,7 +34,7 @@ public class Cannonball {
      * @param y     the y-coordinate from which the cannonball was fired
      * @param deg   the angle in degrees at which the cannonball was fired
      */
-    public Cannonball(int x, int y, int deg, int uuid) {
+    public Cannonball(int x, int y, int deg, int uuid, int shooterID) {
         mPath = generatePath(x, y, deg);
         mPrevPathIndex = 0;
         mX = x;
@@ -42,20 +42,7 @@ public class Cannonball {
         mFiringTime = System.currentTimeMillis();
         mLastTime = mFiringTime;
         mUUID = uuid;
-    }
-
-    /**
-     * Constructor method for a cannonball created by an opponent tank.
-     *
-     * @param path  the path of the cannonball
-     */
-    Cannonball(ArrayList<Coordinate> path) {
-        mPath = path;
-        mPrevPathIndex = 0;
-        mX = mPath.get(0).x;
-        mY = mPath.get(0).y;
-        mFiringTime = System.currentTimeMillis();
-        mLastTime = mFiringTime;
+        mShooterID = shooterID;
     }
 
     /**
@@ -259,5 +246,7 @@ public class Cannonball {
         return mUUID;
     }
 
-
+    public int getShooterID() {
+        return mShooterID;
+    }
 }

@@ -14,8 +14,6 @@ import java.util.ArrayList;
 
 public class BattleActivity extends AppCompatActivity {
 
-    String mGamePin;
-
     private static final String TAG = "WL/BattleActivity";
 
     @Override

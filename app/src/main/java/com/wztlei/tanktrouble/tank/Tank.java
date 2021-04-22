@@ -413,7 +413,6 @@ public abstract class Tank {
 
     public void incrementScore() {
         mScore++;
-        // TODO: Update the value in Firebase and read that score
     }
 
     public boolean isAlive() {

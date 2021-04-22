@@ -1,6 +1,7 @@
 package com.wztlei.tanktrouble.datahouse;
 
 import com.wztlei.tanktrouble.battle.Position;
+import com.wztlei.tanktrouble.cannonball.Cannonball;
 import com.wztlei.tanktrouble.cannonball.CannonballSet;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ public class GameData {
     ArrayList<Integer> playerIDs;
     ArrayList<String> playerUsernames;
     ArrayList<Position> playerPositions;
+    ArrayList<Integer> aliveBullets;
     CannonballSet cannonballSet;
     String gamePin;
     int thisPlayer;
@@ -20,6 +22,8 @@ public class GameData {
         playerIDs = new ArrayList<>();
         playerUsernames = new ArrayList<>();
         playerPositions = new ArrayList<>();
+        aliveBullets = new ArrayList<>();
+        cannonballSet = new CannonballSet();
         status = 0;
         thisPlayer = -1;
     }
@@ -52,6 +56,10 @@ public class GameData {
         return playerUsernames;
     }
 
+    public CannonballSet getCannonballSet() {
+        return cannonballSet;
+    }
+
     public int getStatus() {
         return status;
     }
@@ -61,7 +69,19 @@ public class GameData {
     }
 
     public Position getPlayerPosition(int playerID) {
-        return playerPositions.get(playerIDs.indexOf(thisPlayer));
+        return playerPositions.get(playerID);
+    }
+
+    public int getPlayerAliveBullets() {
+        return aliveBullets.get(thisPlayer);
+    }
+
+    public void incrementUserAliveBullets() {
+        aliveBullets.set(thisPlayer, aliveBullets.get(thisPlayer) + 1);
+    }
+
+    public void decrementUserAliveBullets() {
+        aliveBullets.set(thisPlayer, aliveBullets.get(thisPlayer) - 1);
     }
 
     public void setPosition(Position position) {
@@ -72,7 +92,7 @@ public class GameData {
         return playerIDs;
     }
 
-    public ArrayList<Position> getPlayerCoordinates() {
+    public ArrayList<Position> getPlayerPositions() {
         return playerPositions;
     }
 
@@ -81,12 +101,14 @@ public class GameData {
         playerIDs.add(newPlayerID);
         playerUsernames.add(username);
         playerPositions.add(new Position(10, 10, 0));
+        aliveBullets.add(0);
         thisPlayer = newPlayerID;
     }
 
     public void removePlayer() {
         playerUsernames.remove(playerIDs.indexOf(thisPlayer));
         playerPositions.remove(playerIDs.indexOf(thisPlayer));
+        aliveBullets.remove(playerIDs.indexOf(thisPlayer));
         playerIDs.remove(Integer.valueOf(thisPlayer));
         status = -1;
     }
@@ -99,6 +121,7 @@ public class GameData {
         playerIDs = new ArrayList<>();
         playerUsernames = new ArrayList<>();
         playerPositions = new ArrayList<>();
+        aliveBullets = new ArrayList<>();
         status = 1;
         thisPlayer = -1;
     }
