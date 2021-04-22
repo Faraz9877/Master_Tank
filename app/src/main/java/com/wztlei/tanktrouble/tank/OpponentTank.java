@@ -2,14 +2,8 @@ package com.wztlei.tanktrouble.tank;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.wztlei.tanktrouble.UserUtils;
 import com.wztlei.tanktrouble.battle.Position;
 import com.wztlei.tanktrouble.datahouse.GameData;
@@ -34,9 +28,6 @@ public class OpponentTank extends Tank {
         mColorIndex = tankColor.getIndex();
         mScore = 0;
         mIsAlive = true;
-
-        // Get the user document from Firebase
-        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
 
         if (opponentID > -1) {
             addPosDataRefListeners();

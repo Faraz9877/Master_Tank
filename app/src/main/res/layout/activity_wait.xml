@@ -10,7 +10,6 @@
     tools:context=".match.WaitActivity">
 
     <TextView
-        android:id="@+id/text_you_re_in"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -19,7 +18,6 @@
         android:textSize="30sp" />
 
     <TextView
-        android:id="@+id/text_waiting"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"

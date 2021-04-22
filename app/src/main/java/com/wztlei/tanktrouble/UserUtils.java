@@ -7,17 +7,13 @@ import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.wztlei.tanktrouble.datahouse.GameData;
 
 import org.jetbrains.annotations.Contract;
 
 import java.util.Random;
 
 public class UserUtils {
-    private static DatabaseReference sDatabase;
     private static SharedPreferences sSharedPref;
     private static String[] sAdjectiveList, sNounList;
     private static String sUsername, sUserId;
@@ -40,9 +36,6 @@ public class UserUtils {
         sSharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
         sUserId = sSharedPref.getString(USER_ID_KEY, "");
         sUsername = sSharedPref.getString(USERNAME_KEY, "");
-
-        // Get a reference to the database
-        sDatabase = FirebaseDatabase.getInstance().getReference();
 
         // Set the username data in various locations
         setUsername(sUsername);
@@ -114,27 +107,12 @@ public class UserUtils {
      * @param firstUsername the very first username of the user
      */
     private static void setFirstUsername(final String firstUsername) {
-        final DatabaseReference mUserDataRef = sDatabase.child(USERS_KEY).push();
-
-        mUserDataRef.child(USERNAME_KEY)
-                .setValue(firstUsername)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        sUserId = mUserDataRef.getKey();
-                        sUsername = firstUsername;
-                        putStringInPrefs(USER_ID_KEY, sUserId);
-                        putStringInPrefs(USERNAME_KEY, firstUsername);
-                        Log.d(TAG, "added new user with sUserId=" + sUserId
-                                + " and sUsername=" + sUsername);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Failed to add user in updateUsername");
-                    }
-                });
+        sUserId = Integer.toString(GameData.getInstance().getThisPlayer());
+        sUsername = firstUsername;
+        putStringInPrefs(USER_ID_KEY, sUserId);
+        putStringInPrefs(USERNAME_KEY, firstUsername);
+        Log.d(TAG, "added new user with sUserId=" + sUserId
+                + " and sUsername=" + sUsername);
     }
 
     /**
@@ -144,25 +122,10 @@ public class UserUtils {
      * @param newUsername the new username
      */
     private static void updateUsername(final String newUsername) {
-        sDatabase.child(USERS_KEY)
-                .child(sUserId)
-                .child(USERNAME_KEY)
-                .setValue(newUsername)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        sUsername = newUsername;
-                        putStringInPrefs(USERNAME_KEY, newUsername);
-                        Log.d(TAG, "updated new username for sUserId=" + sUserId
-                                + " with sUsername=" + sUsername);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Failed to update username in updateUsername");
-                    }
-                });
+        sUsername = newUsername;
+        putStringInPrefs(USERNAME_KEY, newUsername);
+        Log.d(TAG, "updated new username for sUserId=" + sUserId
+                + " with sUsername=" + sUsername);
     }
 
     /**

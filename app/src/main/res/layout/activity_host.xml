@@ -28,7 +28,6 @@
         android:text="@string/str_no_player_ready" />
 
     <Button
-        android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/str_start_game"

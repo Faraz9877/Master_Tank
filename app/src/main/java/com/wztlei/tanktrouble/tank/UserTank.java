@@ -3,18 +3,13 @@ package com.wztlei.tanktrouble.tank;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
-import android.util.Log;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.wztlei.tanktrouble.Constants;
 import com.wztlei.tanktrouble.UserUtils;
 import com.wztlei.tanktrouble.battle.Position;
 import com.wztlei.tanktrouble.cannonball.Cannonball;
 import com.wztlei.tanktrouble.datahouse.GameData;
 import com.wztlei.tanktrouble.map.MapUtils;
-
-import java.util.Random;
 
 public class UserTank extends Tank {
 
@@ -200,34 +195,16 @@ public class UserTank extends Tank {
 
         Cannonball c = new Cannonball((int) tankPolygon[0].x, (int) tankPolygon[0].y, mDeg,
                 UserUtils.randomInt(1, Integer.MAX_VALUE-10));
-        updateDataRef(FIRE_KEY, c.getStandardizedPath()); // TODO: Faraz: Embed in GameData
 
         return c;
     }
 
     public void kill(int killingCannonball) {
-        updateDataRef(Constants.DEATH_KEY, killingCannonball); // TODO: Faraz: Embed in GameData
         incrementScore();
         mIsAlive = false;
     }
 
     public void respawn() {
-        updateDataRef(Constants.DEATH_KEY, null); // TODO: Faraz: Embed in GameData
         mIsAlive = true;
     }
-
-    public void reset() {
-        mUserDataRef.removeValue();
-    } // TODO: Faraz: Embed in GameData
-
-//    /**
-//     * Accesses the user's data in the Firebase database with a key and
-//     * updates the data with a new value.
-//     *
-//     * @param key   the key of the data to be updated
-//     * @param value the value of the new data
-//     */
-//    private void updateDataRef(final String key, final Object value) {
-//        mUserDataRef.child(key).setValue(value);
-//    }
 }

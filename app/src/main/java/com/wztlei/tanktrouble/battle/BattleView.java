@@ -7,20 +7,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.wztlei.tanktrouble.Constants;
 import com.wztlei.tanktrouble.R;
 import com.wztlei.tanktrouble.UserUtils;
@@ -138,10 +130,6 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
             }
 
             retry = false;
-        }
-
-        if (mUserTank != null) {
-            mUserTank.reset();
         }
 
         // Remove the game if necessary
@@ -307,7 +295,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
                         // Add an opponent tank
                         TankColor tankColor = getUnusedTankColor();
                         mOpponentTanks.put(playerID, new OpponentTank(activity, playerID, tankColor));
-                        mCannonballSet.addOpponent(playerID);
+//                        mCannonballSet.addOpponent(playerID); // FARAZ: Seems useless!
                         addDeathDataRefListener(playerID);
                         removeExitingTanks(playerID);
                     }
@@ -613,12 +601,12 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
 
     /**
      * Returns the first unused tank color or blue by default.
-     * 
+     *
      * @return  the first unused tank color
      */
     private TankColor getUnusedTankColor() {
         TankColor tankColor = TankColor.ORANGE;
-        
+
         for (int i = 0; i < NUM_TANK_COLORS; i++) {
             if (mUnusedTankColors[i]) {
                 tankColor = TankColor.values()[i];
@@ -626,7 +614,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
                 break;
             }
         }
-        
+
         return tankColor;
     }
 

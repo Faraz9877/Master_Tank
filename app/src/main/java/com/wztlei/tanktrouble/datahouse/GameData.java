@@ -1,9 +1,8 @@
 package com.wztlei.tanktrouble.datahouse;
 
 import com.wztlei.tanktrouble.battle.Position;
-import com.wztlei.tanktrouble.cannonball.Coordinate;
+import com.wztlei.tanktrouble.cannonball.CannonballSet;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class GameData {
@@ -12,6 +11,7 @@ public class GameData {
     ArrayList<Integer> playerIDs;
     ArrayList<String> playerUsernames;
     ArrayList<Position> playerPositions;
+    CannonballSet cannonballSet;
     String gamePin;
     int thisPlayer;
     int status; // 0: wait to join, 1: playing, -1: cancelled
