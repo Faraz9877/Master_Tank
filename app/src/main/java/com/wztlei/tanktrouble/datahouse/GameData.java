@@ -77,7 +77,7 @@ public class GameData {
     }
 
     public void addPlayer(String username) {
-        int newPlayerID = playerIDs.size() + 1;
+        int newPlayerID = playerIDs.size();
         playerIDs.add(newPlayerID);
         playerUsernames.add(username);
         playerPositions.add(new Position(10, 10, 0));

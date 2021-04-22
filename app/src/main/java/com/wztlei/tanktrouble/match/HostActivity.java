@@ -23,9 +23,6 @@ public class HostActivity extends AppCompatActivity {
     private boolean mBattleActivityStarting;
 
     private static final String TAG = "WL/HostActivity";
-    private static final String GAMES_KEY = Constants.GAMES_KEY;
-    private static final String STARTED_KEY = Constants.STARTED_KEY;
-    private static final String OPPONENT_IDS_KEY = Constants.OPPONENT_IDS_KEY;
     private static final String GAME_PIN_KEY = Constants.GAME_PIN_KEY;
     private static final int MIN_GAME_PIN = 1000;
     private static final int MAX_GAME_PIN = 9999;
@@ -98,12 +95,7 @@ public class HostActivity extends AppCompatActivity {
         }
 
         // Listen for new people joining the game
-        /* FARAZ: Inja bayad afrade jadidi ke join mishano add konim. Doroste ye nafare, vali
-         Vali hamun ye nafar ham bayad vaghti ru gushish join zad ma invar befahmim.
-        */
         TextView textPlayersReady = findViewById(R.id.text_players_ready);
-        // FARAZ: Inja yejuri tedado dar biarim ke 1 e ya 2.
-        // Ye juri code bezanim ke betunim ba'dan tedado bebarim balatar rahat. Fe'lan 1 mizaram.
         int numPlayers = GameData.getInstance().getPlayerIDs().size();
 
         // Update the text displaying how many people have joined the game
@@ -122,18 +114,9 @@ public class HostActivity extends AppCompatActivity {
      * @param view the button that is clicked
      */
     public void onClickStartGame(View view) {
-        ArrayList<Integer> opponentIDs = new ArrayList<>();
-
-        for (Integer playerID : GameData.getInstance().getPlayerIDs()) {
-            if (playerID != null && playerID != GameData.getInstance().getThisPlayer()) {
-                opponentIDs.add(playerID);
-            }
-        }
-
         mBattleActivityStarting = true;
         GameData.getInstance().setStatus(1);
         Intent intent = new Intent(getApplicationContext(), BattleActivity.class);
-        intent.putExtra(OPPONENT_IDS_KEY, opponentIDs);
         intent.putExtra(GAME_PIN_KEY, mGamePin);
         startActivity(intent);
     }

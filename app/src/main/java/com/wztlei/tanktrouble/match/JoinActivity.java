@@ -20,7 +20,6 @@ public class JoinActivity extends AppCompatActivity {
     String mGamePin;
     boolean mWaitActivityStarting;
 
-    private static final String GAMES_KEY = Constants.GAMES_KEY;
     private static final String GAME_PIN_KEY = Constants.GAME_PIN_KEY;
     private static final String TAG = "WL/JoinActivity";
 
@@ -77,7 +76,6 @@ public class JoinActivity extends AppCompatActivity {
     private void joinGame() {
         GameData.getInstance().addPlayer(mUserId);
         Intent intent = new Intent(getApplicationContext(), WaitActivity.class);
-        intent.putExtra(GAME_PIN_KEY, mGamePin);
         startActivity(intent);
     }
 

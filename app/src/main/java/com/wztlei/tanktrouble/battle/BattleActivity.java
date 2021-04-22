@@ -16,37 +16,14 @@ public class BattleActivity extends AppCompatActivity {
 
     String mGamePin;
 
-    private static final String OPPONENT_IDS_KEY = Constants.OPPONENT_IDS_KEY;
-    private static final String GAME_PIN_KEY = Constants.GAME_PIN_KEY;
-    private static final String GAMES_KEY = Constants.GAMES_KEY;
     private static final String TAG = "WL/BattleActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Get the bundle from the previous activity
-        Bundle intentBundle = getIntent().getExtras();
-
-        // Set the content view and immediately return when the intent bundle is null
-        if (intentBundle == null) {
-            setContentView(new BattleView(this, new ArrayList<String>(), null));
-            return;
-        }
-
-        // Get the opponent IDs and game pin string from the intent bundle
-        ArrayList<String> opponentIds = intentBundle.getStringArrayList(OPPONENT_IDS_KEY);
-        mGamePin = intentBundle.getString(GAME_PIN_KEY);
-
-        Log.d(TAG, "opponentIds=" + opponentIds);
-
-        // Immediately return if there is no game pin string
-        if (mGamePin == null) {
-            return;
-        }
-
         // Display the graphics with battle view
-        setContentView(new BattleView(this, opponentIds, mGamePin));
+        setContentView(new BattleView(this));
 
         // Grab the database reference for the game into which the user has possibly joined
         GameData.getInstance().sync();
@@ -86,12 +63,6 @@ public class BattleActivity extends AppCompatActivity {
      */
     private void validateGame() {
         // Determine if the user has actually joined the game
-        // Return immediately if this is a test game
-        if (mGamePin.equals(Constants.TEST_GAME_PIN)) {
-            return;
-        }
-
-        String userId = UserUtils.getUserId();
 
         // Determine if any of the children of the game has a key of the user id
         if (GameData.getInstance().isPlayerInGame()) {

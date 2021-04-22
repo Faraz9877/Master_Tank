@@ -69,28 +69,19 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
      *
      * @param activity the activity in which the battle view is instantiated
      */
-    public BattleView(Activity activity, ArrayList<String> opponentIds, String gamePin) {
+    public BattleView(Activity activity) {
         super(activity);
 
         UserUtils.initialize(activity);
         ExplosionAnimation.initialize(activity);
 
-        // TODO: Fix black screen
-        // Try to replicate on Andy's phone
-
         // Set up the user and opponent tanks
-        if (opponentIds != null && gamePin != null) {
-            mUnusedTankColors = new boolean[]{true, true, true, true};
-            mOpponentTanks = new HashMap<>();
-            GameData.getInstance().sync();
-            mJoystickColor = TankColor.BLUE.getPaint();
-            mCannonballSet = new CannonballSet();
-            addEnteringTanks(activity);
-        } else {
-            mUserTank = new UserTank(activity, TankColor.BLUE);
-            mJoystickColor = TankColor.BLUE.getPaint();
-            mCannonballSet = new CannonballSet();
-        }
+        mUnusedTankColors = new boolean[]{true, true, true, true};
+        mOpponentTanks = new HashMap<>();
+        GameData.getInstance().sync();
+        mJoystickColor = TankColor.BLUE.getPaint();
+        mCannonballSet = new CannonballSet();
+        addEnteringTanks(activity);
 
         // Set up the cannonball and explosion data
         mKillingCannonball = 0;
@@ -280,26 +271,27 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
      * @param activity      the activity of the battle view
      */
     private void addEnteringTanks(final Activity activity) {
-                int userId = GameData.getInstance().getThisPlayer();
+        int userId = GameData.getInstance().getThisPlayer();
 
-                // Determine if any of the children of the game has a new key
-                for (int playerID : GameData.getInstance().getPlayerIDs()) {
-                    // Add the new opponent to the game
-                    if (playerID == userId && mUserTank == null) {
-                        // Initialize the user tank
-                        TankColor tankColor = getUnusedTankColor();
-                        mUserTank = new UserTank(activity, tankColor);
-                        mUserDeg = mUserTank.getDegrees();
-                        mJoystickColor = tankColor.getPaint();
-                    } else if (playerID != userId && !mOpponentTanks.containsKey(playerID)) {
-                        // Add an opponent tank
-                        TankColor tankColor = getUnusedTankColor();
-                        mOpponentTanks.put(playerID, new OpponentTank(activity, playerID, tankColor));
+        // Determine if any of the children of the game has a new key
+        System.out.println("This is addEnteringTanks. Tanks: " + GameData.getInstance().getPlayerIDs().size());
+        for (int playerID : GameData.getInstance().getPlayerIDs()) {
+            // Add the new opponent to the game
+            if (playerID == userId && mUserTank == null) {
+                // Initialize the user tank
+                TankColor tankColor = getUnusedTankColor();
+                mUserTank = new UserTank(activity, tankColor);
+                mUserDeg = mUserTank.getDegrees();
+                mJoystickColor = tankColor.getPaint();
+            } else if (playerID != userId && !mOpponentTanks.containsKey(playerID)) {
+                // Add an opponent tank
+                TankColor tankColor = getUnusedTankColor();
+                mOpponentTanks.put(playerID, new OpponentTank(activity, playerID, tankColor));
 //                        mCannonballSet.addOpponent(playerID); // FARAZ: Seems useless!
-                        addDeathDataRefListener(playerID);
-                        removeExitingTanks(playerID);
-                    }
-                }
+                addDeathDataRefListener(playerID);
+                removeExitingTanks(playerID);
+            }
+        }
     }
 
     /**

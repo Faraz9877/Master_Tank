@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.crashlytics.android.Crashlytics;
 import com.wztlei.tanktrouble.battle.BattleActivity;
 import com.wztlei.tanktrouble.match.HostActivity;
 import com.wztlei.tanktrouble.match.JoinActivity;
