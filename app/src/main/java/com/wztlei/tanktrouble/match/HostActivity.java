@@ -1,5 +1,6 @@
 package com.wztlei.tanktrouble.match;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,9 +13,13 @@ import com.wztlei.tanktrouble.MainActivity;
 import com.wztlei.tanktrouble.R;
 import com.wztlei.tanktrouble.UserUtils;
 import com.wztlei.tanktrouble.battle.BattleActivity;
+import com.wztlei.tanktrouble.datahouse.AcceptThread;
+import com.wztlei.tanktrouble.datahouse.Bluetooth;
 import com.wztlei.tanktrouble.datahouse.GameData;
 
 import java.util.ArrayList;
+
+import static android.support.v4.app.ActivityCompat.startActivityForResult;
 
 public class HostActivity extends AppCompatActivity {
 
@@ -24,6 +29,7 @@ public class HostActivity extends AppCompatActivity {
 
     private static final String TAG = "WL/HostActivity";
     private static final String GAME_PIN_KEY = Constants.GAME_PIN_KEY;
+    private final static int REQUEST_ENABLE_BT = 1;
     private static final int MIN_GAME_PIN = 1000;
     private static final int MAX_GAME_PIN = 9999;
 
@@ -119,5 +125,23 @@ public class HostActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), BattleActivity.class);
         intent.putExtra(GAME_PIN_KEY, mGamePin);
         startActivity(intent);
+    }
+
+    public void setBluetooth() {
+        // Enable bluetooth
+        if (!Bluetooth.getInstance().getBluetoothAdapter().isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
+
+        // Make device discoverable for 5 minutes
+        Intent discoverableIntent =
+                new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+        startActivity(discoverableIntent);
+
+        // Start accept thread to get a connection with the peer
+        AcceptThread acceptThread = new AcceptThread ();
+        acceptThread.start();
     }
 }

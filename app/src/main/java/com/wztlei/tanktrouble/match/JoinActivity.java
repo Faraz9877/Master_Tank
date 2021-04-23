@@ -1,6 +1,7 @@
 package com.wztlei.tanktrouble.match;
 
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +13,9 @@ import android.widget.EditText;
 import com.wztlei.tanktrouble.Constants;
 import com.wztlei.tanktrouble.R;
 import com.wztlei.tanktrouble.UserUtils;
+import com.wztlei.tanktrouble.datahouse.AcceptThread;
+import com.wztlei.tanktrouble.datahouse.Bluetooth;
+import com.wztlei.tanktrouble.datahouse.ConnectThread;
 import com.wztlei.tanktrouble.datahouse.GameData;
 
 public class JoinActivity extends AppCompatActivity {
@@ -20,7 +24,7 @@ public class JoinActivity extends AppCompatActivity {
     String mGamePin;
     boolean mWaitActivityStarting;
 
-    private static final String GAME_PIN_KEY = Constants.GAME_PIN_KEY;
+    private final static int REQUEST_ENABLE_BT = 1;
     private static final String TAG = "WL/JoinActivity";
 
     @Override
@@ -96,5 +100,24 @@ public class JoinActivity extends AppCompatActivity {
         // Get the AlertDialog from create() and show it
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    public void setBluetooth() {
+        // Enable bluetooth
+        if (!Bluetooth.getInstance().getBluetoothAdapter().isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
+
+        // Make device discoverable for 5 minutes
+        Intent discoverableIntent =
+                new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+        startActivity(discoverableIntent);
+
+        // Start accept thread to get a connection with the peer
+        // TODO: FARAZ: Fix choosePairedDevice function
+        ConnectThread connectThread = new ConnectThread (Bluetooth.getInstance().choosePairedDevice());
+        connectThread.start();
     }
 }
