@@ -50,6 +50,8 @@ public class ConnectThread extends Thread {
         // The connection attempt succeeded. Perform work associated with
         // the connection in a separate thread.
         Bluetooth.getInstance().setPeerSocket(mmSocket);
+        InputOutputThread inOutThread = new InputOutputThread (mmSocket);
+        inOutThread.start();
     }
 
     // Closes the client socket and causes the thread to finish.

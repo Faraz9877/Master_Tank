@@ -125,4 +125,8 @@ public class GameData {
         status = 1;
         thisPlayer = -1;
     }
+
+    public void readIncoming(String message) {
+
+    }
 }

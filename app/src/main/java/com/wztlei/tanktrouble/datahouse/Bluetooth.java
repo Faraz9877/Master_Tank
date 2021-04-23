@@ -3,6 +3,7 @@ package com.wztlei.tanktrouble.datahouse;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.os.Handler;
 
 import java.util.Set;
 
@@ -12,6 +13,8 @@ public class Bluetooth {
     BluetoothAdapter bluetoothAdapter;
     Set<BluetoothDevice> pairedDevices;
     BluetoothSocket peerSocket;
+
+    Handler handler;
 
     private Bluetooth() {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -50,7 +53,7 @@ public class Bluetooth {
         return null;
     }
 
-    public void discoverDevices() {
-
+    public Handler getHandler() {
+        return handler;
     }
 }
