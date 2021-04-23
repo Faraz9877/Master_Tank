@@ -9,15 +9,13 @@ import com.wztlei.tanktrouble.Constants;
 
 public abstract class Tank {
     Bitmap mBitmap;
-    int mX, mY, mDeg;
+    int mX, mY;
+    float mDeg;
     int mWidth, mHeight;
     int mColorIndex;
     int mScore;
     boolean mIsAlive;
 
-    static final String USERS_KEY = Constants.USERS_KEY;
-    static final String POS_KEY = Constants.POS_KEY;
-    static final String FIRE_KEY = Constants.FIRE_KEY;
     static final float TANK_WIDTH_CONST = Constants.TANK_WIDTH_CONST;
     static final float TANK_HEIGHT_CONST = Constants.TANK_HEIGHT_CONST;
     private static final float GUN_LENGTH_RATIO = 1/7f;
@@ -399,7 +397,7 @@ public abstract class Tank {
         return mHeight;
     }
 
-    public int getDegrees() {
+    public float getDegrees() {
         return mDeg;
     }
 

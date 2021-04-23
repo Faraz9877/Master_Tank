@@ -46,7 +46,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
     private int mJoystickPointerId, mFireButtonPointerId;
     private int mJoystickBaseRadius, mJoystickThresholdRadius, mJoystickMaxDisplacement;
     private int mFireButtonDiameter, mFireButtonPressedDiameter;
-    private int mUserDeg;
+    private float mUserDeg;
     private boolean mFireButtonPressed;
 
     private static final String TAG = "WL/BattleView";
@@ -555,7 +555,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         // Calculate the displacement from the center of the fire button
         int deltaX = pointerX - (mFireButtonOffsetX + mFireButtonDiameter/2);
         int deltaY = pointerY - (mFireButtonOffsetY + mFireButtonDiameter/2);
-        int displacement = calcDistance(deltaX, deltaY);
+        float displacement = calcDistance(deltaX, deltaY);
 
         // Determine whether the user has touched close enough to the center of the fire button
         if (displacement <= mFireButtonDiameter) {
@@ -615,7 +615,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
      * @param   y   the displacement in the y-axis
      * @return      the angle in degrees about the origin
      */
-    private int calcDegrees(int x, int y) {
+    private float calcDegrees(int x, int y) {
         // Calculates an angle between 0 and 180 degrees
         float displacement = calcDistance(x, y);
         float angle = (float) Math.acos(x/displacement);
@@ -623,9 +623,9 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         // Check whether the point (x, y) is above or below the x-axis
         // to convert the angle to between 0 and 360 degrees
         if (y >= 0) {
-            return (int) Math.toDegrees(angle);
+            return (float) Math.toDegrees(angle);
         } else {
-            return (int) -Math.toDegrees(angle);
+            return (float) -Math.toDegrees(angle);
         }
     }
 
@@ -636,7 +636,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
      * @param   y   the displacement in the y-axis
      * @return      the Euclidean distance calculated using the Pythagorean theorem
      */
-    private int calcDistance (int x, int y) {
-        return (int) Math.sqrt(x*x + y*y);
+    private float calcDistance (int x, int y) {
+        return (float) Math.sqrt(x*x + y*y);
     }
 }

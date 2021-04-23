@@ -50,7 +50,7 @@ public class OpponentTank extends Tank {
             position.scalePosition();
             mX = (int) position.x;
             mY = (int) position.y;
-            mDeg = (int) position.deg;
+            mDeg = position.deg;
         }
     }
 

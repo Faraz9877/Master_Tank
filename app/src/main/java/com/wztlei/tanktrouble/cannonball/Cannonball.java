@@ -34,7 +34,7 @@ public class Cannonball {
      * @param y     the y-coordinate from which the cannonball was fired
      * @param deg   the angle in degrees at which the cannonball was fired
      */
-    public Cannonball(int x, int y, int deg, int uuid, int shooterID) {
+    public Cannonball(int x, int y, float deg, int uuid, int shooterID) {
         mPath = generatePath(x, y, deg);
         mPrevPathIndex = 0;
         mX = x;
@@ -54,12 +54,12 @@ public class Cannonball {
      * @param deg       starting angle of the cannonball
      * @return          the path of the cannonball
      */
-    private ArrayList<Coordinate> generatePath(int startX, int startY, int deg) {
+    private ArrayList<Coordinate> generatePath(int startX, int startY, float deg) {
         ArrayList<Coordinate> path = new ArrayList<>();
         float x = startX;
         float y = startY;
-        float dx = RADIUS * (float) Math.cos(Math.toRadians(deg));
-        float dy = RADIUS * (float) Math.sin(Math.toRadians(deg));
+        float dx = (float) (RADIUS * Math.cos(Math.toRadians(deg)));
+        float dy = (float) (RADIUS * Math.sin(Math.toRadians(deg)));
         float travelDistance = 0;
 
         // Add the starting coordinate

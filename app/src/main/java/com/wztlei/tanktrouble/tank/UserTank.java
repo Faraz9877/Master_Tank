@@ -112,7 +112,7 @@ public class UserTank extends Tank {
                 !MapUtils.tankWallCollision(mX, mY, angle, mWidth, mHeight))) {
             mX += deltaX;
             mY += deltaY;
-            mDeg = (int) angle;
+            mDeg = angle;
         } else {
             // Get the original polygon and get the two old centers of rotation
             PointF[] oldPolygon = Tank.tankPolygon(mX, mY, mDeg, mWidth, mHeight);
@@ -136,11 +136,11 @@ public class UserTank extends Tank {
             if (!MapUtils.tankWallCollision(testX1, testY1, angle, mWidth, mHeight)) {
                 mX = testX1;
                 mY = testY1;
-                mDeg = (int) angle;
+                mDeg = angle;
             } else if (!MapUtils.tankWallCollision(testX2, testY2, angle, mWidth, mHeight)) {
                 mX = testX2;
                 mY = testY2;
-                mDeg = (int) angle;
+                mDeg = angle;
             }
         }
 
