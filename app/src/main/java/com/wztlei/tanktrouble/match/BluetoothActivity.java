@@ -14,13 +14,16 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.wztlei.tanktrouble.R;
 import com.wztlei.tanktrouble.datahouse.Bluetooth;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -84,6 +87,7 @@ public class BluetoothActivity extends AppCompatActivity {
         ArrayList list = new ArrayList();
         for(BluetoothDevice bluetoothDevice : nearDevices) {
             list.add(bluetoothDevice.getName() + "\n" + bluetoothDevice.getAddress());
+            System.out.println(bluetoothDevice.getUuids()[0]);
         }
         Toast.makeText(getApplicationContext(), "Showing Near Devices",Toast.LENGTH_SHORT).show();
 
@@ -127,5 +131,22 @@ public class BluetoothActivity extends AppCompatActivity {
         final ArrayAdapter adapter = new  ArrayAdapter(this, android.R.layout.simple_list_item_1, list);
 
         pairedListView.setAdapter(adapter);
+        pairedListView.setOnItemClickListener(myListClickListener); //Method called when the device from the list is clicked
     }
+
+    private AdapterView.OnItemClickListener myListClickListener = new AdapterView.OnItemClickListener()
+    {
+        public void onItemClick (AdapterView av, View v, int arg2, long arg3)
+        {
+            // Get the device MAC address, the last 17 chars in the View
+            String info = ((TextView) v).getText().toString();
+            System.out.println("when clicked" + info);
+//            String address = info.substring(info.length() - 17);
+            // Make an intent to start next activity.
+//            Intent i = new Intent(this, MyCommunicationsActivity.class);
+            //Change the activity.
+//            i.putExtra(EXTRA_ADDRESS, address); //this will be received at CommunicationsActivity
+//            startActivity(i);
+        }
+    };
 }

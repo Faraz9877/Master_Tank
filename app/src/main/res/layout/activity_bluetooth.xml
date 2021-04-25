@@ -51,6 +51,20 @@
         android:onClick="findDevices"
         android:text="@string/std_list_near" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:text="@string/std_paired_devices"
+        android:textColor="@android:color/holo_green_dark"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <ListView
+        android:id="@+id/bluetoothPairedListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 
     <TextView
         android:layout_width="match_parent"
@@ -63,20 +77,6 @@
 
     <ListView
         android:id="@+id/bluetoothNearListView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="start"
-        android:text="@string/std_paired_devices"
-        android:textColor="@android:color/holo_green_dark"
-        android:textSize="24sp"
-        android:textStyle="bold" />
-
-    <ListView
-        android:id="@+id/bluetoothPairedListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
