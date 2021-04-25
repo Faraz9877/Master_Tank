@@ -31,6 +31,7 @@
         <activity android:name=".match.JoinActivity" />
         <activity android:name=".match.HostActivity" />
         <activity android:name=".match.WaitActivity" />
+        <activity android:name=".match.BluetoothActivity" />
     </application>
 
 </manifest>

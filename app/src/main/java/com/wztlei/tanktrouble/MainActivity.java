@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.wztlei.tanktrouble.battle.BattleActivity;
+import com.wztlei.tanktrouble.match.BluetoothActivity;
 import com.wztlei.tanktrouble.match.HostActivity;
 import com.wztlei.tanktrouble.match.JoinActivity;
 
@@ -49,6 +50,11 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
         Log.d(TAG, "onClickSettingsButton");
+    }
 
+    public void onClickBluetoothButton(View view) {
+        Intent intent = new Intent(this, BluetoothActivity.class);
+        startActivity(intent);
+        Log.d(TAG, "onClickBluetoothButton");
     }
 }

@@ -1,6 +1,16 @@
 <resources>
     <string name="app_name">Tank Trouble</string>
 
+    <!-- Bluetooth Activity -->
+    <string name="std_bluetooth_menu">Bluetooth Menu</string>
+    <string name="std_paired_devices">Paired Devices:</string>
+    <string name="std_near_devices">Near Devices:</string>
+    <string name="std_turn_on">Turn On</string>
+    <string name="std_turn_off">Turn Off</string>
+    <string name="std_make_visible">Make Visible</string>
+    <string name="std_list_paired">List Paired Devices</string>
+    <string name="std_list_near">List Near Devices</string>
+
     <!-- Main Activity - Welcome Screen -->
     <string name="str_host">Host</string>
     <string name="str_join">Join</string>
