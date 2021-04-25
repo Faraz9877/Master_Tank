@@ -7,6 +7,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -48,6 +52,8 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
     private int mFireButtonDiameter, mFireButtonPressedDiameter;
     private float mUserDeg;
     private boolean mFireButtonPressed;
+    SoundPool shootSoundPool, explosionSoundPool;
+    int shootSoundId, explosionSoundId;
 
     private static final String TAG = "WL/BattleView";
     private static final float TOP_Y_CONST = Constants.MAP_TOP_Y_CONST;
@@ -92,6 +98,10 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         setFocusable(true);
         setControlGraphicsData(activity);
         setOnTouchListener(this);
+        shootSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+        shootSoundId = shootSoundPool.load(activity, R.raw.fire, 1);
+        explosionSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+        explosionSoundId = explosionSoundPool.load(activity, R.raw.explosion, 1);
     }
 
     @Override
@@ -454,6 +464,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
             if (ExplosionAnimation.isRemovable()) {
                 iterator.remove();
             } else {
+                explosionSoundPool.play(explosionSoundId, 1, 1, 0, 0, 1);
                 ExplosionAnimation.draw(canvas);
             }
         }
@@ -568,8 +579,8 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
                 GameData.getInstance().getCannonballSet().addCannonball(cannonball);
                 //Log.d(TAG, "Projectile fired at x=" + mX + " y=" + mY + " mUserDeg=" + mUserDeg + " degrees");
             }
-
             mFireButtonPressed = true;
+            shootSoundPool.play(shootSoundId, 1, 1, 0, 0, 2);
             mFireButtonPointerId = pointerId;
         } else {
             mFireButtonPressed = false;
