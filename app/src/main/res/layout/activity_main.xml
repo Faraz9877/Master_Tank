@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,42 +7,56 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:gravity="center"
-        android:text="@string/app_name"
-        android:textSize="30sp" />
 
-    <Button
-        android:layout_width="120dp"
+    <LinearLayout
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="onClickHostButton"
-        android:text="@string/str_host" />
+        android:orientation="vertical">
 
-    <Button
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:onClick="onClickJoinButton"
-        android:text="@string/str_join" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:text="@string/app_name"
+            android:textSize="30sp" />
 
-    <Button
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:onClick="onClickSettingsButton"
-        android:text="@string/str_settings" />
+        <Button
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:onClick="onClickHostButton"
+            android:text="@string/str_host" />
 
-    <Button
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:onClick="onClickTestButton"
-        android:text="Test" />
+        <Button
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:onClick="onClickJoinButton"
+            android:text="@string/str_join" />
 
-    <Button
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:onClick="onClickBluetoothButton"
-        android:text="Bluetooth" />
+        <Button
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:onClick="onClickSettingsButton"
+            android:text="@string/str_settings" />
 
-</LinearLayout>
+        <Button
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:onClick="onClickTestButton"
+            android:text="Test" />
+
+        <Button
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:onClick="onClickBluetoothButton"
+            android:text="Bluetooth" />
+
+        <Button
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:onClick="onClickBluetoothGame"
+            android:text="@string/bt_game" />
+    </LinearLayout>
+
+</FrameLayout>

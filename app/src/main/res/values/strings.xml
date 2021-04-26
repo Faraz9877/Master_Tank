@@ -2,6 +2,26 @@
     <string name="app_name">Tank Trouble</string>
 
     <!-- Bluetooth Activity -->
+    <string name="bluetooth_absent">Device is not supported</string>
+    <string name="bluetooth_request">Enabled bluetooth required</string>
+    <string name="device_chooser_header">Device list</string>
+    <string name="scan_for_devices">Scan for devices</string>
+    <string name="scanning_for_devices">Scanning…</string>
+    <string name="n_devices_found_suffix">devices found</string>
+    <string name="enable_discoverable">Make discoverable</string>
+    <string name="not_connected">Not connected</string>
+    <string name="bt_game">Bluetooth game</string>
+    <string name="wait_for_server">Waiting for server to configure game…</string>
+    <!-- Chat -->
+    <string name="send">Send</string>
+    <string name="close">Close</string>
+    <string name="tank_color">Tank Color</string>
+    <string name="color_orange">Orange</string>
+    <string name="color_green">Green</string>
+    <string name="color_blue">Blue</string>
+    <string name="color_red">Red</string>
+    <string name="accept">Accept</string>
+
     <string name="std_bluetooth_menu">Bluetooth Menu</string>
     <string name="std_paired_devices">Paired Devices:</string>
     <string name="std_near_devices">Near Devices:</string>

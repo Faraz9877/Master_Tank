@@ -57,4 +57,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         Log.d(TAG, "onClickBluetoothButton");
     }
+
+    // This is for bluetooth mode
+    public void onClickBluetoothGame(View view) {
+        Intent intent = new Intent(this, DeviceChooser.class);
+        startActivity(intent);
+        Log.d(TAG, "onClickBluetoothGame");
+    }
 }

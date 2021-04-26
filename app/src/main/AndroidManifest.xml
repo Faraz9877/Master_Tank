@@ -4,12 +4,12 @@
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-
-    <!-- If your app targets Android 9 or lower, you can declare
-         ACCESS_COARSE_LOCATION instead. -->
+    <!--
+ If your app targets Android 9 or lower, you can declare
+         ACCESS_COARSE_LOCATION instead.
+    -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
 
     <application
         android:name="android.support.multidex.MultiDexApplication"
@@ -18,20 +18,30 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        android:theme="@style/AppTheme">
+        <activity android:name=".BtGameConfigurationServerActivity" />
+        <activity android:name=".BtGameConfigurationClientActivity" />
+        <activity
+            android:name=".DeviceChooser"
+            android:label="@string/device_chooser_header"
+            android:screenOrientation="portrait" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".SettingsActivity" />
-        <activity android:name=".battle.BattleActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".battle.BattleActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".match.JoinActivity" />
         <activity android:name=".match.HostActivity" />
         <activity android:name=".match.WaitActivity" />
         <activity android:name=".match.BluetoothActivity" />
+
+        <service android:name=".BluetoothService" />
     </application>
 
 </manifest>

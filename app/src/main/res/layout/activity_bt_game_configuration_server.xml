@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp"
+    tools:context=".BtGameConfigurationServerActivity"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:id="@+id/non_local"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"/>
+
+        <LinearLayout
+            android:paddingTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="48dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="@color/colorPrimary"
+                android:text="@string/tank_color"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp">
+            <RadioButton
+                android:id="@+id/color_blue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/color_blue"
+                android:onClick="onColorSelected"
+                android:checked="true"/>
+            <RadioButton
+                android:id="@+id/color_orange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onColorSelected"
+                android:text="@string/color_orange"/>
+            <RadioButton
+                android:id="@+id/color_green"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onColorSelected"
+                android:text="@string/color_green"/>
+            <RadioButton
+                android:id="@+id/color_red"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onColorSelected"
+                android:text="@string/color_red"/>
+        </RadioGroup>
+    </LinearLayout>
+
+</LinearLayout>
