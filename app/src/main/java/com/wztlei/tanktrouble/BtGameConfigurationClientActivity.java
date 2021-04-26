@@ -96,7 +96,7 @@ public class BtGameConfigurationClientActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.alterrank, menu);
+        getMenuInflater().inflate(R.menu.reject, menu);
         return super.onCreateOptionsMenu(menu);
     }
 

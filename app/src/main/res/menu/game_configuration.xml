@@ -2,9 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/accept_button"
+        android:id="@+id/accept"
         android:title="@string/accept"
         android:icon="@drawable/accept"
-        app:showAsAction="always"
-        app:actionViewClass="android.widget.SearchView"/>
+        app:showAsAction="always" />
 </menu>
