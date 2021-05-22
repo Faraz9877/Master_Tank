@@ -12,8 +12,9 @@ public class GameData {
     ArrayList<Integer> playerIDs;
     ArrayList<String> playerUsernames;
     ArrayList<Position> playerPositions;
-    ArrayList<Integer> aliveBullets;
+    ArrayList<Integer> aliveBullets; // Does not sync
     CannonballSet cannonballSet;
+    ArrayList<Cannonball> newCannonballs;
     String gamePin;
     int thisPlayer;
     int status; // 0: wait to join, 1: playing, -1: cancelled
@@ -58,6 +59,10 @@ public class GameData {
 
     public CannonballSet getCannonballSet() {
         return cannonballSet;
+    }
+
+    public ArrayList<Cannonball> getNewCannonballs() {
+        return newCannonballs;
     }
 
     public int getStatus() {
