@@ -76,7 +76,7 @@ public class HostActivity extends AppCompatActivity {
         textViewGamePin.setText(textGamePin);
 
         GameData.getInstance().setGamePin(mGamePin);
-        GameData.getInstance().addPlayer(mUserId);
+        GameData.getInstance().addPlayer(mUserId, 0);
 
         if (mUserId != null && mUserId.length() > 0) {
             // Process the game pin once it has been created

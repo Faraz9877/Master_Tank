@@ -5,9 +5,22 @@ import com.wztlei.tanktrouble.cannonball.Cannonball;
 import com.wztlei.tanktrouble.cannonball.CannonballSet;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DataProtocol {
-    private int state;
+    private static DataProtocol instance = null;
+
+    private DataProtocol() {
+        
+    }
+
+    public static DataProtocol getInstance() {
+        if(instance == null)
+            instance = new DataProtocol();
+
+        return instance;
+    }
 
     // Example Token: I:01;U:King Killer,Sly Fox;P:2.354,5.46,120.2,55.4,15.6,-30.8;C:23,35,55.46,325,1
     public String tokenizeGameData(ArrayList<Integer> playerIDs, ArrayList<String> playerUsernames,
@@ -81,33 +94,96 @@ public class DataProtocol {
 
         // Player IDs
         if(IsIndex != -1) {
-            
+            ArrayList<Integer> playerIDs = new ArrayList<>();
             for(int i = IsIndex; i < token.indexOf(";", IsIndex); i++) {
-
+                playerIDs.add(token.charAt(i) - '0');
             }
+            GameData.getInstance().setPlayerIDs(playerIDs);
         }
 
         // Player Usernames
         if(UsIndex != -1) {
-            for(int i = UsIndex; i < token.indexOf(";", UsIndex); i++) {
-
+            ArrayList<String> usernames = new ArrayList<>();
+            StringBuilder cursor = new StringBuilder();
+            for(int i = UsIndex + 2; i < token.indexOf(";", UsIndex); i++) {
+                if(token.charAt(i) == ',') {
+                    usernames.add(cursor.toString().trim());
+                    cursor = new StringBuilder();
+                }
+                else {
+                    cursor.append(token.charAt(i));
+                }
             }
+            usernames.add(cursor.toString().trim());
+            GameData.getInstance().setPlayerUsernames(usernames);
         }
 
         // Player Positions
         if(PsIndex != -1) {
-            for(int i = PsIndex; i < token.indexOf(";", PsIndex); i++) {
-
+            ArrayList<Position> positions = new ArrayList<>();
+            StringBuilder cursor = new StringBuilder();
+            int xydegCounter = 0;
+            float x = 10, y = 10, deg = 0;
+            for(int i = PsIndex + 2; i < token.indexOf(";", PsIndex); i++) {
+                if(token.charAt(i) == ',') {
+                    if(xydegCounter == 0) {
+                        x = Float.parseFloat(cursor.toString());
+                        xydegCounter ++;
+                    }
+                    else if(xydegCounter == 1) {
+                        y = Float.parseFloat(cursor.toString());
+                        xydegCounter ++;
+                    }
+                    else if(xydegCounter == 2) {
+                        deg = Float.parseFloat(cursor.toString());
+                        positions.add(new Position(x, y, deg));
+                        xydegCounter = 0;
+                    }
+                    cursor = new StringBuilder();
+                }
+                else {
+                    cursor.append(token.charAt(i));
+                }
             }
+            GameData.getInstance().setPlayerPositions(positions);
         }
 
         // New Cannonballs
         if(CsIndex != -1) {
+            StringBuilder cursor = new StringBuilder();
+            int x = 10, y = 20, uuid = 0, shooterID = 0;
+            float deg = 0;
+            int varCounter = 0;
             for(int i = CsIndex; i < token.indexOf(";", CsIndex); i++) {
-
+                if(token.charAt(i) == ',') {
+                    if(varCounter == 0) {
+                        x = Integer.parseInt(cursor.toString());
+                        varCounter ++;
+                    }
+                    else if(varCounter == 1) {
+                        y = Integer.parseInt(cursor.toString());
+                        varCounter ++;
+                    }
+                    else if(varCounter == 2) {
+                        deg = Float.parseFloat(cursor.toString());
+                        varCounter ++;
+                    }
+                    else if(varCounter == 3) {
+                        uuid = Integer.parseInt(cursor.toString());
+                        varCounter ++;
+                    }
+                    else if(varCounter == 4) {
+                        shooterID = Integer.parseInt(cursor.toString());
+                        GameData.getInstance().addCannonball(new Cannonball(x, y, deg, uuid, shooterID));
+                        varCounter = 0;
+                    }
+                    cursor = new StringBuilder();
+                }
+                else {
+                    cursor.append(token.charAt(i));
+                }
             }
         }
-
     }
 
 }

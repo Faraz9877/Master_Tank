@@ -78,7 +78,7 @@ public class JoinActivity extends AppCompatActivity {
      * The method also starts the wait activity which functions as a waiting lobby.
      */
     private void joinGame() {
-        GameData.getInstance().addPlayer(mUserId);
+        GameData.getInstance().addPlayer(mUserId, 1);
         Intent intent = new Intent(getApplicationContext(), WaitActivity.class);
         startActivity(intent);
     }

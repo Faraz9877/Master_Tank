@@ -101,13 +101,13 @@ public class GameData {
         return playerPositions;
     }
 
-    public void addPlayer(String username) {
-        int newPlayerID = playerIDs.size();
-        playerIDs.add(newPlayerID);
+    public void addPlayer(String username, int userId) {
+//        int newPlayerID = playerIDs.size();
+        playerIDs.add(userId);
         playerUsernames.add(username);
         playerPositions.add(new Position(10, 10, 0));
         aliveBullets.add(0);
-        thisPlayer = newPlayerID;
+        thisPlayer = userId;
     }
 
     public void removePlayer() {
@@ -133,5 +133,21 @@ public class GameData {
 
     public void readIncoming(String message) {
 
+    }
+
+    public void setPlayerIDs(ArrayList<Integer> playerIDs) {
+        this.playerIDs = playerIDs;
+    }
+
+    public void setPlayerUsernames(ArrayList<String> playerUsernames) {
+        this.playerUsernames = playerUsernames;
+    }
+
+    public void setPlayerPositions(ArrayList<Position> playerPositions) {
+        this.playerPositions = playerPositions;
+    }
+
+    public void addCannonball(Cannonball cannonball) {
+        cannonballSet.addCannonball(cannonball);
     }
 }
