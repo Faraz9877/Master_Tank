@@ -12,7 +12,7 @@ public class DataProtocol {
     private static DataProtocol instance = null;
 
     private DataProtocol() {
-        
+
     }
 
     public static DataProtocol getInstance() {
