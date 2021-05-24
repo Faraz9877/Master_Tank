@@ -7,7 +7,7 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingTop="16dp"
-    tools:context=".BtGameConfigurationClientActivity"
+    tools:context=".datahouse.BtGameConfigurationClientActivity"
     android:orientation="vertical">
 
     <TextView

@@ -10,12 +10,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
-import com.wztlei.tanktrouble.Constants;
 import com.wztlei.tanktrouble.R;
 import com.wztlei.tanktrouble.UserUtils;
-import com.wztlei.tanktrouble.datahouse.AcceptThread;
-import com.wztlei.tanktrouble.datahouse.Bluetooth;
-import com.wztlei.tanktrouble.datahouse.ConnectThread;
 import com.wztlei.tanktrouble.datahouse.GameData;
 
 public class JoinActivity extends AppCompatActivity {
@@ -115,9 +111,9 @@ public class JoinActivity extends AppCompatActivity {
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
         startActivity(discoverableIntent);
 
-        // Start accept thread to get a connection with the peer
+        // Start connect thread to get a connection with the peer
         // TODO: FARAZ: Fix choosePairedDevice function
-        ConnectThread connectThread = new ConnectThread (Bluetooth.getInstance().choosePairedDevice());
-        connectThread.start();
+//        ConnectThread connectThread = new ConnectThread (Bluetooth.getInstance().choosePairedDevice());
+//        connectThread.start();
     }
 }

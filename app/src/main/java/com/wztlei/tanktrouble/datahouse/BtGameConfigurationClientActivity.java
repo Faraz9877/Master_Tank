@@ -1,4 +1,4 @@
-package com.wztlei.tanktrouble;
+package com.wztlei.tanktrouble.datahouse;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.wztlei.tanktrouble.R;
 
 import java.util.Arrays;
 

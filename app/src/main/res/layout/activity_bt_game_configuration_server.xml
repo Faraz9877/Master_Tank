@@ -7,7 +7,7 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingTop="16dp"
-    tools:context=".BtGameConfigurationServerActivity"
+    tools:context=".datahouse.BtGameConfigurationServerActivity"
     android:orientation="vertical">
 
 

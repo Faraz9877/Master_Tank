@@ -1,7 +1,5 @@
-package com.wztlei.tanktrouble;
+package com.wztlei.tanktrouble.datahouse;
 
-import android.Manifest;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
@@ -10,9 +8,9 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+
+import com.wztlei.tanktrouble.R;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,9 +23,10 @@ import java.util.UUID;
  * Service handling bluetooth interaction
  */
 public class BluetoothService extends Service {
+    private static BluetoothService instance = null;
 
     private static final String TAG = "BluetoothService";
-    private static final UUID MY_UUID = UUID.fromString("27e86a38-a29c-421e-9d17-fe9c0c3bf2e6");
+    private static final UUID MY_UUID = UUID.fromString("SuperTank");
 
     private static final int NOTIFICATION_ID = 1;
 

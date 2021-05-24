@@ -1,4 +1,4 @@
-package com.wztlei.tanktrouble;
+package com.wztlei.tanktrouble.datahouse;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -11,6 +11,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioButton;
+
+import com.wztlei.tanktrouble.R;
 
 public class BtGameConfigurationServerActivity extends AppCompatActivity {
 

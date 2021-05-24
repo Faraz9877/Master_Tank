@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.wztlei.tanktrouble.battle.BattleActivity;
+import com.wztlei.tanktrouble.datahouse.DeviceChooserActivity;
 import com.wztlei.tanktrouble.match.BluetoothActivity;
 import com.wztlei.tanktrouble.match.HostActivity;
 import com.wztlei.tanktrouble.match.JoinActivity;

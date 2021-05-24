@@ -1,4 +1,4 @@
-package com.wztlei.tanktrouble;
+package com.wztlei.tanktrouble.datahouse;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -20,6 +20,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.wztlei.tanktrouble.R;
 
 import java.util.Set;
 

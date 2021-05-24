@@ -13,13 +13,7 @@ import com.wztlei.tanktrouble.MainActivity;
 import com.wztlei.tanktrouble.R;
 import com.wztlei.tanktrouble.UserUtils;
 import com.wztlei.tanktrouble.battle.BattleActivity;
-import com.wztlei.tanktrouble.datahouse.AcceptThread;
-import com.wztlei.tanktrouble.datahouse.Bluetooth;
 import com.wztlei.tanktrouble.datahouse.GameData;
-
-import java.util.ArrayList;
-
-import static android.support.v4.app.ActivityCompat.startActivityForResult;
 
 public class HostActivity extends AppCompatActivity {
 
@@ -141,7 +135,6 @@ public class HostActivity extends AppCompatActivity {
         startActivity(discoverableIntent);
 
         // Start accept thread to get a connection with the peer
-        AcceptThread acceptThread = new AcceptThread ();
-        acceptThread.start();
+
     }
 }
