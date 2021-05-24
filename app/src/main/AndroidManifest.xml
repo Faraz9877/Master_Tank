@@ -22,7 +22,7 @@
         <activity android:name=".BtGameConfigurationServerActivity" />
         <activity android:name=".BtGameConfigurationClientActivity" />
         <activity
-            android:name=".DeviceChooser"
+            android:name=".DeviceChooserActivity"
             android:label="@string/device_chooser_header"
             android:screenOrientation="portrait" />
         <activity android:name=".MainActivity">

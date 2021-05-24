@@ -23,7 +23,7 @@ import android.widget.Toast;
 
 import java.util.Set;
 
-public class DeviceChooser extends AppCompatActivity {
+public class DeviceChooserActivity extends AppCompatActivity {
 
     private BluetoothService btService;
 
@@ -72,7 +72,7 @@ public class DeviceChooser extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if (btService != null) {
-            btService.registerActivity(DeviceChooser.class);
+            btService.registerActivity(DeviceChooserActivity.class);
         }
     }
 
@@ -81,12 +81,12 @@ public class DeviceChooser extends AppCompatActivity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             btService = ((BluetoothService.BtBinder) service).getService();
 
-            btService.registerActivity(DeviceChooser.class);
+            btService.registerActivity(DeviceChooserActivity.class);
 
             try {
                 btService.initBtAdapter();
             } catch (BluetoothService.BtUnavailableException e) {
-                Toast.makeText(DeviceChooser.this,
+                Toast.makeText(DeviceChooserActivity.this,
                         R.string.bluetooth_absent, Toast.LENGTH_LONG).show();
                 finish();
                 return;
@@ -108,13 +108,13 @@ public class DeviceChooser extends AppCompatActivity {
                         public void run() {
                             shouldStop = false;
                             if (btService.isServer()) {
-                                startActivity(new Intent(DeviceChooser.this,
+                                startActivity(new Intent(DeviceChooserActivity.this,
                                         BtGameConfigurationServerActivity.class));
                             } else {
-                                startActivity(new Intent(DeviceChooser.this,
+                                startActivity(new Intent(DeviceChooserActivity.this,
                                         BtGameConfigurationClientActivity.class));
                             }
-                            DeviceChooser.this.finish();
+                            DeviceChooserActivity.this.finish();
                         }
                     });
                 }
