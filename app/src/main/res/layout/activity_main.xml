@@ -15,7 +15,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:gravity="center"
@@ -23,37 +23,37 @@
             android:textSize="30sp" />
 
         <Button
-            android:layout_width="120dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:onClick="onClickHostButton"
             android:text="@string/str_host" />
 
         <Button
-            android:layout_width="120dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:onClick="onClickJoinButton"
             android:text="@string/str_join" />
 
         <Button
-            android:layout_width="120dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:onClick="onClickSettingsButton"
             android:text="@string/str_settings" />
 
         <Button
-            android:layout_width="120dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:onClick="onClickTestButton"
             android:text="Test" />
 
         <Button
-            android:layout_width="120dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:onClick="onClickBluetoothButton"
             android:text="Bluetooth" />
 
         <Button
-            android:layout_width="120dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:onClick="onClickBluetoothGame"
             android:text="@string/bt_game" />
