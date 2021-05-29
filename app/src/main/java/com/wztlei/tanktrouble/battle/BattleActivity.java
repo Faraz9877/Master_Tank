@@ -13,6 +13,7 @@ import com.wztlei.tanktrouble.Constants;
 import com.wztlei.tanktrouble.MainActivity;
 import com.wztlei.tanktrouble.UserUtils;
 import com.wztlei.tanktrouble.datahouse.BluetoothService;
+import com.wztlei.tanktrouble.datahouse.DataProtocol;
 import com.wztlei.tanktrouble.datahouse.DeviceChooserActivity;
 import com.wztlei.tanktrouble.datahouse.GameData;
 import com.wztlei.tanktrouble.match.WaitActivity;
@@ -24,6 +25,7 @@ public class BattleActivity extends AppCompatActivity {
     private static final String TAG = "WL/BattleActivity";
 
     private BluetoothService btService;
+    private BluetoothService.MessageChannel messageChannel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +48,6 @@ public class BattleActivity extends AppCompatActivity {
             btService.registerActivity(BattleActivity.class);
             GameData.getInstance().setBtService(btService);
         }
-
-//        GameData.getInstance().sync(1100);
     }
 
     @Override
@@ -76,10 +76,10 @@ public class BattleActivity extends AppCompatActivity {
         if (btService.getBluetoothAdapter() != null) {
             btService.getBluetoothAdapter().cancelDiscovery();
         }
-        if (btService != null /* && shouldStop */) {
-            btService.stopSelf();
-            btService = null;
-        }
+//        if (btService != null /* && shouldStop */) {
+//            btService.stopSelf();
+//            btService = null;
+//        }
         unbindService(connection);
 
         Log.d(TAG, "onDestroy");
@@ -112,9 +112,7 @@ public class BattleActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             btService = ((BluetoothService.BtBinder) service).getService();
-
             btService.registerActivity(WaitActivity.class);
-
             // TODO: manage this part
             btService.setOnConnected(new BluetoothService.OnConnected() {
                 @Override
@@ -125,6 +123,21 @@ public class BattleActivity extends AppCompatActivity {
 //                            startActivity(new Intent(JoinActivity.this,
 //                                    BtGameConfigurationClientActivity.class));
 //                            JoinActivity.this.finish();
+                        }
+                    });
+                }
+            });
+
+            messageChannel = btService.getChannel();
+            messageChannel.setOnMessageReceivedListener(new BluetoothService.OnMessageReceivedListener() {
+                @Override
+                public void process(final byte[] buffer) {
+                    BattleActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String data = new String(buffer);
+                            Log.d(TAG, "Battle Message Process: " + data);
+                            DataProtocol.detokenizeGameData(data);
                         }
                     });
                 }

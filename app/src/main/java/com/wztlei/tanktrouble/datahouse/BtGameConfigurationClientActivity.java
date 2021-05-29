@@ -59,18 +59,17 @@ public class BtGameConfigurationClientActivity extends AppCompatActivity {
             btService.registerActivity(BtGameConfigurationServerActivity.class);
 
             messageChannel = btService.getChannel();
-
             messageChannel.setOnMessageReceivedListener(new BluetoothService.OnMessageReceivedListener() {
                 @Override
                 public void process(final byte[] buffer) {
                     BtGameConfigurationClientActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            long seed = fromByteArray(Arrays.copyOfRange(buffer, 0, 8));
-                            byte color = buffer[8];
-                            byte type = buffer[9];
+//                            long seed = fromByteArray(Arrays.copyOfRange(buffer, 0, 8));
+//                            byte color = buffer[8];
+//                            byte type = buffer[9];
 
-                            Log.d(TAG, Long.toString(seed));
+//                            Log.d(TAG, Long.toString(seed));
 
                             // TODO: fix here
 //                            Intent intent = new Intent(BtGameConfigurationClientActivity.this,

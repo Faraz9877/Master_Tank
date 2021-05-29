@@ -21,8 +21,11 @@ import com.wztlei.tanktrouble.battle.BattleActivity;
 import com.wztlei.tanktrouble.datahouse.BluetoothService;
 import com.wztlei.tanktrouble.datahouse.BtGameConfigurationClientActivity;
 import com.wztlei.tanktrouble.datahouse.BtGameConfigurationServerActivity;
+import com.wztlei.tanktrouble.datahouse.DataProtocol;
 import com.wztlei.tanktrouble.datahouse.DeviceChooserActivity;
 import com.wztlei.tanktrouble.datahouse.GameData;
+
+import java.util.Arrays;
 
 public class HostActivity extends AppCompatActivity {
 
@@ -31,6 +34,7 @@ public class HostActivity extends AppCompatActivity {
     private boolean mBattleActivityStarting;
 
     private BluetoothService btService;
+    private BluetoothService.MessageChannel messageChannel;
 
     private static final String TAG = "WL/HostActivity";
     private static final String GAME_PIN_KEY = Constants.GAME_PIN_KEY;
@@ -89,10 +93,10 @@ public class HostActivity extends AppCompatActivity {
             if (btService.getBluetoothAdapter() != null) {
                 btService.getBluetoothAdapter().cancelDiscovery();
             }
-            if (btService != null /* && shouldStop */) {
-                btService.stopSelf();
-                btService = null;
-            }
+//            if (btService != null /* && shouldStop */) {
+//                btService.stopSelf();
+//                btService = null;
+//            }
             unbindService(connection);
         }
     }
@@ -163,10 +167,7 @@ public class HostActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             btService = ((BluetoothService.BtBinder) service).getService();
-
             btService.registerActivity(HostActivity.class);
-
-
             // TODO: manage this part
             btService.setOnConnected(new BluetoothService.OnConnected() {
                 @Override
@@ -177,6 +178,21 @@ public class HostActivity extends AppCompatActivity {
 //                            startActivity(new Intent(HostActivity.this,
 //                                    BtGameConfigurationClientActivity.class));
 //                            HostActivity.this.finish();
+                        }
+                    });
+                }
+            });
+
+            messageChannel = btService.getChannel();
+            messageChannel.setOnMessageReceivedListener(new BluetoothService.OnMessageReceivedListener() {
+                @Override
+                public void process(final byte[] buffer) {
+                    HostActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String data = new String(buffer);
+                            Log.d(TAG, "Host Message Process: " + data);
+                            DataProtocol.detokenizeGameData(data);
                         }
                     });
                 }

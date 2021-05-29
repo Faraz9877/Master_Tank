@@ -17,6 +17,7 @@ import android.widget.EditText;
 import com.wztlei.tanktrouble.R;
 import com.wztlei.tanktrouble.UserUtils;
 import com.wztlei.tanktrouble.datahouse.BluetoothService;
+import com.wztlei.tanktrouble.datahouse.DataProtocol;
 import com.wztlei.tanktrouble.datahouse.DeviceChooserActivity;
 import com.wztlei.tanktrouble.datahouse.GameData;
 
@@ -27,6 +28,7 @@ public class JoinActivity extends AppCompatActivity {
     boolean mWaitActivityStarting;
 
     private BluetoothService btService;
+    private BluetoothService.MessageChannel messageChannel;
 
     private final static int REQUEST_ENABLE_BT = 1;
     private static final String TAG = "WL/JoinActivity";
@@ -74,10 +76,10 @@ public class JoinActivity extends AppCompatActivity {
         if (btService.getBluetoothAdapter() != null) {
             btService.getBluetoothAdapter().cancelDiscovery();
         }
-        if (btService != null /* && shouldStop */) {
-            btService.stopSelf();
-            btService = null;
-        }
+//        if (btService != null /* && shouldStop */) {
+//            btService.stopSelf();
+//            btService = null;
+//        }
         unbindService(connection);
     }
 
@@ -91,8 +93,6 @@ public class JoinActivity extends AppCompatActivity {
         // Get the game pin entered by the user
         EditText editGamePin = findViewById(R.id.edit_game_pin);
         mGamePin = editGamePin.getText().toString();
-
-//        GameData.getInstance().sync(1100);
 
         if (mGamePin.length() > 0 && mGamePin.equals(GameData.getInstance().getGamePin())) {
             mWaitActivityStarting = true;
@@ -108,6 +108,7 @@ public class JoinActivity extends AppCompatActivity {
      */
     private void joinGame() {
         GameData.getInstance().addPlayer(mUserId, 1);
+        GameData.getInstance().sync(1100, true);
         Intent intent = new Intent(getApplicationContext(), WaitActivity.class);
         startActivity(intent);
     }
@@ -135,10 +136,7 @@ public class JoinActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             btService = ((BluetoothService.BtBinder) service).getService();
-
             btService.registerActivity(JoinActivity.class);
-
-
             // TODO: manage this part
             btService.setOnConnected(new BluetoothService.OnConnected() {
                 @Override
@@ -149,6 +147,21 @@ public class JoinActivity extends AppCompatActivity {
 //                            startActivity(new Intent(JoinActivity.this,
 //                                    BtGameConfigurationClientActivity.class));
 //                            JoinActivity.this.finish();
+                        }
+                    });
+                }
+            });
+
+            messageChannel = btService.getChannel();
+            messageChannel.setOnMessageReceivedListener(new BluetoothService.OnMessageReceivedListener() {
+                @Override
+                public void process(final byte[] buffer) {
+                    JoinActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String data = new String(buffer);
+                            Log.d(TAG, "Join Message Process: " + data);
+                            DataProtocol.detokenizeGameData(data);
                         }
                     });
                 }

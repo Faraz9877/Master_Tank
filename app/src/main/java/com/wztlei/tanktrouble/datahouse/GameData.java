@@ -4,6 +4,7 @@ import com.wztlei.tanktrouble.battle.Position;
 import com.wztlei.tanktrouble.cannonball.Cannonball;
 import com.wztlei.tanktrouble.cannonball.CannonballSet;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 public class GameData {
@@ -31,15 +32,22 @@ public class GameData {
         thisPlayer = -1;
     }
 
-    public void sync(int syncCode)
+    public void sync(int syncCode, boolean isSolo)
     {
-        String token = DataProtocol.tokenizeGameData(
+        String token;
+        token = isSolo ? DataProtocol.tokenizeSoloGameData(
+                playerIDs.get(thisPlayer),
+                (syncCode / 100) % 2 == 1 ? playerUsernames.get(thisPlayer): null,
+                (syncCode / 10) % 2 == 1 ? playerPositions.get(thisPlayer): null,
+                syncCode % 2 == 1 ? newCannonballs: null
+            ) : DataProtocol.tokenizeGameData(
                 (syncCode / 1000) % 2 == 1 ? playerIDs: null,
                 (syncCode / 100) % 2 == 1 ? playerUsernames: null,
                 (syncCode / 10) % 2 == 1 ? playerPositions: null,
                 syncCode % 2 == 1 ? newCannonballs: null
-        );
-        btService.getChannel().send(token.getBytes());
+            );
+
+        btService.getChannel().send(token.getBytes(/*"UTF-8"*/));
         newCannonballs.clear();
     }
 
@@ -160,5 +168,21 @@ public class GameData {
 
     public void addCannonball(Cannonball cannonball) {
         cannonballSet.addCannonball(cannonball);
+    }
+
+    public void addPlayerID(int playerID) {
+        if(!playerIDs.contains(playerID)) {
+            playerIDs.add(playerID);
+        }
+    }
+
+    public void addPlayerUsername(int id, String username) {
+        if(!playerUsernames.contains(username) && playerIDs.size() > playerUsernames.size()) {
+            playerUsernames.add(username);
+        }
+    }
+
+    public void setPlayerPosition(int playerID, Position position) {
+        playerPositions.set(playerIDs.indexOf(playerID), position);
     }
 }
