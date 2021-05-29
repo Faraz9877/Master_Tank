@@ -35,7 +35,6 @@ public class BattleActivity extends AppCompatActivity {
         bindService(new Intent(this, BluetoothService.class), connection, Context.BIND_AUTO_CREATE);
 
         // Grab the database reference for the game into which the user has possibly joined
-        GameData.getInstance().sync();
         validateGame();
     }
 
@@ -45,7 +44,10 @@ public class BattleActivity extends AppCompatActivity {
 
         if (btService != null) {
             btService.registerActivity(BattleActivity.class);
+            GameData.getInstance().setBtService(btService);
         }
+
+//        GameData.getInstance().sync(1100);
     }
 
     @Override

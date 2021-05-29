@@ -19,6 +19,8 @@ public class GameData {
     int thisPlayer;
     int status; // 0: wait to join, 1: playing, -1: cancelled
 
+    private BluetoothService btService;
+
     private GameData() {
         playerIDs = new ArrayList<>();
         playerUsernames = new ArrayList<>();
@@ -29,9 +31,16 @@ public class GameData {
         thisPlayer = -1;
     }
 
-    public void sync()
+    public void sync(int syncCode)
     {
-
+        String token = DataProtocol.tokenizeGameData(
+                (syncCode / 1000) % 2 == 1 ? playerIDs: null,
+                (syncCode / 100) % 2 == 1 ? playerUsernames: null,
+                (syncCode / 10) % 2 == 1 ? playerPositions: null,
+                syncCode % 2 == 1 ? newCannonballs: null
+        );
+        btService.getChannel().send(token.getBytes());
+        newCannonballs.clear();
     }
 
     public static GameData getInstance() {
@@ -48,6 +57,8 @@ public class GameData {
     public void setStatus(int status) {
         this.status = status;
     }
+
+    public void setBtService(BluetoothService btService) { this.btService = btService; }
 
     public int getThisPlayer() {
         return thisPlayer;

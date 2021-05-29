@@ -62,6 +62,7 @@ public class HostActivity extends AppCompatActivity {
         super.onStart();
         if (btService != null) {
             btService.registerActivity(HostActivity.class);
+            GameData.getInstance().setBtService(btService);
         }
     }
 

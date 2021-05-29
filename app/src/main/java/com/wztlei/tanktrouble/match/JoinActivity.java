@@ -53,6 +53,7 @@ public class JoinActivity extends AppCompatActivity {
 
         if (btService != null) {
             btService.registerActivity(JoinActivity.class);
+            GameData.getInstance().setBtService(btService);
         }
 
         mWaitActivityStarting = false;
@@ -91,7 +92,7 @@ public class JoinActivity extends AppCompatActivity {
         EditText editGamePin = findViewById(R.id.edit_game_pin);
         mGamePin = editGamePin.getText().toString();
 
-        GameData.getInstance().sync();
+//        GameData.getInstance().sync(1100);
 
         if (mGamePin.length() > 0 && mGamePin.equals(GameData.getInstance().getGamePin())) {
             mWaitActivityStarting = true;

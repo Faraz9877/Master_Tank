@@ -41,6 +41,7 @@ public class WaitActivity extends AppCompatActivity {
 
         if (btService != null) {
             btService.registerActivity(WaitActivity.class);
+            GameData.getInstance().setBtService(btService);
         }
     }
 
@@ -72,7 +73,7 @@ public class WaitActivity extends AppCompatActivity {
      */
     private void waitForGameToStart() {
         // Listen for new people joining the game
-        GameData.getInstance().sync();
+//        GameData.getInstance().sync(1100);
         if (GameData.getInstance().getStatus() == -1) {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
@@ -87,7 +88,7 @@ public class WaitActivity extends AppCompatActivity {
      * Called when the host presses the start game button.
      */
     private void onGameStarted() {
-        GameData.getInstance().sync();
+//        GameData.getInstance().sync(1100);
         Intent intent = new Intent(getApplicationContext(), BattleActivity.class);
         startActivity(intent);
     }

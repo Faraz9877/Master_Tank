@@ -9,21 +9,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DataProtocol {
-    private static DataProtocol instance = null;
-
-    private DataProtocol() {
-
-    }
-
-    public static DataProtocol getInstance() {
-        if(instance == null)
-            instance = new DataProtocol();
-
-        return instance;
-    }
 
     // Example Token: I:01;U:King Killer,Sly Fox;P:2.354,5.46,120.2,55.4,15.6,-30.8;C:23,35,55.46,325,1
-    public String tokenizeGameData(ArrayList<Integer> playerIDs, ArrayList<String> playerUsernames,
+    public static String tokenizeGameData(ArrayList<Integer> playerIDs, ArrayList<String> playerUsernames,
                                    ArrayList<Position> playerPositions, ArrayList<Cannonball> cannonballs) {
         StringBuilder token = new StringBuilder();
 
@@ -86,7 +74,7 @@ public class DataProtocol {
         return token.toString();
     }
 
-    public void detokenizeGameData(String token) {
+    public static void detokenizeGameData(String token) {
         int IsIndex = token.indexOf("I:");
         int UsIndex = token.indexOf("U:");
         int PsIndex = token.indexOf("P:");

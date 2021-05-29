@@ -83,7 +83,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         // Set up the user and opponent tanks
         mUnusedTankColors = new boolean[]{true, true, true, true};
         mOpponentTanks = new HashMap<>();
-        GameData.getInstance().sync();
+//        GameData.getInstance().sync(1100);
         mJoystickColor = TankColor.BLUE.getPaint();
         addEnteringTanks(activity);
 
@@ -102,6 +102,8 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         shootSoundId = shootSoundPool.load(activity, R.raw.fire, 1);
         explosionSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
         explosionSoundId = explosionSoundPool.load(activity, R.raw.explosion, 1);
+
+//        GameData.getInstance().sync(0011);
     }
 
     @Override
@@ -307,7 +309,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
      * @param opponentId    the id of the opponent
      */
     private void removeExitingTanks(final int opponentId){
-        GameData.getInstance().sync();
+//        GameData.getInstance().sync(1110);
 
         // Determine if any of the children of the game has a key of the opponent id
         // Return if we have found a key matching the user id, since
