@@ -1,18 +1,27 @@
 package com.wztlei.tanktrouble.match;
 
 import android.bluetooth.BluetoothAdapter;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.wztlei.tanktrouble.Constants;
 import com.wztlei.tanktrouble.MainActivity;
 import com.wztlei.tanktrouble.R;
 import com.wztlei.tanktrouble.UserUtils;
 import com.wztlei.tanktrouble.battle.BattleActivity;
+import com.wztlei.tanktrouble.datahouse.BluetoothService;
+import com.wztlei.tanktrouble.datahouse.BtGameConfigurationClientActivity;
+import com.wztlei.tanktrouble.datahouse.BtGameConfigurationServerActivity;
+import com.wztlei.tanktrouble.datahouse.DeviceChooserActivity;
 import com.wztlei.tanktrouble.datahouse.GameData;
 
 public class HostActivity extends AppCompatActivity {
@@ -20,6 +29,8 @@ public class HostActivity extends AppCompatActivity {
     private String mGamePin;
     private String mUserId;
     private boolean mBattleActivityStarting;
+
+    private BluetoothService btService;
 
     private static final String TAG = "WL/HostActivity";
     private static final String GAME_PIN_KEY = Constants.GAME_PIN_KEY;
@@ -35,6 +46,8 @@ public class HostActivity extends AppCompatActivity {
         // Get a reference to the games database
         UserUtils.initialize(this);
 
+        bindService(new Intent(this, BluetoothService.class), connection, Context.BIND_AUTO_CREATE);
+
         // Get the user id
         mUserId = UserUtils.getUserId();
 
@@ -45,9 +58,26 @@ public class HostActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        if (btService != null) {
+            btService.registerActivity(HostActivity.class);
+        }
+    }
+
+    @Override
     protected void onRestart(){
         super.onRestart();
+
         onUniqueRandomPinCreated();
+    }
+
+    @Override
+    protected void onStop() {
+        if (btService != null) {
+            btService.unregisterActivity();
+        }
+        super.onStop();
     }
 
     @Override
@@ -55,7 +85,14 @@ public class HostActivity extends AppCompatActivity {
         super.onDestroy();
 
         if (!mBattleActivityStarting) {
-            // To destroy game
+            if (btService.getBluetoothAdapter() != null) {
+                btService.getBluetoothAdapter().cancelDiscovery();
+            }
+            if (btService != null /* && shouldStop */) {
+                btService.stopSelf();
+                btService = null;
+            }
+            unbindService(connection);
         }
     }
 
@@ -121,20 +158,33 @@ public class HostActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void setBluetooth() {
-        // Enable bluetooth
-        if (!Bluetooth.getInstance().getBluetoothAdapter().isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+    private final ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            btService = ((BluetoothService.BtBinder) service).getService();
+
+            btService.registerActivity(HostActivity.class);
+
+
+            // TODO: manage this part
+            btService.setOnConnected(new BluetoothService.OnConnected() {
+                @Override
+                public void success() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+//                            startActivity(new Intent(HostActivity.this,
+//                                    BtGameConfigurationClientActivity.class));
+//                            HostActivity.this.finish();
+                        }
+                    });
+                }
+            });
         }
 
-        // Make device discoverable for 5 minutes
-        Intent discoverableIntent =
-                new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-        startActivity(discoverableIntent);
-
-        // Start accept thread to get a connection with the peer
-
-    }
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            btService = null;
+        }
+    };
 }

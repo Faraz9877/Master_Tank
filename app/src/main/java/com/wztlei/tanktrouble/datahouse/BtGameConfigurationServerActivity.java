@@ -18,8 +18,6 @@ public class BtGameConfigurationServerActivity extends AppCompatActivity {
 
     protected static final String TAG = "ServerConfiguration";
 
-    private static final byte CHANNEL_ID = 2;
-
     public static final int COLOR_BLUE = 1;
     public static final int COLOR_RED = 2;
     public static final int COLOR_GREEN = 3;
@@ -38,7 +36,7 @@ public class BtGameConfigurationServerActivity extends AppCompatActivity {
             btService = ((BluetoothService.BtBinder) service).getService();
             btService.registerActivity(BtGameConfigurationServerActivity.class);
 
-            messageChannel = btService.getChannel(CHANNEL_ID);
+            messageChannel = btService.getChannel();
 
             if (acceptButton != null) {
                 acceptButton.setEnabled(true);
@@ -97,7 +95,7 @@ public class BtGameConfigurationServerActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         if (btService != null) {
-            btService.unregisterChannel(CHANNEL_ID);
+            btService.unregisterChannel();
         }
         if (btService != null && shouldStop) {
             btService.stopSelf();
@@ -131,7 +129,8 @@ public class BtGameConfigurationServerActivity extends AppCompatActivity {
     }
 
     public void launchGame() {
-        // TODO  maybe something else inti gameData
-        System.out.println("read to lunch");
+        // TODO  maybe something else init gameData
+
+        System.out.println("ready to launch");
     }
 }

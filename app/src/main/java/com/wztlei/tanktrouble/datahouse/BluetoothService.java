@@ -23,7 +23,7 @@ import java.util.UUID;
  * Service handling bluetooth interaction
  */
 public class BluetoothService extends Service {
-    private static BluetoothService instance = null;
+//    private static BluetoothService instance = null;
 
     private static final String TAG = "BluetoothService";
     private static final UUID MY_UUID = UUID.fromString("SuperTank");
@@ -41,12 +41,14 @@ public class BluetoothService extends Service {
 
     @Override
     public void onCreate() {
-        for (int i = 0; i < byteSize; ++i) {
-            cache[i] = new ArrayList<>();
-        }
+//        instance = this;
 
         super.onCreate();
     }
+
+//    public static BluetoothService getInstance() {
+//        return instance;
+//    }
 
     @Override
     public void onDestroy() {
@@ -83,7 +85,7 @@ public class BluetoothService extends Service {
     }
 
     public class BtBinder extends Binder {
-        BluetoothService getService() {
+        public BluetoothService getService() {
             return BluetoothService.this;
         }
     }
@@ -177,57 +179,36 @@ public class BluetoothService extends Service {
         void process(byte[] buffer);
     }
 
-    private final int byteSize = 256;
-
-    @SuppressWarnings("unchecked")
-    private ArrayList<byte[]>[] cache = new ArrayList[byteSize];
-
     public class MessageChannel {
-        private byte id;
         private OnMessageReceivedListener onMessageReceivedListener;
-
-        public MessageChannel(byte id) {
-            this.id = id;
-        }
 
         public void setOnMessageReceivedListener(OnMessageReceivedListener onMessageReceivedListener) {
             this.onMessageReceivedListener = onMessageReceivedListener;
-
-            for (int i = 0; i < cache[id].size(); ++i) {
-                onMessageReceivedListener.process(cache[id].get(i));
-            }
-            cache[id].clear();
         }
 
         public void send(byte[] bytes) {
             //noinspection SynchronizeOnNonFinalField
             synchronized (connectedThread) {
                 byte[] buffer = new byte[bytes.length + 1];
-                buffer[0] = id;
                 System.arraycopy(bytes, 0, buffer, 1, bytes.length);
                 connectedThread.write(buffer);
             }
         }
     }
 
-    MessageChannel[] channels = new MessageChannel[256];
+    MessageChannel channel = new MessageChannel();
 
-    public MessageChannel getChannel(byte id) {
-        MessageChannel channel = new MessageChannel(id);
-        channels[id] = channel;
+    public MessageChannel getChannel() {
+        channel = new MessageChannel();
         return channel;
     }
 
-    public void unregisterChannel(int id) {
-        channels[id] = null;
+    public void unregisterChannel() {
+        channel = null;
     }
 
-    private void process(int id, byte[] message) {
-        if (channels[id] != null) {
-            channels[id].onMessageReceivedListener.process(message);
-        } else {
-            cache[id].add(message);
-        }
+    private void process(byte[] message) {
+        channel.onMessageReceivedListener.process(message);
     }
 
     private void showNotification(Class<?> aClass, String title, String text) {
@@ -380,9 +361,7 @@ public class BluetoothService extends Service {
                 try {
                     bytes = inputStream.read(buffer);
                     Log.d(TAG, "read");
-                    byte id = buffer[0];
-                    byte[] msg = Arrays.copyOfRange(buffer, 1, bytes);
-                    process(id, msg);
+                    process(buffer);
                 } catch (IOException e) {
                     break;
                 }

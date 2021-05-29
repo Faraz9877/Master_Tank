@@ -31,8 +31,6 @@ public class BtGameConfigurationClientActivity extends AppCompatActivity {
         bindService(btServiceIntent, connection, Context.BIND_AUTO_CREATE);
     }
 
-    private static final byte CHANNEL_ID = 2;
-
     private BluetoothService btService;
 
     private BluetoothService.MessageChannel messageChannel;
@@ -60,7 +58,7 @@ public class BtGameConfigurationClientActivity extends AppCompatActivity {
             btService = ((BluetoothService.BtBinder) service).getService();
             btService.registerActivity(BtGameConfigurationServerActivity.class);
 
-            messageChannel = btService.getChannel(CHANNEL_ID);
+            messageChannel = btService.getChannel();
 
             messageChannel.setOnMessageReceivedListener(new BluetoothService.OnMessageReceivedListener() {
                 @Override
@@ -131,7 +129,7 @@ public class BtGameConfigurationClientActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         if (btService != null) {
-            btService.unregisterChannel(CHANNEL_ID);
+            btService.unregisterChannel();
         }
         if (btService != null && shouldStop) {
             btService.stopSelf();

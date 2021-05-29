@@ -2,9 +2,13 @@ package com.wztlei.tanktrouble.match;
 
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +16,8 @@ import android.widget.EditText;
 
 import com.wztlei.tanktrouble.R;
 import com.wztlei.tanktrouble.UserUtils;
+import com.wztlei.tanktrouble.datahouse.BluetoothService;
+import com.wztlei.tanktrouble.datahouse.DeviceChooserActivity;
 import com.wztlei.tanktrouble.datahouse.GameData;
 
 public class JoinActivity extends AppCompatActivity {
@@ -19,6 +25,8 @@ public class JoinActivity extends AppCompatActivity {
     String mUserId;
     String mGamePin;
     boolean mWaitActivityStarting;
+
+    private BluetoothService btService;
 
     private final static int REQUEST_ENABLE_BT = 1;
     private static final String TAG = "WL/JoinActivity";
@@ -31,6 +39,8 @@ public class JoinActivity extends AppCompatActivity {
         mUserId = UserUtils.getUserId();
         mWaitActivityStarting = false;
 
+        bindService(new Intent(this, BluetoothService.class), connection, Context.BIND_AUTO_CREATE);
+
         // Log an error if there is no user ID
         if (mUserId != null && mUserId.length() == 0) {
             Log.e(TAG, "No user ID set");
@@ -40,12 +50,34 @@ public class JoinActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        if (btService != null) {
+            btService.registerActivity(JoinActivity.class);
+        }
+
         mWaitActivityStarting = false;
     }
 
     @Override
     protected void onStop() {
+        if (btService != null) {
+            btService.unregisterActivity();
+        }
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (btService.getBluetoothAdapter() != null) {
+            btService.getBluetoothAdapter().cancelDiscovery();
+        }
+        if (btService != null /* && shouldStop */) {
+            btService.stopSelf();
+            btService = null;
+        }
+        unbindService(connection);
     }
 
     /**
@@ -98,22 +130,33 @@ public class JoinActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    public void setBluetooth() {
-        // Enable bluetooth
-        if (!Bluetooth.getInstance().getBluetoothAdapter().isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+    private final ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            btService = ((BluetoothService.BtBinder) service).getService();
+
+            btService.registerActivity(JoinActivity.class);
+
+
+            // TODO: manage this part
+            btService.setOnConnected(new BluetoothService.OnConnected() {
+                @Override
+                public void success() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+//                            startActivity(new Intent(JoinActivity.this,
+//                                    BtGameConfigurationClientActivity.class));
+//                            JoinActivity.this.finish();
+                        }
+                    });
+                }
+            });
         }
 
-        // Make device discoverable for 5 minutes
-        Intent discoverableIntent =
-                new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-        startActivity(discoverableIntent);
-
-        // Start connect thread to get a connection with the peer
-        // TODO: FARAZ: Fix choosePairedDevice function
-//        ConnectThread connectThread = new ConnectThread (Bluetooth.getInstance().choosePairedDevice());
-//        connectThread.start();
-    }
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            btService = null;
+        }
+    };
 }
