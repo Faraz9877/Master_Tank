@@ -188,6 +188,8 @@ public class BluetoothService extends Service {
 
         public void send(byte[] bytes) {
             //noinspection SynchronizeOnNonFinalField
+            if(connectedThread == null)
+                return;
             synchronized (connectedThread) {
                 byte[] buffer = new byte[bytes.length + 1];
                 System.arraycopy(bytes, 0, buffer, 1, bytes.length);
@@ -199,7 +201,9 @@ public class BluetoothService extends Service {
     MessageChannel channel = new MessageChannel();
 
     public MessageChannel getChannel() {
-        channel = new MessageChannel();
+        if(channel == null) {
+            channel = new MessageChannel();
+        }
         return channel;
     }
 
@@ -208,6 +212,9 @@ public class BluetoothService extends Service {
     }
 
     private void process(byte[] message) {
+        if(channel == null || channel.onMessageReceivedListener == null) {
+            return;
+        }
         channel.onMessageReceivedListener.process(message);
     }
 
@@ -371,7 +378,7 @@ public class BluetoothService extends Service {
         private void write(byte[] bytes) {
             try {
                 outputStream.write(bytes);
-                Log.d(TAG, "write");
+//                Log.d(TAG, "write");
             } catch (IOException ignored) {
             }
         }

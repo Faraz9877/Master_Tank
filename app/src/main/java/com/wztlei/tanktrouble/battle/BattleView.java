@@ -84,11 +84,12 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         mUnusedTankColors = new boolean[]{true, true, true, true};
         mOpponentTanks = new HashMap<>();
         mJoystickColor = TankColor.BLUE.getPaint();
-        addEnteringTanks(activity);
 
         // Set up the cannonball and explosion data
         mKillingCannonball = 0;
         mExplosionAnimations = new HashSet<>();
+
+        addEnteringTanks(activity);
 
         // Callback allows us to intercept events
         getHolder().addCallback(this);
@@ -131,8 +132,8 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         }
 
         // Remove the game if necessary
-        GameData.getInstance().removePlayer();
-        GameData.getInstance().sync(1100, false);
+//        GameData.getInstance().removePlayer();
+        GameData.getInstance().sync(1111, false);
         removeGame();
     }
 

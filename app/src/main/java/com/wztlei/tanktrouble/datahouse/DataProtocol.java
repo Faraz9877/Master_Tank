@@ -11,9 +11,18 @@ import java.util.regex.Pattern;
 public class DataProtocol {
 
     // Example Token: I:01;U:King Killer,Sly Fox;P:2.354,5.46,120.2,55.4,15.6,-30.8;C:23,35,55.46,325,1
-    public static String tokenizeGameData(ArrayList<Integer> playerIDs, ArrayList<String> playerUsernames,
-                                   ArrayList<Position> playerPositions, ArrayList<Cannonball> cannonballs) {
+    public static String tokenizeGameData(String gamePIN, ArrayList<Integer> playerIDs,
+                                          ArrayList<String> playerUsernames,
+                                          ArrayList<Position> playerPositions,
+                                          ArrayList<Cannonball> cannonballs) {
         StringBuilder token = new StringBuilder();
+
+        // Game PIN
+        if(gamePIN != null) {
+            token.append("G:");
+            token.append(gamePIN);
+            token.append(";");
+        }
 
         // Player IDs
         if(playerIDs != null) {
@@ -75,9 +84,15 @@ public class DataProtocol {
     }
 
     // Example Token: SI:1;U:King Killer;P:2.354,5.46,120.2;C:23,35,55.46,325,1
-    public static String tokenizeSoloGameData(Integer playerID, String playerUsername,
+    public static String tokenizeSoloGameData(String gamePIN, Integer playerID, String playerUsername,
                                           Position playerPosition, ArrayList<Cannonball> cannonballs) {
         StringBuilder token = new StringBuilder();
+
+        if(gamePIN != null) {
+            token.append("G:");
+            token.append(gamePIN);
+            token.append(";");
+        }
 
         // Player ID
         if(playerID != null) {
@@ -128,18 +143,30 @@ public class DataProtocol {
     }
 
     public static void detokenizeGameData(String token) {
+        if(token.charAt(0) == 'S') {
+            detokenizeSoloGameData(token);
+            return;
+        }
+
+        int GsIndex = token.indexOf("G:");
         int IsIndex = token.indexOf("I:");
         int UsIndex = token.indexOf("U:");
         int PsIndex = token.indexOf("P:");
         int CsIndex = token.indexOf("C:");
 
+        // Game PIN
+        if(GsIndex != -1) {
+            String GamePIN;
+            StringBuilder cursor = new StringBuilder();
+            for(int i = GsIndex + 2; i < token.indexOf(";", GsIndex); i++) {
+                cursor.append(token.charAt(i));
+            }
+            GamePIN = cursor.toString().trim();
+            GameData.getInstance().setGamePin(GamePIN);
+        }
+
         // Player IDs
         if(IsIndex != -1) {
-            if(IsIndex == 1) {
-                detokenizeSoloGameData(token);
-                return;
-            }
-
             ArrayList<Integer> playerIDs = new ArrayList<>();
             for(int i = IsIndex + 2; i < token.indexOf(";", IsIndex); i++) {
                 playerIDs.add(token.charAt(i) - '0');
@@ -200,7 +227,7 @@ public class DataProtocol {
             int x = 10, y = 20, uuid = 0, shooterID = 0;
             float deg = 0;
             int varCounter = 0;
-            for(int i = CsIndex; i < token.indexOf(";", CsIndex); i++) {
+            for(int i = CsIndex + 2; i < token.indexOf(";", CsIndex); i++) {
                 if(token.charAt(i) == ',') {
                     if(varCounter == 0) {
                         x = Integer.parseInt(cursor.toString());
@@ -234,10 +261,22 @@ public class DataProtocol {
 
     // Must have ID field
     public static void detokenizeSoloGameData(String token) {
+        int GsIndex = token.indexOf("G:");
         int IsIndex = token.indexOf("I:");
         int UsIndex = token.indexOf("U:");
         int PsIndex = token.indexOf("P:");
         int CsIndex = token.indexOf("C:");
+
+        // Game PIN
+        if(GsIndex != -1) {
+            String GamePIN;
+            StringBuilder cursor = new StringBuilder();
+            for(int i = GsIndex + 2; i < token.indexOf(";", GsIndex); i++) {
+                cursor.append(token.charAt(i));
+            }
+            GamePIN = cursor.toString().trim();
+            GameData.getInstance().setGamePin(GamePIN);
+        }
 
         // Player IDs
         int playerID = token.charAt(IsIndex + 2) - '0';
@@ -288,7 +327,7 @@ public class DataProtocol {
             int x = 10, y = 20, uuid = 0, shooterID = 0;
             float deg = 0;
             int varCounter = 0;
-            for(int i = CsIndex; i < token.indexOf(";", CsIndex); i++) {
+            for(int i = CsIndex + 2; i < token.indexOf(";", CsIndex); i++) {
                 if(token.charAt(i) == ',') {
                     if(varCounter == 0) {
                         x = Integer.parseInt(cursor.toString());

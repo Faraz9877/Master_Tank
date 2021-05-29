@@ -27,6 +27,7 @@ public class GameData {
         playerUsernames = new ArrayList<>();
         playerPositions = new ArrayList<>();
         aliveBullets = new ArrayList<>();
+        newCannonballs = new ArrayList<>();
         cannonballSet = new CannonballSet();
         status = 0;
         thisPlayer = -1;
@@ -36,11 +37,13 @@ public class GameData {
     {
         String token;
         token = isSolo ? DataProtocol.tokenizeSoloGameData(
+                (syncCode / 10000) % 2 == 1 ? gamePin: null,
                 playerIDs.get(thisPlayer),
                 (syncCode / 100) % 2 == 1 ? playerUsernames.get(thisPlayer): null,
                 (syncCode / 10) % 2 == 1 ? playerPositions.get(thisPlayer): null,
                 syncCode % 2 == 1 ? newCannonballs: null
             ) : DataProtocol.tokenizeGameData(
+                (syncCode / 10000) % 2 == 1 ? gamePin: null,
                 (syncCode / 1000) % 2 == 1 ? playerIDs: null,
                 (syncCode / 100) % 2 == 1 ? playerUsernames: null,
                 (syncCode / 10) % 2 == 1 ? playerPositions: null,

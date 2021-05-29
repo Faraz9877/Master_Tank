@@ -73,9 +73,9 @@ public class DeviceChooserActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (btService != null) {
-            btService.registerActivity(DeviceChooserActivity.class);
-        }
+//        if (btService != null) {
+//            btService.registerActivity(DeviceChooserActivity.class);
+//        }
     }
 
     private final ServiceConnection connection = new ServiceConnection() {

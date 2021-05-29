@@ -106,7 +106,7 @@ public class JoinActivity extends AppCompatActivity {
      */
     private void joinGame() {
         GameData.getInstance().addPlayer(mUserId, 1);
-        GameData.getInstance().sync(1100, true);
+        GameData.getInstance().sync(1110, true);
         Intent intent = new Intent(getApplicationContext(), WaitActivity.class);
         startActivity(intent);
     }

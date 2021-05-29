@@ -19,6 +19,7 @@ import com.wztlei.tanktrouble.MainActivity;
 import com.wztlei.tanktrouble.R;
 import com.wztlei.tanktrouble.UserUtils;
 import com.wztlei.tanktrouble.battle.BattleActivity;
+import com.wztlei.tanktrouble.match.JoinActivity;
 
 public class BtGameConfigurationServerActivity extends AppCompatActivity {
 
@@ -47,13 +48,28 @@ public class BtGameConfigurationServerActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             btService = ((BluetoothService.BtBinder) service).getService();
+            GameData.getInstance().setBtService(btService);
             btService.registerActivity(BtGameConfigurationServerActivity.class);
 
             messageChannel = btService.getChannel();
+            messageChannel.setOnMessageReceivedListener(new BluetoothService.OnMessageReceivedListener() {
+                @Override
+                public void process(final byte[] buffer) {
+                    BtGameConfigurationServerActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String data = new String(buffer);
+                            Log.d(TAG, "BtServer Message Process: " + data);
+                            DataProtocol.detokenizeGameData(data);
+                        }
+                    });
+                }
+            });
 
             if (acceptButton != null) {
                 acceptButton.setEnabled(true);
             }
+            hostGameWithRandomPin();
         }
 
         @Override
@@ -69,7 +85,6 @@ public class BtGameConfigurationServerActivity extends AppCompatActivity {
 
         UserUtils.initialize(this);
         mUserId = UserUtils.getUserId();
-        hostGameWithRandomPin();
         mBattleActivityStarting = false;
 
         Intent btServiceIntent = new Intent(this, BluetoothService.class);
@@ -98,7 +113,7 @@ public class BtGameConfigurationServerActivity extends AppCompatActivity {
     protected void onRestart(){
         super.onRestart();
 
-        onUniqueRandomPinCreated();
+//        onUniqueRandomPinCreated();
     }
 
     @Override
@@ -134,19 +149,20 @@ public class BtGameConfigurationServerActivity extends AppCompatActivity {
     private void hostGameWithRandomPin() {
         // Create a new random game pin and display it
         mGamePin = Integer.toString(UserUtils.randomInt(MIN_GAME_PIN, MAX_GAME_PIN));
-        TextView textViewGamePin = findViewById(R.id.text_game_pin);
+        TextView textViewGamePin = findViewById(R.id.text_game_pin2);
         String textGamePin = "PIN: " + mGamePin;
         textViewGamePin.setText(textGamePin);
 
         GameData.getInstance().setGamePin(mGamePin);
         GameData.getInstance().addPlayer(mUserId, 0);
+        GameData.getInstance().sync(11110, true);
 
         if (mUserId != null && mUserId.length() > 0) {
             // Process the game pin once it has been created
             onUniqueRandomPinCreated();
 
             // Automatically display that one player is ready (which is the current user)
-            TextView textPlayersReady = findViewById(R.id.text_players_ready);
+            TextView textPlayersReady = findViewById(R.id.text_players_ready2);
             String newPlayersReadyText = "1 Player Ready";
             textPlayersReady.setText(newPlayersReadyText);
         } else {
@@ -160,7 +176,7 @@ public class BtGameConfigurationServerActivity extends AppCompatActivity {
         }
 
         // Listen for new people joining the game
-        TextView textPlayersReady = findViewById(R.id.text_players_ready);
+        TextView textPlayersReady = findViewById(R.id.text_players_ready2);
         int numPlayers = GameData.getInstance().getPlayerIDs().size();
 
         // Update the text displaying how many people have joined the game

@@ -17,6 +17,8 @@ import android.widget.EditText;
 
 import com.wztlei.tanktrouble.R;
 import com.wztlei.tanktrouble.UserUtils;
+import com.wztlei.tanktrouble.battle.BattleActivity;
+import com.wztlei.tanktrouble.match.JoinActivity;
 import com.wztlei.tanktrouble.match.WaitActivity;
 
 import java.util.Arrays;
@@ -69,35 +71,23 @@ public class BtGameConfigurationClientActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             btService = ((BluetoothService.BtBinder) service).getService();
+            GameData.getInstance().setBtService(btService);
             btService.registerActivity(BtGameConfigurationClientActivity.class);
 
             messageChannel = btService.getChannel();
-//            messageChannel.setOnMessageReceivedListener(new BluetoothService.OnMessageReceivedListener() {
-//                @Override
-//                public void process(final byte[] buffer) {
-//                    BtGameConfigurationClientActivity.this.runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            long seed = fromByteArray(Arrays.copyOfRange(buffer, 0, 8));
-//                            byte color = buffer[8];
-//                            byte type = buffer[9];
-
-//                            Log.d(TAG, Long.toString(seed));
-
-                            // TODO: fix here
-//                            Intent intent = new Intent(BtGameConfigurationClientActivity.this,
-//                                    BtGameActivity.class)
-//                                    .putExtra(GameActivity.SEED, seed)
-//                                    .putExtra(GameActivity.GAME, (int) type)
-//                                    .putExtra(BtGameActivity.LOCAL_PLAYER_COLOR,
-//                                            color == GameConfigurationActivity.COLOR_WHITE);
-//                            startActivity(intent);
-//                            shouldStop = false;
-//                            finish();
-//                        }
-//                    });
-//                }
-//            });
+            messageChannel.setOnMessageReceivedListener(new BluetoothService.OnMessageReceivedListener() {
+                @Override
+                public void process(final byte[] buffer) {
+                    BtGameConfigurationClientActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String data = new String(buffer);
+                            Log.d(TAG, "BtClient Message Process: " + data);
+                            DataProtocol.detokenizeGameData(data);
+                        }
+                    });
+                }
+            });
         }
 
         @Override
@@ -142,19 +132,21 @@ public class BtGameConfigurationClientActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (btService != null) {
-            btService.unregisterChannel();
+        if(!mWaitActivityStarting) {
+            if (btService != null) {
+                btService.unregisterChannel();
+            }
+            if (btService != null && shouldStop) {
+                btService.stopSelf();
+            }
+            unbindService(connection);
         }
-        if (btService != null && shouldStop) {
-            btService.stopSelf();
-        }
-        unbindService(connection);
         super.onDestroy();
     }
 
     public void onClickEnterGamePin(View view) {
         // Get the game pin entered by the user
-        EditText editGamePin = findViewById(R.id.edit_game_pin);
+        EditText editGamePin = findViewById(R.id.edit_game_pin2);
         mGamePin = editGamePin.getText().toString();
 
         if (mGamePin.length() > 0 && mGamePin.equals(GameData.getInstance().getGamePin())) {
@@ -168,7 +160,7 @@ public class BtGameConfigurationClientActivity extends AppCompatActivity {
     private void joinGame() {
         GameData.getInstance().addPlayer(mUserId, 1);
         GameData.getInstance().sync(1100, true);
-        Intent intent = new Intent(getApplicationContext(), WaitActivity.class);
+        Intent intent = new Intent(getApplicationContext(), BattleActivity.class);
         startActivity(intent);
     }
 
