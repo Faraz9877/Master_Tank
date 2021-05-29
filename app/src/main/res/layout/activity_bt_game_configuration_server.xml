@@ -11,61 +11,85 @@
     android:orientation="vertical">
 
 
-    <LinearLayout
-        android:id="@+id/non_local"
+    <TextView
+        android:id="@+id/text_game_pin2"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="2dp"
         android:layout_weight="1"
-        android:orientation="vertical">
+        android:gravity="center"
+        android:paddingBottom="20dp"
+        android:text="@string/str_no_id_set"
+        android:textSize="30sp" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?android:attr/listDivider"/>
+    <TextView
+        android:id="@+id/text_players_ready2"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:paddingBottom="20dp"
+        android:text="@string/str_no_player_ready" />
 
-        <LinearLayout
-            android:paddingTop="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="48dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:textColor="@color/colorPrimary"
-                android:text="@string/tank_color"
-                android:layout_gravity="center"/>
-        </LinearLayout>
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:onClick="onClickStartGame"
+        android:text="@string/str_start_game" />
 
-        <RadioGroup
-            android:layout_width="match_parent"
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:paddingTop="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="8dp">
-            <RadioButton
-                android:id="@+id/color_blue"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/color_blue"
-                android:onClick="onColorSelected"
-                android:checked="true"/>
-            <RadioButton
-                android:id="@+id/color_orange"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="onColorSelected"
-                android:text="@string/color_orange"/>
-            <RadioButton
-                android:id="@+id/color_green"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="onColorSelected"
-                android:text="@string/color_green"/>
-            <RadioButton
-                android:id="@+id/color_red"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="onColorSelected"
-                android:text="@string/color_red"/>
-        </RadioGroup>
+            android:layout_gravity="center"
+            android:text="@string/tank_color"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp" />
     </LinearLayout>
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp">
+
+        <RadioButton
+            android:id="@+id/color_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:onClick="onColorSelected"
+            android:text="@string/color_blue" />
+
+        <RadioButton
+            android:id="@+id/color_orange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onColorSelected"
+            android:text="@string/color_orange" />
+
+        <RadioButton
+            android:id="@+id/color_green"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onColorSelected"
+            android:text="@string/color_green" />
+
+        <RadioButton
+            android:id="@+id/color_red"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onColorSelected"
+            android:text="@string/color_red" />
+    </RadioGroup>
 
 </LinearLayout>

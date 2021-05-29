@@ -7,14 +7,24 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioButton;
+import android.widget.TextView;
 
+import com.wztlei.tanktrouble.Constants;
+import com.wztlei.tanktrouble.MainActivity;
 import com.wztlei.tanktrouble.R;
+import com.wztlei.tanktrouble.UserUtils;
+import com.wztlei.tanktrouble.battle.BattleActivity;
 
 public class BtGameConfigurationServerActivity extends AppCompatActivity {
+
+    private String mGamePin;
+    private String mUserId;
+    private boolean mBattleActivityStarting;
 
     protected static final String TAG = "ServerConfiguration";
 
@@ -22,6 +32,9 @@ public class BtGameConfigurationServerActivity extends AppCompatActivity {
     public static final int COLOR_RED = 2;
     public static final int COLOR_GREEN = 3;
     public static final int COLOR_ORANGE = 4;
+    private static final String GAME_PIN_KEY = Constants.GAME_PIN_KEY;
+    private static final int MIN_GAME_PIN = 1000;
+    private static final int MAX_GAME_PIN = 9999;
 
     protected int color = COLOR_BLUE;
 
@@ -54,6 +67,11 @@ public class BtGameConfigurationServerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bt_game_configuration_server);
 
+        UserUtils.initialize(this);
+        mUserId = UserUtils.getUserId();
+        hostGameWithRandomPin();
+        mBattleActivityStarting = false;
+
         Intent btServiceIntent = new Intent(this, BluetoothService.class);
         startService(btServiceIntent);
         bindService(btServiceIntent, connection, Context.BIND_AUTO_CREATE);
@@ -77,6 +95,13 @@ public class BtGameConfigurationServerActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onRestart(){
+        super.onRestart();
+
+        onUniqueRandomPinCreated();
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
         if (btService != null) {
@@ -94,14 +119,66 @@ public class BtGameConfigurationServerActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (btService != null) {
-            btService.unregisterChannel();
+        if (!mBattleActivityStarting) {
+            if (btService != null) {
+                btService.unregisterChannel();
+            }
+            if (btService != null && shouldStop) {
+                btService.stopSelf();
+            }
+            unbindService(connection);
         }
-        if (btService != null && shouldStop) {
-            btService.stopSelf();
-        }
-        unbindService(connection);
         super.onDestroy();
+    }
+
+    private void hostGameWithRandomPin() {
+        // Create a new random game pin and display it
+        mGamePin = Integer.toString(UserUtils.randomInt(MIN_GAME_PIN, MAX_GAME_PIN));
+        TextView textViewGamePin = findViewById(R.id.text_game_pin);
+        String textGamePin = "PIN: " + mGamePin;
+        textViewGamePin.setText(textGamePin);
+
+        GameData.getInstance().setGamePin(mGamePin);
+        GameData.getInstance().addPlayer(mUserId, 0);
+
+        if (mUserId != null && mUserId.length() > 0) {
+            // Process the game pin once it has been created
+            onUniqueRandomPinCreated();
+
+            // Automatically display that one player is ready (which is the current user)
+            TextView textPlayersReady = findViewById(R.id.text_players_ready);
+            String newPlayersReadyText = "1 Player Ready";
+            textPlayersReady.setText(newPlayersReadyText);
+        } else {
+            Log.e(TAG, "Warning: no user Id");
+        }
+    }
+
+    private void onUniqueRandomPinCreated() {
+        if (mUserId == null) {
+            startActivity(new Intent(this, MainActivity.class));
+        }
+
+        // Listen for new people joining the game
+        TextView textPlayersReady = findViewById(R.id.text_players_ready);
+        int numPlayers = GameData.getInstance().getPlayerIDs().size();
+
+        // Update the text displaying how many people have joined the game
+        if (numPlayers == 1) {
+            String newPlayersReadyText = "1 Player Ready";
+            textPlayersReady.setText(newPlayersReadyText);
+        } else {
+            String newPlayersReadyText = numPlayers + " Players Ready";
+            textPlayersReady.setText(newPlayersReadyText);
+        }
+    }
+
+    public void onClickStartGame(View view) {
+        mBattleActivityStarting = true;
+        GameData.getInstance().setStatus(1);
+        Intent intent = new Intent(getApplicationContext(), BattleActivity.class);
+        intent.putExtra(GAME_PIN_KEY, mGamePin);
+        startActivity(intent);
     }
 
     public void onColorSelected(View view) {

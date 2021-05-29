@@ -17,7 +17,8 @@
         android:gravity="center"
         android:hint="@string/str_game_pin"
         android:inputType="number"
-        tools:ignore="TextFields" />
+        tools:ignore="TextFields"
+        android:autofillHints="" />
 
     <Button
         android:layout_width="match_parent"
