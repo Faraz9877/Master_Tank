@@ -26,7 +26,7 @@ public class BluetoothService extends Service {
 //    private static BluetoothService instance = null;
 
     private static final String TAG = "BluetoothService";
-    private static final UUID MY_UUID = UUID.fromString("SuperTank");
+    private static final UUID MY_UUID = UUID.fromString("27e86a38-a29c-421e-9d17-fe9c0c3bf2e6");
 
     private static final int NOTIFICATION_ID = 1;
 
