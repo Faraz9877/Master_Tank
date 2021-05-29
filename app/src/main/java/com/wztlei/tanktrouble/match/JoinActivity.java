@@ -1,7 +1,6 @@
 package com.wztlei.tanktrouble.match;
 
 import android.app.AlertDialog;
-import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,7 +17,6 @@ import com.wztlei.tanktrouble.R;
 import com.wztlei.tanktrouble.UserUtils;
 import com.wztlei.tanktrouble.datahouse.BluetoothService;
 import com.wztlei.tanktrouble.datahouse.DataProtocol;
-import com.wztlei.tanktrouble.datahouse.DeviceChooserActivity;
 import com.wztlei.tanktrouble.datahouse.GameData;
 
 public class JoinActivity extends AppCompatActivity {

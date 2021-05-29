@@ -9,12 +9,9 @@ import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.wztlei.tanktrouble.Constants;
 import com.wztlei.tanktrouble.MainActivity;
-import com.wztlei.tanktrouble.UserUtils;
 import com.wztlei.tanktrouble.datahouse.BluetoothService;
 import com.wztlei.tanktrouble.datahouse.DataProtocol;
-import com.wztlei.tanktrouble.datahouse.DeviceChooserActivity;
 import com.wztlei.tanktrouble.datahouse.GameData;
 import com.wztlei.tanktrouble.match.WaitActivity;
 

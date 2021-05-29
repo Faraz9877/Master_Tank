@@ -56,7 +56,7 @@ public class BtGameConfigurationClientActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             btService = ((BluetoothService.BtBinder) service).getService();
-            btService.registerActivity(BtGameConfigurationServerActivity.class);
+            btService.registerActivity(BtGameConfigurationClientActivity.class);
 
             messageChannel = btService.getChannel();
             messageChannel.setOnMessageReceivedListener(new BluetoothService.OnMessageReceivedListener() {
@@ -113,7 +113,7 @@ public class BtGameConfigurationClientActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if (btService != null) {
-            btService.registerActivity(BtGameConfigurationServerActivity.class);
+            btService.registerActivity(BtGameConfigurationClientActivity.class);
         }
     }
 

@@ -1,6 +1,5 @@
 package com.wztlei.tanktrouble.match;
 
-import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -19,10 +18,7 @@ import com.wztlei.tanktrouble.R;
 import com.wztlei.tanktrouble.UserUtils;
 import com.wztlei.tanktrouble.battle.BattleActivity;
 import com.wztlei.tanktrouble.datahouse.BluetoothService;
-import com.wztlei.tanktrouble.datahouse.BtGameConfigurationClientActivity;
-import com.wztlei.tanktrouble.datahouse.BtGameConfigurationServerActivity;
 import com.wztlei.tanktrouble.datahouse.DataProtocol;
-import com.wztlei.tanktrouble.datahouse.DeviceChooserActivity;
 import com.wztlei.tanktrouble.datahouse.GameData;
 
 import java.util.Arrays;
