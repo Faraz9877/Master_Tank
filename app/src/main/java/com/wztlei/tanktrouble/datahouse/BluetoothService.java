@@ -137,7 +137,7 @@ public class BluetoothService extends Service {
         return btSocket;
     }
 
-    /*
+    /**
         Called to indicate that activity is in foreground and notification is unnecessary
      */
     public void registerActivity(Class<?> activityClass) {
@@ -145,7 +145,7 @@ public class BluetoothService extends Service {
         changeRegCount(1);
     }
 
-    /*
+    /**
         Called to indicate that activity is no longer visible and notification may be needed
      */
     public void unregisterActivity() {

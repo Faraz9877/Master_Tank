@@ -5,6 +5,7 @@ import android.graphics.Paint;
 
 import com.wztlei.tanktrouble.Constants;
 import com.wztlei.tanktrouble.UserUtils;
+import com.wztlei.tanktrouble.battle.Position;
 import com.wztlei.tanktrouble.map.MapUtils;
 
 import java.util.ArrayList;
@@ -237,6 +238,10 @@ public class Cannonball {
 
     public float getDeg() {
         return mDeg;
+    }
+
+    public Position getPosition() {
+        return new Position(mX, mY, mDeg);
     }
 
     public int getRadius() {

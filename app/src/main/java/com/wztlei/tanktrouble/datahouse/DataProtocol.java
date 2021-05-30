@@ -1,5 +1,8 @@
 package com.wztlei.tanktrouble.datahouse;
 
+import android.util.Log;
+
+import com.wztlei.tanktrouble.UserUtils;
 import com.wztlei.tanktrouble.battle.Position;
 import com.wztlei.tanktrouble.cannonball.Cannonball;
 import com.wztlei.tanktrouble.cannonball.CannonballSet;
@@ -15,7 +18,6 @@ public class DataProtocol {
                                           ArrayList<String> playerUsernames,
                                           ArrayList<Position> playerPositions,
                                           ArrayList<Cannonball> cannonballs) {
-
         StringBuilder token = new StringBuilder();
 
         // Game PIN
@@ -50,13 +52,14 @@ public class DataProtocol {
             token.append("P:");
             for(int i = 0; i < playerPositions.size(); i++)
             {
+                Position stdPos = playerPositions.get(i).standardizePosition();
                 if(i != 0)
                     token.append(",");
-                token.append(playerPositions.get(i).x);
+                token.append(stdPos.x);
                 token.append(",");
-                token.append(playerPositions.get(i).y);
+                token.append(stdPos.y);
                 token.append(",");
-                token.append(playerPositions.get(i).deg);
+                token.append(stdPos.deg);
             }
             token.append(";");
         }
@@ -66,13 +69,14 @@ public class DataProtocol {
             token.append("C:");
             for(int i = 0; i < cannonballs.size(); i++)
             {
+                Position stdPos = cannonballs.get(i).getPosition().standardizePosition();
                 if(i != 0) // int x, int y, float deg, int uuid, int shooterID
                     token.append(",");
-                token.append(cannonballs.get(i).getX());
+                token.append(stdPos.x);
                 token.append(",");
-                token.append(cannonballs.get(i).getY());
+                token.append(stdPos.y);
                 token.append(",");
-                token.append(cannonballs.get(i).getDeg());
+                token.append(stdPos.deg);
                 token.append(",");
                 token.append(cannonballs.get(i).getUUID());
                 token.append(",");
@@ -85,13 +89,11 @@ public class DataProtocol {
     }
 
     // Example Token: SI:1;U:King Killer;P:2.354,5.46,120.2;C:23,35,55.46,325,1
-    public static String tokenizeSoloGameData(String gamePIN,
-                                              Integer playerID,
-                                              String playerUsername,
-                                              Position playerPosition,
-                                              ArrayList<Cannonball> cannonballs) {
-
+    public static String tokenizeSoloGameData(String gamePIN, Integer playerID, String playerUsername,
+                                              Position playerPosition, ArrayList<Cannonball> cannonballs) {
         StringBuilder token = new StringBuilder();
+
+        token.append("S");
 
         if(gamePIN != null) {
             token.append("G:");
@@ -101,7 +103,7 @@ public class DataProtocol {
 
         // Player ID
         if(playerID != null) {
-            token.append("SI:");
+            token.append("I:");
             token.append(playerID);
             token.append(";");
         }
@@ -115,12 +117,13 @@ public class DataProtocol {
 
         // Player Positions
         if(playerPosition != null) {
+            Position stdPos = playerPosition.standardizePosition();
             token.append("P:");
-            token.append(playerPosition.x);
+            token.append(stdPos.x);
             token.append(",");
-            token.append(playerPosition.y);
+            token.append(stdPos.y);
             token.append(",");
-            token.append(playerPosition.deg);
+            token.append(stdPos.deg);
             token.append(";");
         }
 
@@ -129,13 +132,14 @@ public class DataProtocol {
             token.append("C:");
             for(int i = 0; i < cannonballs.size(); i++)
             {
+                Position stdPos = cannonballs.get(i).getPosition().standardizePosition();
                 if(i != 0) // int x, int y, float deg, int uuid, int shooterID
                     token.append(",");
-                token.append(cannonballs.get(i).getX());
+                token.append(stdPos.x);
                 token.append(",");
-                token.append(cannonballs.get(i).getY());
+                token.append(stdPos.y);
                 token.append(",");
-                token.append(cannonballs.get(i).getDeg());
+                token.append(stdPos.deg);
                 token.append(",");
                 token.append(cannonballs.get(i).getUUID());
                 token.append(",");
@@ -148,10 +152,12 @@ public class DataProtocol {
     }
 
     public static void detokenizeGameData(String token) {
-        if(token.charAt(0) == 'S') {
+        if(token.contains("S")) {
+            Log.d("TOKEN DEBUG", "Solo detokenizer reached!");
             detokenizeSoloGameData(token);
             return;
         }
+        Log.d("TOKEN DEBUG", "Detokenizer reached!");
 
         int GsIndex = token.indexOf("G:");
         int IsIndex = token.indexOf("I:");
@@ -175,6 +181,7 @@ public class DataProtocol {
             ArrayList<Integer> playerIDs = new ArrayList<>();
             for(int i = IsIndex + 2; i < token.indexOf(";", IsIndex); i++) {
                 playerIDs.add(token.charAt(i) - '0');
+//                Log.d("TOKEN DEBUG", "PlayerID: " + (token.charAt(i) - '0'));
             }
             GameData.getInstance().setPlayerIDs(playerIDs);
         }
@@ -193,6 +200,7 @@ public class DataProtocol {
                 }
             }
             usernames.add(cursor.toString().trim());
+//            Log.d("TOKEN DEBUG", "PlayerUsername: " + cursor.toString().trim());
             GameData.getInstance().setPlayerUsernames(usernames);
         }
 
@@ -201,7 +209,7 @@ public class DataProtocol {
             ArrayList<Position> positions = new ArrayList<>();
             StringBuilder cursor = new StringBuilder();
             int xydegCounter = 0;
-            float x = 10, y = 10, deg = 0;
+            float x = 300, y = 300, deg = 0;
             for(int i = PsIndex + 2; i < token.indexOf(";", PsIndex); i++) {
                 if(token.charAt(i) == ',') {
                     if(xydegCounter == 0) {
@@ -214,7 +222,7 @@ public class DataProtocol {
                     }
                     else if(xydegCounter == 2) {
                         deg = Float.parseFloat(cursor.toString());
-                        positions.add(new Position(x, y, deg));
+                        positions.add((new Position(x, y, deg)).scalePosition());
                         xydegCounter = 0;
                     }
                     cursor = new StringBuilder();
@@ -229,7 +237,7 @@ public class DataProtocol {
         // New Cannonballs
         if(CsIndex != -1) {
             StringBuilder cursor = new StringBuilder();
-            int x = 10, y = 20, uuid = 0, shooterID = 0;
+            int x = 300, y = 200, uuid = 0, shooterID = 0;
             float deg = 0;
             int varCounter = 0;
             for(int i = CsIndex + 2; i < token.indexOf(";", CsIndex); i++) {
@@ -252,7 +260,8 @@ public class DataProtocol {
                     }
                     else if(varCounter == 4) {
                         shooterID = Integer.parseInt(cursor.toString());
-                        GameData.getInstance().addCannonball(new Cannonball(x, y, deg, uuid, shooterID));
+                        GameData.getInstance().addCannonball(new Cannonball(Math.round(x * Position.SCREEN_SCALE),
+                                Math.round(y * Position.SCREEN_SCALE), deg, uuid, shooterID));
                         varCounter = 0;
                     }
                     cursor = new StringBuilder();
@@ -285,6 +294,7 @@ public class DataProtocol {
 
         // Player IDs
         int playerID = token.charAt(IsIndex + 2) - '0';
+//        Log.d("TOKEN DEBUG", "PlayerID: " + (token.charAt(IsIndex + 2) - '0'));
         GameData.getInstance().addPlayerID(playerID);
 
         // Player Usernames
@@ -292,9 +302,10 @@ public class DataProtocol {
             String username;
             StringBuilder cursor = new StringBuilder();
             for(int i = UsIndex + 2; i < token.indexOf(";", UsIndex); i++) {
-                    cursor.append(token.charAt(i));
+                cursor.append(token.charAt(i));
             }
             username = cursor.toString().trim();
+//            Log.d("TOKEN DEBUG", "Player Username: " + cursor.toString().trim());
             GameData.getInstance().addPlayerUsername(playerID, username);
         }
 
@@ -303,7 +314,7 @@ public class DataProtocol {
             Position position;
             StringBuilder cursor = new StringBuilder();
             int xydegCounter = 0;
-            float x = 10, y = 10, deg = 0;
+            float x = 300, y = 300, deg = 0;
             for(int i = PsIndex + 2; i < token.indexOf(";", PsIndex); i++) {
                 if(token.charAt(i) == ',') {
                     if(xydegCounter == 0) {
@@ -317,12 +328,18 @@ public class DataProtocol {
                     else if(xydegCounter == 2) {
                         deg = Float.parseFloat(cursor.toString());
                     }
+                    cursor = new StringBuilder();
                 }
                 else {
                     cursor.append(token.charAt(i));
                 }
             }
-            position = new Position(x, y, deg);
+            position = (new Position(x, y, deg)).scalePosition();
+            Log.d("TOKEN DEBUG", "Player Position: " + x + " " + y + " " + deg);
+            Log.d("TOKEN DEBUG", "GameData Position: " +
+                    GameData.getInstance().playerPositions.get(0).x + " " +
+                    GameData.getInstance().playerPositions.get(0).y + " " +
+                    GameData.getInstance().playerPositions.get(0).deg);
             GameData.getInstance().setPlayerPosition(playerID, position);
         }
 
@@ -352,7 +369,8 @@ public class DataProtocol {
                     }
                     else if(varCounter == 4) {
                         shooterID = Integer.parseInt(cursor.toString());
-                        GameData.getInstance().addCannonball(new Cannonball(x, y, deg, uuid, shooterID));
+                        GameData.getInstance().addCannonball(new Cannonball(Math.round(x * Position.SCREEN_SCALE),
+                                Math.round(y * Position.SCREEN_SCALE), deg, uuid, shooterID));
                         varCounter = 0;
                     }
                     cursor = new StringBuilder();
