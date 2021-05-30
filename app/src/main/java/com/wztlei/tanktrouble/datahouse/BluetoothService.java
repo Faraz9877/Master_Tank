@@ -72,8 +72,8 @@ public class BluetoothService extends Service {
         if (btSocket != null) {
             try {
                 btSocket.close();
-            } catch (IOException ignored) {
-            }
+            } catch (IOException ignored) {}
+
             btSocket = null;
         }
     }

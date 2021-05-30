@@ -87,16 +87,16 @@ public class DeviceChooserActivity extends AppCompatActivity {
 
             try {
                 btService.initBtAdapter();
-            } catch (BluetoothService.BtUnavailableException e) {
-                Toast.makeText(DeviceChooserActivity.this,
-                        R.string.bluetooth_absent, Toast.LENGTH_LONG).show();
+            }
+            catch (BluetoothService.BtUnavailableException e) {
+                Toast.makeText(DeviceChooserActivity.this, R.string.bluetooth_absent, Toast.LENGTH_LONG).show();
                 finish();
                 return;
             }
 
             if (!btService.getBluetoothAdapter().isEnabled()) {
                 startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),
-                        REQUEST_ENABLE_BLUETOOTH);
+                                                  REQUEST_ENABLE_BLUETOOTH);
             } else {
                 initBt();
             }
@@ -111,10 +111,10 @@ public class DeviceChooserActivity extends AppCompatActivity {
                             shouldStop = false;
                             if (btService.isServer()) {
                                 startActivity(new Intent(DeviceChooserActivity.this,
-                                        BtGameConfigurationServerActivity.class));
+                                                         BtGameConfigurationServerActivity.class));
                             } else {
                                 startActivity(new Intent(DeviceChooserActivity.this,
-                                        BtGameConfigurationClientActivity.class));
+                                                         BtGameConfigurationClientActivity.class));
                             }
                             DeviceChooserActivity.this.finish();
                         }
@@ -136,8 +136,7 @@ public class DeviceChooserActivity extends AppCompatActivity {
         switch (requestCode) {
             case REQUEST_ENABLE_BLUETOOTH:
                 if (resultCode != RESULT_OK) {
-                    Toast.makeText(this,
-                            R.string.bluetooth_request, Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.bluetooth_request, Toast.LENGTH_LONG).show();
                     finish();
                     break;
                 }
@@ -201,8 +200,7 @@ public class DeviceChooserActivity extends AppCompatActivity {
                 ++devicesFound;
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(intent.getAction())) {
                 progressBar.setVisible(false);
-                makeToast(Integer.toString(devicesFound) +
-                        " " + getString(R.string.n_devices_found_suffix));
+                makeToast(Integer.toString(devicesFound) + " " + getString(R.string.n_devices_found_suffix));
             }
         }
     };

@@ -15,6 +15,7 @@ public class DataProtocol {
                                           ArrayList<String> playerUsernames,
                                           ArrayList<Position> playerPositions,
                                           ArrayList<Cannonball> cannonballs) {
+
         StringBuilder token = new StringBuilder();
 
         // Game PIN
@@ -84,8 +85,12 @@ public class DataProtocol {
     }
 
     // Example Token: SI:1;U:King Killer;P:2.354,5.46,120.2;C:23,35,55.46,325,1
-    public static String tokenizeSoloGameData(String gamePIN, Integer playerID, String playerUsername,
-                                          Position playerPosition, ArrayList<Cannonball> cannonballs) {
+    public static String tokenizeSoloGameData(String gamePIN,
+                                              Integer playerID,
+                                              String playerUsername,
+                                              Position playerPosition,
+                                              ArrayList<Cannonball> cannonballs) {
+
         StringBuilder token = new StringBuilder();
 
         if(gamePIN != null) {
