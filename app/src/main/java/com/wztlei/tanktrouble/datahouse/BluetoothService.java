@@ -270,8 +270,7 @@ public class BluetoothService extends Service {
         public AcceptThread() {
             try {
                 serverSocket = btAdapter.listenUsingRfcommWithServiceRecord(TAG, MY_UUID);
-            } catch (IOException ignored) {
-            }
+            } catch (IOException ignored) {}
         }
 
         public void run() {
@@ -279,15 +278,12 @@ public class BluetoothService extends Service {
             while (true) {
                 try {
                     socket = serverSocket.accept();
-                } catch (IOException e) {
-                    break;
-                }
-                if (socket != null) {
-                    connected(socket, true);
-                    try {
+                    if (socket != null) {
+                        connected(socket, true);
                         serverSocket.close();
-                    } catch (IOException ignored) {
+                        break;
                     }
+                } catch (IOException e) {
                     break;
                 }
             }
