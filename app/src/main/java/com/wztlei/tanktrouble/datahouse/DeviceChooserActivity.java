@@ -11,6 +11,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wztlei.tanktrouble.R;
+import com.wztlei.tanktrouble.battle.BattleActivity;
 
 import java.util.Set;
 
@@ -82,7 +84,7 @@ public class DeviceChooserActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             btService = ((BluetoothService.BtBinder) service).getService();
-
+            GameData.getInstance().setBtService(btService);
             btService.registerActivity(DeviceChooserActivity.class);
 
             try {
@@ -110,11 +112,12 @@ public class DeviceChooserActivity extends AppCompatActivity {
                         public void run() {
                             shouldStop = false;
                             if (btService.isServer()) {
+                                GameData.getInstance().setServer(true);
                                 startActivity(new Intent(DeviceChooserActivity.this,
-                                        BtGameConfigurationServerActivity.class));
+                                        BattleActivity.class));
                             } else {
                                 startActivity(new Intent(DeviceChooserActivity.this,
-                                        BtGameConfigurationClientActivity.class));
+                                        BattleActivity.class));
                             }
                             DeviceChooserActivity.this.finish();
                         }
@@ -222,8 +225,9 @@ public class DeviceChooserActivity extends AppCompatActivity {
         }
         unregisterReceiver(broadcastReceiver);
         if (btService != null && shouldStop) {
-            btService.stopSelf();
-            btService = null;
+            Log.d("DeviceChooser", "onDestroy: BtService is STOPPING!");
+//            btService.stopSelf();
+//            btService = null;
         }
         unbindService(connection);
         super.onDestroy();

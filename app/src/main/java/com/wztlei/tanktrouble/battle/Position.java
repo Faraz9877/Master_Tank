@@ -6,7 +6,7 @@ public class Position {
 
     public float x, y, deg;
 
-    private static final float SCREEN_SCALE = UserUtils.getScreenScale();
+    public static final float SCREEN_SCALE = UserUtils.getScreenScale();
 
     public Position(float x, float y, float deg) {
         this.x = x;
@@ -14,13 +14,17 @@ public class Position {
         this.deg = deg;
     }
 
-    public void standardizePosition() {
-        x /= SCREEN_SCALE;
-        y /= SCREEN_SCALE;
+    public Position(Position P) {
+        this.x = P.x;
+        this.y = P.y;
+        this.deg = P.deg;
     }
 
-    public void scalePosition() {
-        x *= SCREEN_SCALE;
-        y *= SCREEN_SCALE;
+    public Position standardizePosition() {
+        return new Position(x / SCREEN_SCALE, y / SCREEN_SCALE, deg);
+    }
+
+    public Position scalePosition() {
+        return new Position(x * SCREEN_SCALE, y * SCREEN_SCALE, deg);
     }
 }

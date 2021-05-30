@@ -55,6 +55,8 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
     SoundPool shootSoundPool, explosionSoundPool;
     int shootSoundId, explosionSoundId;
 
+    Activity mActivity;
+
     private static final String TAG = "WL/BattleView";
     private static final float TOP_Y_CONST = Constants.MAP_TOP_Y_CONST;
     private static final float JOYSTICK_BASE_RADIUS_CONST = (float) 165/543;
@@ -76,6 +78,8 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
      */
     public BattleView(Activity activity) {
         super(activity);
+
+        mActivity = activity;
 
         UserUtils.initialize(activity);
         ExplosionAnimation.initialize(activity);
@@ -134,7 +138,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         // Remove the game if necessary
 //        GameData.getInstance().removePlayer();
         GameData.getInstance().sync(1111, false);
-        removeGame();
+//        removeGame();
     }
 
     /**
@@ -147,13 +151,16 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         super.draw(canvas);
         canvas.drawColor(Color.WHITE);
         MapUtils.drawMap(canvas);
-        drawFireButton(canvas);
-        drawJoystick(canvas);
+        if(GameData.getInstance().getThisPlayer() == 0) {
+            drawFireButton(canvas);
+            drawJoystick(canvas);
+
+        }
 
         // Check whether a cannonball collided with the user's tank
-        if (mKillingCannonball == 0) {
+        if (mKillingCannonball == 0 && GameData.getInstance().getThisPlayer() == 0) {
             // Update and draw the user's tank
-            if (mUserTank != null) {
+            if (mUserTank != null && GameData.getInstance().getThisPlayer() == 0) {
                 updateUserTank();
                 mUserTank.draw(canvas);
                 mUserTank.respawn();
@@ -166,7 +173,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
             // TODO: Make tank appear after x seconds
             // TODO: Increment the score
             // Update and draw the user's tank
-            if (mUserTank != null && mUserTank.isAlive()) {
+            if (mUserTank != null && mUserTank.isAlive() && GameData.getInstance().getThisPlayer() == 0) {
                 updateUserTank();
                 mUserTank.draw(canvas);
                 mUserTank.kill(mKillingCannonball);
@@ -182,13 +189,26 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
 
         // Draw all of the opponents' tanks and their cannonballs while detecting collisions
         for (OpponentTank opponentTank : mOpponentTanks.values()) {
-            if (opponentTank != null && opponentTank.isAlive()) {
+            if (opponentTank != null && opponentTank.isAlive() && GameData.getInstance().getThisPlayer() == 1) {
                 opponentTank.draw(canvas);
             }
         }
 
-        GameData.getInstance().sync(1011, true);
+        GameData.getInstance().sync(1111, false);
+
+        for(int i = 0; i < GameData.getInstance().getPlayerPositions().size(); i++) {
+            Log.d(TAG, "PlayerID: " + GameData.getInstance().getPlayerIDs().get(i));
+            Log.d(TAG, "Player Position " + i + " : " +
+                    GameData.getInstance().getPlayerPositions().get(i).x + " " +
+                    GameData.getInstance().getPlayerPositions().get(i).y + " " +
+                    GameData.getInstance().getPlayerPositions().get(i).deg);
+        }
+
         drawExplosions(canvas);
+//        addEnteringTanks(mActivity);
+        mUserTank.updatePosition(Math.round(GameData.getInstance().getPlayerPositions().get(0).x),
+                Math.round(GameData.getInstance().getPlayerPositions().get(0).y),
+                GameData.getInstance().getPlayerPositions().get(0).deg);
         drawScores(canvas);
     }
 
@@ -283,18 +303,20 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         int userId = GameData.getInstance().getThisPlayer();
 
         // Determine if any of the children of the game has a new key
-        System.out.println("This is addEnteringTanks. Tanks: " + GameData.getInstance().getPlayerIDs().size());
+        Log.d("AddEnteringTanks", "This is addEnteringTanks. Tanks: " + GameData.getInstance().getPlayerIDs().size());
         for (int playerID : GameData.getInstance().getPlayerIDs()) {
             // Add the new opponent to the game
-            if (playerID == userId && mUserTank == null) {
+            if (playerID == userId && mUserTank == null && GameData.getInstance().getThisPlayer() == 0) {
                 // Initialize the user tank
                 TankColor tankColor = getUnusedTankColor();
                 mUserTank = new UserTank(activity, tankColor);
                 mUserDeg = mUserTank.getDegrees();
                 mJoystickColor = tankColor.getPaint();
-            } else if (playerID != userId && !mOpponentTanks.containsKey(playerID)) {
+            } else if (playerID != userId && !mOpponentTanks.containsKey(playerID)
+                    && GameData.getInstance().getThisPlayer() == 1) {
                 // Add an opponent tank
                 TankColor tankColor = getUnusedTankColor();
+                Log.d(TAG, "addEnteringTanks: HERE IS SUPPOSED TO ADD ADVERSARY TANKS!");
                 mOpponentTanks.put(playerID, new OpponentTank(activity, playerID, tankColor));
 //                        mCannonballSet.addOpponent(playerID); // FARAZ: Seems useless!
                 addDeathDataRefListener(playerID);

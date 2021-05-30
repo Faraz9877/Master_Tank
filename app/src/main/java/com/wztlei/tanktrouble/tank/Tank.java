@@ -22,6 +22,12 @@ public abstract class Tank {
     private static final float GUN_LEFT_EDGE_RATIO = 39/100f;
     private static final float GUN_RIGHT_EDGE_RATIO = 61/100f;
 
+    public void updatePosition(int x, int y, float deg) {
+        mX = x;
+        mY = y;
+        mDeg = deg;
+    }
+
     /**
      * Returns an array of PointFs representing a polygon perfectly enclosing a tank.
      *

@@ -34,13 +34,34 @@ public class UserTank extends Tank {
         mScore = 0;
         mIsAlive = true;
 
+        mX = Math.round(GameData.getInstance().getPlayerPositions().get(0).x);
+        mX = Math.round(GameData.getInstance().getPlayerPositions().get(0).y);
+        mDeg = GameData.getInstance().getPlayerPositions().get(0).deg;
+
         // Set the initial x and y coordinates for the tank
+//        if(GameData.getInstance().getServer())
+//        {
+            do {
+                mX = UserUtils.randomInt(50, UserUtils.getScreenWidth());
+                mY = UserUtils.randomInt(UserUtils.scaleGraphicsInt(1.1f * Constants.MAP_TOP_Y_CONST),
+                        UserUtils.scaleGraphicsInt(0.9f*Constants.MAP_TOP_Y_CONST + 1));
+                mDeg = UserUtils.randomInt(-180, 180);
+            } while (MapUtils.tankWallCollision(mX, mY, mDeg, mWidth, mHeight));
+            GameData.getInstance().setPlayerPosition(0, new Position(mX, mY, mDeg));
+//        }
+    }
+
+    public static Position getRandomInitialPosition() {
+        int x, y, deg;
         do {
-            mX = UserUtils.randomInt(50, UserUtils.getScreenWidth());
-            mY = UserUtils.randomInt(UserUtils.scaleGraphicsInt(1.1f * Constants.MAP_TOP_Y_CONST),
+            x = UserUtils.randomInt(50, UserUtils.getScreenWidth());
+            y = UserUtils.randomInt(UserUtils.scaleGraphicsInt(1.1f * Constants.MAP_TOP_Y_CONST),
                     UserUtils.scaleGraphicsInt(0.9f*Constants.MAP_TOP_Y_CONST + 1));
-            mDeg = UserUtils.randomInt(-180, 180);
-        } while (MapUtils.tankWallCollision(mX, mY, mDeg, mWidth, mHeight));
+            deg = UserUtils.randomInt(-180, 180);
+        } while (MapUtils.tankWallCollision(x, y, deg,
+                Math.max(UserUtils.scaleGraphicsInt(TANK_WIDTH_CONST), 1),
+                Math.max(UserUtils.scaleGraphicsInt(TANK_HEIGHT_CONST), 1)));
+        return new Position(x, y, deg);
     }
 
     /**
@@ -145,7 +166,7 @@ public class UserTank extends Tank {
         }
 
         Position position = new Position(mX, mY, mDeg);
-        position.standardizePosition();
+//        position = position.standardizePosition();
         GameData.getInstance().setPosition(position);
         lastTime = nowTime;
     }

@@ -47,7 +47,7 @@ public class OpponentTank extends Tank {
         Position position = GameData.getInstance().getPlayerPosition(opponentID);
 
         if (position != null) {
-            position.scalePosition();
+            position = position.scalePosition();
             mX = (int) position.x;
             mY = (int) position.y;
             mDeg = position.deg;
