@@ -243,11 +243,11 @@ public class DataProtocol {
             for(int i = CsIndex + 2; i < token.indexOf(";", CsIndex); i++) {
                 if(token.charAt(i) == ',') {
                     if(varCounter == 0) {
-                        x = Integer.parseInt(cursor.toString());
+                        x = Math.round(Float.parseFloat(cursor.toString()));
                         varCounter ++;
                     }
                     else if(varCounter == 1) {
-                        y = Integer.parseInt(cursor.toString());
+                        y = Math.round(Float.parseFloat(cursor.toString()));
                         varCounter ++;
                     }
                     else if(varCounter == 2) {
@@ -260,7 +260,8 @@ public class DataProtocol {
                     }
                     else if(varCounter == 4) {
                         shooterID = Integer.parseInt(cursor.toString());
-                        GameData.getInstance().addCannonball(new Cannonball(Math.round(x * Position.SCREEN_SCALE),
+                        GameData.getInstance().getCannonballSet().addCannonball(
+                                new Cannonball(Math.round(x * Position.SCREEN_SCALE),
                                 Math.round(y * Position.SCREEN_SCALE), deg, uuid, shooterID));
                         varCounter = 0;
                     }
@@ -335,11 +336,11 @@ public class DataProtocol {
                 }
             }
             position = (new Position(x, y, deg)).scalePosition();
-            Log.d("TOKEN DEBUG", "Player Position: " + x + " " + y + " " + deg);
-            Log.d("TOKEN DEBUG", "GameData Position: " +
-                    GameData.getInstance().playerPositions.get(0).x + " " +
-                    GameData.getInstance().playerPositions.get(0).y + " " +
-                    GameData.getInstance().playerPositions.get(0).deg);
+//            Log.d("TOKEN DEBUG", "Player Position: " + x + " " + y + " " + deg);
+//            Log.d("TOKEN DEBUG", "GameData Position: " +
+//                    GameData.getInstance().playerPositions.get(0).x + " " +
+//                    GameData.getInstance().playerPositions.get(0).y + " " +
+//                    GameData.getInstance().playerPositions.get(0).deg);
             GameData.getInstance().setPlayerPosition(playerID, position);
         }
 
@@ -352,11 +353,11 @@ public class DataProtocol {
             for(int i = CsIndex + 2; i < token.indexOf(";", CsIndex); i++) {
                 if(token.charAt(i) == ',') {
                     if(varCounter == 0) {
-                        x = Integer.parseInt(cursor.toString());
+                        x = Math.round(Float.parseFloat(cursor.toString()));
                         varCounter ++;
                     }
                     else if(varCounter == 1) {
-                        y = Integer.parseInt(cursor.toString());
+                        y = Math.round(Float.parseFloat(cursor.toString()));
                         varCounter ++;
                     }
                     else if(varCounter == 2) {
@@ -369,8 +370,10 @@ public class DataProtocol {
                     }
                     else if(varCounter == 4) {
                         shooterID = Integer.parseInt(cursor.toString());
-                        GameData.getInstance().addCannonball(new Cannonball(Math.round(x * Position.SCREEN_SCALE),
-                                Math.round(y * Position.SCREEN_SCALE), deg, uuid, shooterID));
+                        GameData.getInstance().getCannonballSet().addCannonball(
+                                new Cannonball(Math.round(x * Position.SCREEN_SCALE),
+                                Math.round(y * Position.SCREEN_SCALE), deg, uuid, shooterID)
+                        );
                         varCounter = 0;
                     }
                     cursor = new StringBuilder();

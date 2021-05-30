@@ -428,9 +428,13 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
 
         if (mUserTank == null) {
             return;
-        } else if (velocityX == 0 && velocityY == 0) {
-            mUserTank.update(velocityX, velocityY, mUserDeg);
-        } else {
+        }
+        else if (velocityX == 0 && velocityY == 0) {
+            mUserTank.updatePosition(Math.round(GameData.getInstance().getPlayerPositions().get(0).x),
+                    Math.round(GameData.getInstance().getPlayerPositions().get(0).y),
+                    GameData.getInstance().getPlayerPositions().get(0).deg);
+        }
+        else {
             mUserDeg = calcDegrees(deltaX, deltaY);
             mUserTank.update(velocityX, velocityY, mUserDeg);
         }
@@ -600,10 +604,10 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
                 GameData.getInstance().incrementUserAliveBullets();
                 GameData.getInstance().getCannonballSet().addCannonball(cannonball);
                 GameData.getInstance().getNewCannonballs().add(cannonball);
+                shootSoundPool.play(shootSoundId, 1, 1, 0, 0, 2);
                 //Log.d(TAG, "Projectile fired at x=" + mX + " y=" + mY + " mUserDeg=" + mUserDeg + " degrees");
             }
             mFireButtonPressed = true;
-            shootSoundPool.play(shootSoundId, 1, 1, 0, 0, 2);
             mFireButtonPointerId = pointerId;
         } else {
             mFireButtonPressed = false;

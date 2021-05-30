@@ -49,7 +49,7 @@ public class GameData {
     {
         if(btService == null || ! isServer)
             return;
-        Log.d("Sync", "sync: btService is found!");
+//        Log.d("Sync", "sync: btService is found!");
 
         String token;
         token = isSolo ? DataProtocol.tokenizeSoloGameData(
@@ -67,14 +67,16 @@ public class GameData {
             );
 
         btService.getChannel().send(token.getBytes(/*"UTF-8"*/));
-        newCannonballs.clear();
+
+        if(syncCode % 2 == 1)
+            newCannonballs.clear();
     }
 
     public void setServer(boolean server) {
         isServer = server;
     }
 
-    public boolean getServer(boolean server) {
+    public boolean getServer() {
         return  isServer;
     }
 
