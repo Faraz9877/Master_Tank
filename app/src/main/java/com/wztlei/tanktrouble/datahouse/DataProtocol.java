@@ -316,8 +316,8 @@ public class DataProtocol {
             StringBuilder cursor = new StringBuilder();
             int xydegCounter = 0;
             float x = 300, y = 300, deg = 0;
-            for(int i = PsIndex + 2; i < token.indexOf(";", PsIndex); i++) {
-                if(token.charAt(i) == ',') {
+            for(int i = PsIndex + 2; i < token.indexOf(";", PsIndex) + 1; i++) {
+                if(token.charAt(i) == ',' || token.charAt(i) == ';') {
                     if(xydegCounter == 0) {
                         x = Float.parseFloat(cursor.toString());
                         xydegCounter ++;
@@ -328,6 +328,7 @@ public class DataProtocol {
                     }
                     else if(xydegCounter == 2) {
                         deg = Float.parseFloat(cursor.toString());
+                        xydegCounter = 0;
                     }
                     cursor = new StringBuilder();
                 }

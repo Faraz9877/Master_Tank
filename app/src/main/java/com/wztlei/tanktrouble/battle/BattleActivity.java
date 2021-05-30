@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 
 import com.wztlei.tanktrouble.MainActivity;
 import com.wztlei.tanktrouble.datahouse.BluetoothService;
@@ -23,13 +24,15 @@ public class BattleActivity extends AppCompatActivity {
 
     private BluetoothService btService;
     private BluetoothService.MessageChannel messageChannel;
+    private View battleView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Display the graphics with battle view
-        setContentView(new BattleView(this));
+        battleView = new BattleView(this);
+        setContentView(battleView);
 
         bindService(new Intent(this, BluetoothService.class), connection, Context.BIND_AUTO_CREATE);
 
