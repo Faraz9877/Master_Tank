@@ -190,6 +190,7 @@ public class BluetoothService extends Service {
             //noinspection SynchronizeOnNonFinalField
             if(connectedThread == null)
                 return;
+
             synchronized (connectedThread) {
                 byte[] buffer = new byte[bytes.length + 1];
                 System.arraycopy(bytes, 0, buffer, 1, bytes.length);
