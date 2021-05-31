@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.wztlei.tanktrouble">
+    package="com.afaa.tanktrouble">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -19,30 +19,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".datahouse.BtGameConfigurationServerActivity" />
-        <activity android:name=".datahouse.BtGameConfigurationClientActivity" />
+        <activity android:name="com.afaa.tanktrouble.datahouse.BtGameConfigurationServerActivity" />
+        <activity android:name="com.afaa.tanktrouble.datahouse.BtGameConfigurationClientActivity" />
         <activity
-            android:name=".datahouse.DeviceChooserActivity"
+            android:name="com.afaa.tanktrouble.datahouse.DeviceChooserActivity"
             android:label="@string/device_chooser_header"
             android:screenOrientation="portrait" />
-        <activity android:name=".MainActivity">
+        <activity android:name="com.afaa.tanktrouble.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SettingsActivity" />
+        <activity android:name="com.afaa.tanktrouble.SettingsActivity" />
         <activity
-            android:name=".battle.BattleActivity"
+            android:name="com.afaa.tanktrouble.battle.BattleActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity android:name=".match.JoinActivity" />
-        <activity android:name=".match.HostActivity" />
-        <activity android:name=".match.WaitActivity" />
-        <activity android:name=".match.BluetoothActivity" />
+        <activity android:name="com.afaa.tanktrouble.match.JoinActivity" />
+        <activity android:name="com.afaa.tanktrouble.match.HostActivity" />
+        <activity android:name="com.afaa.tanktrouble.match.WaitActivity" />
+        <activity android:name="com.afaa.tanktrouble.match.BluetoothActivity" />
 
-        <service android:name=".datahouse.BluetoothService" />
+        <service android:name="com.afaa.tanktrouble.datahouse.BluetoothService" />
     </application>
 
 </manifest>
