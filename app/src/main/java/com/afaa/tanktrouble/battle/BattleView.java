@@ -205,7 +205,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         mUserTank.updatePosition(Math.round(GameData.getInstance().getPlayerPositions().get(0).x),
                 Math.round(GameData.getInstance().getPlayerPositions().get(0).y),
                 GameData.getInstance().getPlayerPositions().get(0).deg);
-        mUserTank.draw(canvas);
+//        mUserTank.draw(canvas);
         drawScores(canvas);
     }
 

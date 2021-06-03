@@ -57,7 +57,7 @@ public class DeviceChooserActivity extends AppCompatActivity {
         deviceList.setAdapter(arrayAdapter);
         deviceList.setOnItemClickListener(onItemClickListener);
 
-        // TODO: understand this part
+//         TODO: understand this part
         bindService(new Intent(this, BluetoothService.class), connection, Context.BIND_AUTO_CREATE);
 
         IntentFilter intentFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
