@@ -57,7 +57,7 @@ public class DeviceChooserActivity extends AppCompatActivity {
         deviceList.setAdapter(arrayAdapter);
         deviceList.setOnItemClickListener(onItemClickListener);
 
-        // TODO: understand this part
+
         bindService(new Intent(this, BluetoothService.class), connection, Context.BIND_AUTO_CREATE);
 
         IntentFilter intentFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
@@ -103,7 +103,7 @@ public class DeviceChooserActivity extends AppCompatActivity {
                 initBt();
             }
 
-            // TODO: manage this part
+
             btService.setOnConnected(new BluetoothService.OnConnected() {
                 @Override
                 public void success() {
@@ -188,7 +188,7 @@ public class DeviceChooserActivity extends AppCompatActivity {
             btService.getBluetoothAdapter().cancelDiscovery();
 
             String str = ((TextView) view).getText().toString();
-            String address = str.substring(str.length() - 17); // Length of address
+            String address = str.substring(str.length() - 17);
 
             makeToast(address);
 

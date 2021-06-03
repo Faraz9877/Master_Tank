@@ -13,12 +13,12 @@ public class GameData {
     ArrayList<Integer> playerIDs;
     ArrayList<String> playerUsernames;
     ArrayList<Position> playerPositions;
-    ArrayList<Integer> aliveBullets; // Does not sync
+    ArrayList<Integer> aliveBullets;
     CannonballSet cannonballSet;
     ArrayList<Cannonball> newCannonballs;
     String gamePin;
     int thisPlayer;
-    int status; // 0: wait to join, 1: playing, -1: cancelled
+    int status;
     boolean isServer;
 
     private BluetoothService btService;
@@ -60,7 +60,7 @@ public class GameData {
                 syncCode % 2 == 1 ? newCannonballs: null
             );
 
-        btService.getChannel().send(token.getBytes(/*"UTF-8"*/));
+        btService.getChannel().send(token.getBytes(  ));
 
         if(syncCode % 2 == 1)
             newCannonballs.clear();

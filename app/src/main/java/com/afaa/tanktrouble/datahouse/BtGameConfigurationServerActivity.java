@@ -112,7 +112,6 @@ public class BtGameConfigurationServerActivity extends AppCompatActivity {
     protected void onRestart(){
         super.onRestart();
 
-//        onUniqueRandomPinCreated();
     }
 
     @Override
@@ -146,7 +145,7 @@ public class BtGameConfigurationServerActivity extends AppCompatActivity {
     }
 
     private void hostGameWithRandomPin() {
-        // Create a new random game pin and display it
+
         mGamePin = Integer.toString(UserUtils.randomInt(MIN_GAME_PIN, MAX_GAME_PIN));
         TextView textViewGamePin = findViewById(R.id.text_game_pin2);
         String textGamePin = "PIN: " + mGamePin;
@@ -157,10 +156,10 @@ public class BtGameConfigurationServerActivity extends AppCompatActivity {
         GameData.getInstance().sync(11110, true);
 
         if (mUserId != null && mUserId.length() > 0) {
-            // Process the game pin once it has been created
+
             onUniqueRandomPinCreated();
 
-            // Automatically display that one player is ready (which is the current user)
+
             TextView textPlayersReady = findViewById(R.id.text_players_ready2);
             String newPlayersReadyText = "1 Player Ready";
             textPlayersReady.setText(newPlayersReadyText);
@@ -174,11 +173,11 @@ public class BtGameConfigurationServerActivity extends AppCompatActivity {
             startActivity(new Intent(this, MainActivity.class));
         }
 
-        // Listen for new people joining the game
+
         TextView textPlayersReady = findViewById(R.id.text_players_ready2);
         int numPlayers = GameData.getInstance().getPlayerIDs().size();
 
-        // Update the text displaying how many people have joined the game
+
         if (numPlayers == 1) {
             String newPlayersReadyText = "1 Player Ready";
             textPlayersReady.setText(newPlayersReadyText);
@@ -221,7 +220,7 @@ public class BtGameConfigurationServerActivity extends AppCompatActivity {
     }
 
     public void launchGame() {
-        // TODO  maybe something else init gameData
+
 
         System.out.println("ready to launch");
     }

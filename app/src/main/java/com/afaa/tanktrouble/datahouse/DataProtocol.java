@@ -9,21 +9,21 @@ import java.util.ArrayList;
 
 public class DataProtocol {
 
-    // Example Token: I:01;U:King Killer,Sly Fox;P:2.354,5.46,120.2,55.4,15.6,-30.8;C:23,35,55.46,325,1
+
     public static String tokenizeGameData(String gamePIN, ArrayList<Integer> playerIDs,
                                           ArrayList<String> playerUsernames,
                                           ArrayList<Position> playerPositions,
                                           ArrayList<Cannonball> cannonballs) {
         StringBuilder token = new StringBuilder();
 
-        // Game PIN
+
         if(gamePIN != null) {
             token.append("G:");
             token.append(gamePIN);
             token.append(";");
         }
 
-        // Player IDs
+
         if(playerIDs != null) {
             token.append("I:");
             for(int i = 0; i < playerIDs.size(); i++)
@@ -31,7 +31,7 @@ public class DataProtocol {
             token.append(";");
         }
 
-        // Player Usernames
+
         if(playerUsernames != null) {
             token.append("U:");
             for(int i = 0; i < playerUsernames.size(); i++)
@@ -43,7 +43,7 @@ public class DataProtocol {
             token.append(";");
         }
 
-        // Player Positions
+
         if(playerPositions != null) {
             token.append("P:");
             for(int i = 0; i < playerPositions.size(); i++)
@@ -60,13 +60,13 @@ public class DataProtocol {
             token.append(";");
         }
 
-        // New Cannonballs
+
         if(cannonballs != null) {
             token.append("C:");
             for(int i = 0; i < cannonballs.size(); i++)
             {
                 Position stdPos = cannonballs.get(i).getPosition().standardizePosition();
-                if(i != 0) // int x, int y, float deg, int uuid, int shooterID
+                if(i != 0)
                     token.append(",");
                 token.append(stdPos.x);
                 token.append(",");
@@ -84,7 +84,7 @@ public class DataProtocol {
         return token.toString();
     }
 
-    // Example Token: SI:1;U:King Killer;P:2.354,5.46,120.2;C:23,35,55.46,325,1
+
     public static String tokenizeSoloGameData(String gamePIN, Integer playerID, String playerUsername,
                                           Position playerPosition, ArrayList<Cannonball> cannonballs) {
         StringBuilder token = new StringBuilder();
@@ -97,21 +97,21 @@ public class DataProtocol {
             token.append(";");
         }
 
-        // Player ID
+
         if(playerID != null) {
             token.append("I:");
             token.append(playerID);
             token.append(";");
         }
 
-        // Player Username
+
         if(playerUsername != null) {
             token.append("U:");
             token.append(playerUsername);
             token.append(";");
         }
 
-        // Player Positions
+
         if(playerPosition != null) {
             Position stdPos = playerPosition.standardizePosition();
             token.append("P:");
@@ -123,13 +123,13 @@ public class DataProtocol {
             token.append(";");
         }
 
-        // New Cannonballs
+
         if(cannonballs != null) {
             token.append("C:");
             for(int i = 0; i < cannonballs.size(); i++)
             {
                 Position stdPos = cannonballs.get(i).getPosition().standardizePosition();
-                if(i != 0) // int x, int y, float deg, int uuid, int shooterID
+                if(i != 0)
                     token.append(",");
                 token.append(stdPos.x);
                 token.append(",");
@@ -161,7 +161,7 @@ public class DataProtocol {
         int PsIndex = token.indexOf("P:");
         int CsIndex = token.indexOf("C:");
 
-        // Game PIN
+
         if(GsIndex != -1) {
             String GamePIN;
             StringBuilder cursor = new StringBuilder();
@@ -172,7 +172,7 @@ public class DataProtocol {
             GameData.getInstance().setGamePin(GamePIN);
         }
 
-        // Player IDs
+
         if(IsIndex != -1) {
             ArrayList<Integer> playerIDs = new ArrayList<>();
             for(int i = IsIndex + 2; i < token.indexOf(";", IsIndex); i++) {
@@ -182,7 +182,7 @@ public class DataProtocol {
             GameData.getInstance().setPlayerIDs(playerIDs);
         }
 
-        // Player Usernames
+
         if(UsIndex != -1) {
             ArrayList<String> usernames = new ArrayList<>();
             StringBuilder cursor = new StringBuilder();
@@ -200,7 +200,7 @@ public class DataProtocol {
             GameData.getInstance().setPlayerUsernames(usernames);
         }
 
-        // Player Positions
+
         if(PsIndex != -1) {
             ArrayList<Position> positions = new ArrayList<>();
             StringBuilder cursor = new StringBuilder();
@@ -230,7 +230,7 @@ public class DataProtocol {
             GameData.getInstance().setPlayerPositions(positions);
         }
 
-        // New Cannonballs
+
         if(CsIndex != -1) {
             StringBuilder cursor = new StringBuilder();
             int x = 300, y = 200, uuid = 0, shooterID = 0;
@@ -270,7 +270,7 @@ public class DataProtocol {
         }
     }
 
-    // Must have ID field
+
     public static void detokenizeSoloGameData(String token) {
         int GsIndex = token.indexOf("G:");
         int IsIndex = token.indexOf("I:");
@@ -278,7 +278,7 @@ public class DataProtocol {
         int PsIndex = token.indexOf("P:");
         int CsIndex = token.indexOf("C:");
 
-        // Game PIN
+
         if(GsIndex != -1) {
             String GamePIN;
             StringBuilder cursor = new StringBuilder();
@@ -289,12 +289,12 @@ public class DataProtocol {
             GameData.getInstance().setGamePin(GamePIN);
         }
 
-        // Player IDs
+
         int playerID = token.charAt(IsIndex + 2) - '0';
 //        Log.d("TOKEN DEBUG", "PlayerID: " + (token.charAt(IsIndex + 2) - '0'));
         GameData.getInstance().addPlayerID(playerID);
 
-        // Player Usernames
+
         if(UsIndex != -1) {
             String username;
             StringBuilder cursor = new StringBuilder();
@@ -306,7 +306,7 @@ public class DataProtocol {
             GameData.getInstance().addPlayerUsername(playerID, username);
         }
 
-        // Player Positions
+
         if(PsIndex != -1) {
             Position position;
             StringBuilder cursor = new StringBuilder();
@@ -341,7 +341,7 @@ public class DataProtocol {
             GameData.getInstance().setPlayerPosition(playerID, position);
         }
 
-        // New Cannonballs
+
         if(CsIndex != -1) {
             StringBuilder cursor = new StringBuilder();
             int x = 10, y = 20, uuid = 0, shooterID = 0;

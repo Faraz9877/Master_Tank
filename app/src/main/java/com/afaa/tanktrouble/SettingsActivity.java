@@ -20,9 +20,7 @@ public class SettingsActivity extends AppCompatActivity {
         mEditUsername.setText(username);
     }
 
-    /**
-     *  Saves the user's inputted settings into Firebase.
-     */
+
     public void onClickSaveButton(View view) {
         startActivity(new Intent(this, MainActivity.class));
     }
