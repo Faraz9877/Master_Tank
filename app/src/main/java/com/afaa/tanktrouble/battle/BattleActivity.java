@@ -28,14 +28,13 @@ public class BattleActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Display the graphics with battle view
+
         battleView = new BattleView(this);
         setContentView(battleView);
 
         bindService(new Intent(this, BluetoothService.class), connection, Context.BIND_AUTO_CREATE);
 
-        // Grab the database reference for the game into which the user has possibly joined
-//        validateGame();
+
     }
 
     @Override
@@ -74,7 +73,7 @@ public class BattleActivity extends AppCompatActivity {
         if (btService.getBluetoothAdapter() != null) {
             btService.getBluetoothAdapter().cancelDiscovery();
         }
-//        if (btService != null /* && shouldStop */) {
+//        if (btService != null   ) {
 //            btService.stopSelf();
 //            btService = null;
 //        }
@@ -88,21 +87,18 @@ public class BattleActivity extends AppCompatActivity {
         startActivity( new Intent(this, MainActivity.class));
     }
 
-    /**
-     * Determines if the user has actually joined the game,
-     * and if not, return to the main activity.
-     */
-    private void validateGame() {
-        // Determine if the user has actually joined the game
 
-        // Determine if any of the children of the game has a key of the user id
+    private void validateGame() {
+
+
+
         if (GameData.getInstance().isPlayerInGame()) {
-            // Return if we have found a key matching the user id, since
-            // this means that the user has actually joined the game
+
+
             return;
         }
 
-        // The user has not actually joined the game, so return to the main activity
+
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
     }
 
@@ -112,7 +108,7 @@ public class BattleActivity extends AppCompatActivity {
             btService = ((BluetoothService.BtBinder) service).getService();
             btService.registerActivity(WaitActivity.class);
             GameData.getInstance().setBtService(btService);
-            // TODO: manage this part
+
             btService.setOnConnected(new BluetoothService.OnConnected() {
                 @Override
                 public void success() {

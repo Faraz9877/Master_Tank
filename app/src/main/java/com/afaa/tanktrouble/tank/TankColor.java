@@ -13,11 +13,7 @@ public enum TankColor {
     GREEN,
     ORANGE;
 
-    /**
-     * Returns the paint with the appropriate RGB color value.
-     *
-     * @return  the RGB color value stored in a Paint object
-     */
+
     public Paint getPaint() {
         Paint paint = new Paint();
 
@@ -39,12 +35,7 @@ public enum TankColor {
         return paint;
     }
 
-    /**
-     * Returns the tank bitmap by decoding the resource file with the tank of the desired color.
-     *
-     * @param activity  the activity in which this method is called
-     * @return          a bitmap of the tank with the desired color
-     */
+
     public Bitmap getTankBitmap(Activity activity) {
         Bitmap b = null;
 

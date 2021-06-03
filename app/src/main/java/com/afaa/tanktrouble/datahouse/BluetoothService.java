@@ -17,9 +17,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
-/**
- * Service handling bluetooth interaction
- */
+
 public class BluetoothService extends Service {
 //    private static BluetoothService instance = null;
 
@@ -44,7 +42,6 @@ public class BluetoothService extends Service {
         super.onCreate();
     }
 
-//    public static BluetoothService getInstance() {
 //        return instance;
 //    }
 
@@ -135,17 +132,13 @@ public class BluetoothService extends Service {
         return btSocket;
     }
 
-    /*
-        Called to indicate that activity is in foreground and notification is unnecessary
-     */
+
     public void registerActivity(Class<?> activityClass) {
         lastClass = activityClass;
         changeRegCount(1);
     }
 
-    /*
-        Called to indicate that activity is no longer visible and notification may be needed
-     */
+
     public void unregisterActivity() {
         changeRegCount(-1);
     }
@@ -185,7 +178,7 @@ public class BluetoothService extends Service {
         }
 
         public void send(byte[] bytes) {
-            //noinspection SynchronizeOnNonFinalField
+
             if(connectedThread == null)
                 return;
             synchronized (connectedThread) {
@@ -219,8 +212,7 @@ public class BluetoothService extends Service {
     private void showNotification(Class<?> aClass, String title, String text) {
         Log.d(TAG, "notification shown");
 
-        // TODO: check this part
-//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+
 //                .setContentTitle(title)
 //                .setContentText(text)
 //                .setSmallIcon(R.drawable.ic_bt_notification)
