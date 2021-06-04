@@ -155,12 +155,12 @@ public class GameData {
     }
 
     public void reset() {
-//        playerIDs = new ArrayList<>();
-//        playerUsernames = new ArrayList<>();
-//        playerPositions = new ArrayList<>();
-//        aliveBullets = new ArrayList<>();
-//        status = 1;
-//        thisPlayer = -1;
+        playerIDs = new ArrayList<>();
+        playerUsernames = new ArrayList<>();
+        playerPositions = new ArrayList<>();
+        aliveBullets = new ArrayList<>();
+        status = 1;
+        thisPlayer = -1;
     }
 
     public void setPlayerIDs(ArrayList<Integer> playerIDs) {

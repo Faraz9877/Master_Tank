@@ -188,8 +188,8 @@ public class DataProtocol {
         if(UsIndex != -1) {
             ArrayList<String> usernames = new ArrayList<>();
             StringBuilder cursor = new StringBuilder();
-            for(int i = UsIndex + 2; i < token.indexOf(";", UsIndex); i++) {
-                if(token.charAt(i) == ',') {
+            for(int i = UsIndex + 2; i < token.indexOf(";", UsIndex) + 1; i++) {
+                if(token.charAt(i) == ',' || token.charAt(i) == ';') {
                     usernames.add(cursor.toString().trim());
                     cursor = new StringBuilder();
                 }
@@ -208,8 +208,8 @@ public class DataProtocol {
             StringBuilder cursor = new StringBuilder();
             int xydegCounter = 0;
             float x = 300, y = 300, deg = 0;
-            for(int i = PsIndex + 2; i < token.indexOf(";", PsIndex); i++) {
-                if(token.charAt(i) == ',') {
+            for(int i = PsIndex + 2; i < token.indexOf(";", PsIndex) + 1; i++) {
+                if(token.charAt(i) == ',' || token.charAt(i) == ';') {
                     if(xydegCounter == 0) {
                         x = Float.parseFloat(cursor.toString());
                         xydegCounter ++;
@@ -239,9 +239,9 @@ public class DataProtocol {
             int x = 300, y = 200, uuid = 0, shooterID = 0;
             float deg = 0;
             int varCounter = 0;
-            for(int i = CsIndex + 2; i < token.indexOf(";", CsIndex); i++) {
+            for(int i = CsIndex + 2; i < token.indexOf(";", CsIndex) + 1; i++) {
                 Log.d("Detokenize VarCounter:", "" + varCounter);
-                if(token.charAt(i) == ',') {
+                if(token.charAt(i) == ',' || token.charAt(i) == ';') {
                     if(varCounter == 0) {
                         x = Math.round(Float.parseFloat(cursor.toString()));
                         Log.d("Cannonball Detokenize:", "" + Math.round(x * Position.SCREEN_SCALE));
@@ -360,8 +360,8 @@ public class DataProtocol {
             int x = 10, y = 20, uuid = 0, shooterID = 0;
             float deg = 0;
             int varCounter = 0;
-            for(int i = CsIndex + 2; i < token.indexOf(";", CsIndex); i++) {
-                if(token.charAt(i) == ',') {
+            for(int i = CsIndex + 2; i < token.indexOf(";", CsIndex) + 1; i++) {
+                if(token.charAt(i) == ',' || token.charAt(i) == ';') {
                     if(varCounter == 0) {
                         x = Math.round(Float.parseFloat(cursor.toString()));
                         varCounter ++;
