@@ -90,7 +90,7 @@ public class DataProtocol {
                                           Position playerPosition, ArrayList<Cannonball> cannonballs) {
         StringBuilder token = new StringBuilder();
 
-        token.append("S");
+        token.append("S:");
 
         if(gamePIN != null) {
             token.append("G:");
@@ -143,14 +143,15 @@ public class DataProtocol {
                 token.append(cannonballs.get(i).getShooterID());
             }
             token.append(";");
+            Log.d("Cannonball Tokens", token.toString());
         }
 
         return token.toString();
     }
 
     public static void detokenizeGameData(String token) {
-        if(token.contains("S")) {
-//            Log.d("TOKEN DEBUG", "Solo detokenizer reached!");
+        if(token.contains("S:")) {
+            Log.d("TOKEN DEBUG", "Solo detokenizer reached!");
             detokenizeSoloGameData(token);
             return;
         }
@@ -233,30 +234,41 @@ public class DataProtocol {
 
 
         if(CsIndex != -1) {
+            Log.d("Detokenize Cannonballs", "Entered Cs detokenize!");
             StringBuilder cursor = new StringBuilder();
             int x = 300, y = 200, uuid = 0, shooterID = 0;
             float deg = 0;
             int varCounter = 0;
             for(int i = CsIndex + 2; i < token.indexOf(";", CsIndex); i++) {
+                Log.d("Detokenize VarCounter:", "" + varCounter);
                 if(token.charAt(i) == ',') {
                     if(varCounter == 0) {
                         x = Math.round(Float.parseFloat(cursor.toString()));
+                        Log.d("Cannonball Detokenize:", "" + Math.round(x * Position.SCREEN_SCALE));
                         varCounter ++;
                     }
                     else if(varCounter == 1) {
                         y = Math.round(Float.parseFloat(cursor.toString()));
+                        Log.d("Cannonball Detokenize:", Math.round(x * Position.SCREEN_SCALE) + " " +
+                                Math.round(y * Position.SCREEN_SCALE));
                         varCounter ++;
                     }
                     else if(varCounter == 2) {
                         deg = Float.parseFloat(cursor.toString());
+                        Log.d("Cannonball Detokenize:", Math.round(x * Position.SCREEN_SCALE) + " " +
+                                Math.round(y * Position.SCREEN_SCALE) + " " + deg);
                         varCounter ++;
                     }
                     else if(varCounter == 3) {
                         uuid = Integer.parseInt(cursor.toString());
+                        Log.d("Cannonball Detokenize:", Math.round(x * Position.SCREEN_SCALE) + " " +
+                                Math.round(y * Position.SCREEN_SCALE) + " " + deg + " " + uuid);
                         varCounter ++;
                     }
                     else if(varCounter == 4) {
                         shooterID = Integer.parseInt(cursor.toString());
+                        Log.d("Cannonball Detokenize:", Math.round(x * Position.SCREEN_SCALE) + " " +
+                                Math.round(y * Position.SCREEN_SCALE) + " " + deg + " " + uuid + " " + shooterID);
                         GameData.getInstance().getCannonballSet().addCannonball(
                                 new Cannonball(Math.round(x * Position.SCREEN_SCALE),
                                 Math.round(y * Position.SCREEN_SCALE), deg, uuid, shooterID));
