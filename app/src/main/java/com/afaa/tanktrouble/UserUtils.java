@@ -38,8 +38,8 @@ public class UserUtils {
         sUsername = sSharedPref.getString(USERNAME_KEY, "");
 
 
-        setUsername(sUsername);
         setScreenSize(activity);
+        setUsername(sUsername);
     }
 
 
