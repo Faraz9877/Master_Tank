@@ -205,15 +205,16 @@ public class DataProtocol {
             ArrayList<Position> positions = new ArrayList<>();
             StringBuilder cursor = new StringBuilder();
             int xydegCounter = 0;
-            float x = 300, y = 300, deg = 0;
+            int x = 300, y = 300;
+            float deg = 0;
             for(int i = PsIndex + 2; i < token.indexOf(";", PsIndex) + 1; i++) {
                 if(token.charAt(i) == ',' || token.charAt(i) == ';') {
                     if(xydegCounter == 0) {
-                        x = Float.parseFloat(cursor.toString());
+                        x = Integer.parseInt(cursor.toString());
                         xydegCounter ++;
                     }
                     else if(xydegCounter == 1) {
-                        y = Float.parseFloat(cursor.toString());
+                        y = Integer.parseInt(cursor.toString());
                         xydegCounter ++;
                     }
                     else if(xydegCounter == 2) {
@@ -256,7 +257,7 @@ public class DataProtocol {
                     }
                     else if(varCounter == 4) {
                         shooterID = Integer.parseInt(cursor.toString());
-                        GameData.getInstance().getCannonballSet().addCannonball(
+                        GameData.getInstance().addCannonball(
                                 new Cannonball(Math.round(x * Position.SCREEN_SCALE),
                                 Math.round(y * Position.SCREEN_SCALE), deg, uuid, shooterID));
                         varCounter = 0;
@@ -311,15 +312,16 @@ public class DataProtocol {
             Position position;
             StringBuilder cursor = new StringBuilder();
             int xydegCounter = 0;
-            float x = 300, y = 300, deg = 0;
+            int x = 300, y = 300;
+            float deg = 0;
             for(int i = PsIndex + 2; i < token.indexOf(";", PsIndex) + 1; i++) {
                 if(token.charAt(i) == ',' || token.charAt(i) == ';') {
                     if(xydegCounter == 0) {
-                        x = Float.parseFloat(cursor.toString());
+                        x = Integer.parseInt(cursor.toString());
                         xydegCounter ++;
                     }
                     else if(xydegCounter == 1) {
-                        y = Float.parseFloat(cursor.toString());
+                        y = Integer.parseInt(cursor.toString());
                         xydegCounter ++;
                     }
                     else if(xydegCounter == 2) {

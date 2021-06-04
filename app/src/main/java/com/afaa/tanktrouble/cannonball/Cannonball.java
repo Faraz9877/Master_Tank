@@ -14,7 +14,8 @@ public class Cannonball {
 
     private ArrayList<Coordinate> mPath;
     private int mPrevPathIndex;
-    private float mX, mY, mDeg;
+    private float mX, mY;
+    private float mDeg;
     private long mFiringTime, mLastTime;
     private int mUUID, mShooterID;
 
@@ -205,7 +206,7 @@ public class Cannonball {
     }
 
     public Position getPosition() {
-        return new Position(mX, mY, mDeg);
+        return new Position((int) mX, (int) mY, mDeg);
     }
 
     public int getRadius() {
