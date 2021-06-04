@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:79356637662:android:840d787905ce9107",
         "android_client_info": {
-          "package_name": "com.wztlei.tanktrouble"
+          "package_name": "com.afaa.tanktrouble"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "79356637662-gb6uj02vqd44fag30dc2e0j94n3pipe7.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.wztlei.tanktrouble",
+            "package_name": "com.afaa.tanktrouble",
             "certificate_hash": "fc9d9d083ee4a3f6bf61b87e6b0e2538080ba147"
           }
         },

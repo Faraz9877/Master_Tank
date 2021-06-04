@@ -17,6 +17,6 @@ public class ExampleInstrumentedTest {
 
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.wztlei.tanktrouble", appContext.getPackageName());
+        assertEquals("com.afaa.tanktrouble", appContext.getPackageName());
     }
 }
