@@ -13,7 +13,7 @@ import com.afaa.tanktrouble.map.MapUtils;
 
 public class UserTank extends Tank {
 
-    private long lastTime;
+//    private long lastTime;
 
     private static final String TAG = "WL/UserTank";
     private static final float SPEED_CONST = UserUtils.scaleGraphicsFloat(40/1080f)/100f;

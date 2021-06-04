@@ -16,6 +16,8 @@ public abstract class Tank {
     int mScore;
     boolean mIsAlive;
 
+    protected long lastTime;
+
     static final float TANK_WIDTH_CONST = Constants.TANK_WIDTH_CONST;
     static final float TANK_HEIGHT_CONST = Constants.TANK_HEIGHT_CONST;
     private static final float GUN_LENGTH_RATIO = 1/7f;
@@ -26,6 +28,8 @@ public abstract class Tank {
         mX = x;
         mY = y;
         mDeg = deg;
+
+        lastTime = System.currentTimeMillis();
     }
 
 
