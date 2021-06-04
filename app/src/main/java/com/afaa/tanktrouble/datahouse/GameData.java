@@ -57,10 +57,10 @@ public class GameData {
                 (syncCode / 1000) % 2 == 1 ? playerIDs: null,
                 (syncCode / 100) % 2 == 1 ? playerUsernames: null,
                 (syncCode / 10) % 2 == 1 ? playerPositions: null,
-                syncCode % 2 == 1 ? newCannonballs: null
+                syncCode % 2 == 1 && newCannonballs.size() > 0 ? newCannonballs: null
             );
 
-        btService.getChannel().send(token.getBytes(  ));
+        btService.getChannel().send(token.getBytes());
 
         if(syncCode % 2 == 1)
             newCannonballs.clear();

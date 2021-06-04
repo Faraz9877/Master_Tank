@@ -79,6 +79,7 @@ public class DataProtocol {
                 token.append(cannonballs.get(i).getShooterID());
             }
             token.append(";");
+            Log.d("Cannonball Tokens", token.toString());
         }
 
         return token.toString();
@@ -149,11 +150,11 @@ public class DataProtocol {
 
     public static void detokenizeGameData(String token) {
         if(token.contains("S")) {
-            Log.d("TOKEN DEBUG", "Solo detokenizer reached!");
+//            Log.d("TOKEN DEBUG", "Solo detokenizer reached!");
             detokenizeSoloGameData(token);
             return;
         }
-        Log.d("TOKEN DEBUG", "Detokenizer reached!");
+//        Log.d("TOKEN DEBUG", "Detokenizer reached!");
 
         int GsIndex = token.indexOf("G:");
         int IsIndex = token.indexOf("I:");

@@ -26,7 +26,7 @@ public class UserUtils {
     private static final String TAG = "WL/UserUtils";
 
     public static void initialize(Activity activity) {
-        Log.d(TAG, "initialize UserUtils");
+//        Log.d(TAG, "initialize UserUtils");
 
 
         sAdjectiveList = activity.getResources().getStringArray(R.array.adjective_list);
@@ -86,16 +86,16 @@ public class UserUtils {
         sUsername = firstUsername;
         putStringInPrefs(USER_ID_KEY, sUserId);
         putStringInPrefs(USERNAME_KEY, firstUsername);
-        Log.d(TAG, "added new user with sUserId=" + sUserId
-                + " and sUsername=" + sUsername);
+//        Log.d(TAG, "added new user with sUserId=" + sUserId
+//                + " and sUsername=" + sUsername);
     }
 
 
     private static void updateUsername(final String newUsername) {
         sUsername = newUsername;
         putStringInPrefs(USERNAME_KEY, newUsername);
-        Log.d(TAG, "updated new username for sUserId=" + sUserId
-                + " with sUsername=" + sUsername);
+//        Log.d(TAG, "updated new username for sUserId=" + sUserId
+//                + " with sUsername=" + sUsername);
     }
 
 

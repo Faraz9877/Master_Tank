@@ -113,7 +113,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        Log.d(TAG, "surfaceDestroyed");
+//        Log.d(TAG, "surfaceDestroyed");
         boolean retry = true;
 
         while (retry) {
@@ -184,11 +184,11 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         GameData.getInstance().sync(1111, false);
 
         for(int i = 0; i < GameData.getInstance().getPlayerPositions().size(); i++) {
-            Log.d(TAG, "PlayerID: " + GameData.getInstance().getPlayerIDs().get(i));
-            Log.d(TAG, "Player Position " + i + " : " +
-                    GameData.getInstance().getPlayerPositions().get(i).x + " " +
-                    GameData.getInstance().getPlayerPositions().get(i).y + " " +
-                    GameData.getInstance().getPlayerPositions().get(i).deg);
+//            Log.d(TAG, "PlayerID: " + GameData.getInstance().getPlayerIDs().get(i));
+//            Log.d(TAG, "Player Position " + i + " : " +
+//                    GameData.getInstance().getPlayerPositions().get(i).x + " " +
+//                    GameData.getInstance().getPlayerPositions().get(i).y + " " +
+//                    GameData.getInstance().getPlayerPositions().get(i).deg);
         }
 
         drawExplosions(canvas);

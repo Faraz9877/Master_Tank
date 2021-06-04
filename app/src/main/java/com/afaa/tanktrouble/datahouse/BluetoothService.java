@@ -210,7 +210,7 @@ public class BluetoothService extends Service {
     }
 
     private void showNotification(Class<?> aClass, String title, String text) {
-        Log.d(TAG, "notification shown");
+//        Log.d(TAG, "notification shown");
 
 
 //                .setContentTitle(title)
@@ -226,7 +226,7 @@ public class BluetoothService extends Service {
     }
 
     private void hideNotification() {
-        Log.d(TAG, "notification hidden");
+//        Log.d(TAG, "notification hidden");
 
         stopForeground(true);
     }
@@ -307,7 +307,7 @@ public class BluetoothService extends Service {
 
             try {
                 socket.connect();
-                Log.d(TAG, Boolean.toString(socket.isConnected()));
+//                Log.d(TAG, Boolean.toString(socket.isConnected()));
             } catch (IOException connectException) {
                 try {
                     socket.close();
@@ -357,7 +357,7 @@ public class BluetoothService extends Service {
             while (true) {
                 try {
                     bytes = inputStream.read(buffer);
-                    Log.d(TAG, "read");
+//                    Log.d(TAG, "read");
                     process(buffer);
                 } catch (IOException e) {
                     break;

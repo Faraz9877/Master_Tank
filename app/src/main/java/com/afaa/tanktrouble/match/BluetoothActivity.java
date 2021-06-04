@@ -54,7 +54,7 @@ public class BluetoothActivity extends AppCompatActivity {
         nearListView = (ListView)findViewById(R.id.bluetoothNearListView);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter == null) {
-           Log.d(TAG, "Device doesn't support Bluetooth");
+//           Log.d(TAG, "Device doesn't support Bluetooth");
         }
         ActivityCompat.requestPermissions(this,
                 new String[] {Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN,

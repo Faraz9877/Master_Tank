@@ -58,7 +58,7 @@ public class BtGameConfigurationServerActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             String data = new String(buffer);
-                            Log.d(TAG, "BtServer Message Process: " + data);
+//                            Log.d(TAG, "BtServer Message Process: " + data);
                             DataProtocol.detokenizeGameData(data);
                         }
                     });

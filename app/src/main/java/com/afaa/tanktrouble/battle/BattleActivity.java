@@ -50,8 +50,8 @@ public class BattleActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d(TAG, "onPause");
-        Log.d(TAG, "isFinishing()==" + isFinishing());
+//        Log.d(TAG, "onPause");
+//        Log.d(TAG, "isFinishing()==" + isFinishing());
     }
 
     @Override
@@ -62,8 +62,8 @@ public class BattleActivity extends AppCompatActivity {
             btService.unregisterActivity();
         }
 
-        Log.d(TAG, "onStop");
-        Log.d(TAG, "isFinishing()==" + isFinishing());
+//        Log.d(TAG, "onStop");
+//        Log.d(TAG, "isFinishing()==" + isFinishing());
     }
 
     @Override
@@ -79,7 +79,7 @@ public class BattleActivity extends AppCompatActivity {
 //        }
         unbindService(connection);
 
-        Log.d(TAG, "onDestroy");
+//        Log.d(TAG, "onDestroy");
     }
 
     @Override
@@ -131,7 +131,7 @@ public class BattleActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             String data = new String(buffer);
-                            Log.d(TAG, "Battle Message Process: " + data);
+//                            Log.d(TAG, "Battle Message Process: " + data);
                             DataProtocol.detokenizeGameData(data);
                         }
                     });

@@ -181,6 +181,7 @@ public class HostActivity extends AppCompatActivity {
                     });
                 }
             });
+
         }
 
         @Override

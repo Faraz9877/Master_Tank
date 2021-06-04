@@ -225,7 +225,7 @@ public class DeviceChooserActivity extends AppCompatActivity {
         }
         unregisterReceiver(broadcastReceiver);
         if (btService != null && shouldStop) {
-            Log.d("DeviceChooser", "onDestroy: BtService is STOPPING!");
+//            Log.d("DeviceChooser", "onDestroy: BtService is STOPPING!");
 //            btService.stopSelf();
 //            btService = null;
         }
