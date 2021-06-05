@@ -4,11 +4,12 @@ import com.afaa.tanktrouble.UserUtils;
 
 public class Position {
 
-    public float x, y, deg;
+    public int x, y;
+    public float deg;
 
     public static final float SCREEN_SCALE = UserUtils.getScreenScale();
 
-    public Position(float x, float y, float deg) {
+    public Position(int x, int y, float deg) {
         this.x = x;
         this.y = y;
         this.deg = deg;
@@ -21,10 +22,10 @@ public class Position {
     }
 
     public Position standardizePosition() {
-        return new Position(x / SCREEN_SCALE, y / SCREEN_SCALE, deg);
+        return new Position( (int) (x / SCREEN_SCALE), (int) (y / SCREEN_SCALE), deg);
     }
 
     public Position scalePosition() {
-        return new Position(x * SCREEN_SCALE, y * SCREEN_SCALE, deg);
+        return new Position( (int) (x * SCREEN_SCALE), (int) (y * SCREEN_SCALE), deg);
     }
 }

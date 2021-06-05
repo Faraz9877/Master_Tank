@@ -7,7 +7,7 @@ public class Coordinate {
 
     private static final float SCREEN_SCALE = UserUtils.getScreenScale();
 
-    // Firebase's Realtime Database requires a no-argument constructor
+
     @SuppressWarnings("unused")
     public Coordinate() {}
 

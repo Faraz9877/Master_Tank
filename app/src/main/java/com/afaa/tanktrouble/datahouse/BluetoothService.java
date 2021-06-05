@@ -15,6 +15,8 @@ import com.afaa.tanktrouble.R;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -70,8 +72,8 @@ public class BluetoothService extends Service {
         if (btSocket != null) {
             try {
                 btSocket.close();
-            } catch (IOException ignored) {}
-
+            } catch (IOException ignored) {
+            }
             btSocket = null;
         }
     }
@@ -218,7 +220,7 @@ public class BluetoothService extends Service {
     }
 
     private void showNotification(Class<?> aClass, String title, String text) {
-        Log.d(TAG, "notification shown");
+//        Log.d(TAG, "notification shown");
 
         // TODO: check this part
 //        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
@@ -235,7 +237,7 @@ public class BluetoothService extends Service {
     }
 
     private void hideNotification() {
-        Log.d(TAG, "notification hidden");
+//        Log.d(TAG, "notification hidden");
 
         stopForeground(true);
     }
@@ -269,7 +271,8 @@ public class BluetoothService extends Service {
         public AcceptThread() {
             try {
                 serverSocket = btAdapter.listenUsingRfcommWithServiceRecord(TAG, MY_UUID);
-            } catch (IOException ignored) {}
+            } catch (IOException ignored) {
+            }
         }
 
         public void run() {
@@ -277,13 +280,15 @@ public class BluetoothService extends Service {
             while (true) {
                 try {
                     socket = serverSocket.accept();
-                    if (socket != null) {
-                        connected(socket, true);
-                        serverSocket.close();
-                        break;
-                    }
+                } catch (IOException e) {
+                    break;
                 }
-                catch (IOException e) {
+                if (socket != null) {
+                    connected(socket, true);
+                    try {
+                        serverSocket.close();
+                    } catch (IOException ignored) {
+                    }
                     break;
                 }
             }
@@ -292,8 +297,8 @@ public class BluetoothService extends Service {
         public void cancel() {
             try {
                 serverSocket.close();
+            } catch (IOException ignored) {
             }
-            catch (IOException ignored) {}
         }
     }
 
@@ -304,8 +309,8 @@ public class BluetoothService extends Service {
         public ConnectThread(String address) {
             try {
                 socket = btAdapter.getRemoteDevice(address).createRfcommSocketToServiceRecord(MY_UUID);
+            } catch (IOException ignored) {
             }
-            catch (IOException ignored) {}
         }
 
         public void run() {
@@ -313,13 +318,12 @@ public class BluetoothService extends Service {
 
             try {
                 socket.connect();
-                Log.d(TAG, Boolean.toString(socket.isConnected()));
-            }
-            catch (IOException connectException) {
+//                Log.d(TAG, Boolean.toString(socket.isConnected()));
+            } catch (IOException connectException) {
                 try {
                     socket.close();
+                } catch (IOException ignored) {
                 }
-                catch (IOException ignored) {}
                 return;
             }
 
@@ -332,7 +336,8 @@ public class BluetoothService extends Service {
             if (socket != null) {
                 try {
                     socket.close();
-                } catch (IOException ignored) {}
+                } catch (IOException ignored) {
+                }
             }
         }
     }
@@ -348,8 +353,7 @@ public class BluetoothService extends Service {
             try {
                 tmpIn = btSocket.getInputStream();
                 tmpOut = btSocket.getOutputStream();
-            }
-            catch (IOException ignored) {
+            } catch (IOException ignored) {
                 Log.d(TAG, "error");
             }
 
@@ -364,10 +368,9 @@ public class BluetoothService extends Service {
             while (true) {
                 try {
                     bytes = inputStream.read(buffer);
-                    Log.d(TAG, "read");
+//                    Log.d(TAG, "read");
                     process(buffer);
-                }
-                catch (IOException e) {
+                } catch (IOException e) {
                     break;
                 }
             }
@@ -377,13 +380,15 @@ public class BluetoothService extends Service {
             try {
                 outputStream.write(bytes);
 //                Log.d(TAG, "write");
-            } catch (IOException ignored) {}
+            } catch (IOException ignored) {
+            }
         }
 
         public void cancel() {
             try {
                 btSocket.close();
-            } catch (IOException ignored) {}
+            } catch (IOException ignored) {
+            }
         }
     }
 }

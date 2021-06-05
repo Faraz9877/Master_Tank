@@ -16,22 +16,23 @@ public abstract class Tank {
     int mScore;
     boolean mIsAlive;
 
+    protected long lastTime;
+
     static final float TANK_WIDTH_CONST = Constants.TANK_WIDTH_CONST;
     static final float TANK_HEIGHT_CONST = Constants.TANK_HEIGHT_CONST;
     private static final float GUN_LENGTH_RATIO = 1/7f;
     private static final float GUN_LEFT_EDGE_RATIO = 39/100f;
     private static final float GUN_RIGHT_EDGE_RATIO = 61/100f;
 
-    /**
-     * Returns an array of PointFs representing a polygon perfectly enclosing a tank.
-     *
-     * @param x     the x-PointF of the tank
-     * @param y     the y-PointF of the tank
-     * @param deg   the angle of the tank in degrees
-     * @param w     the width of the tank
-     * @param h     the height of the tank
-     * @return      the array of PointFs representing the polygon
-     */
+    public void updatePosition(int x, int y, float deg) {
+        mX = x;
+        mY = y;
+        mDeg = deg;
+
+        lastTime = System.currentTimeMillis();
+    }
+
+
     @SuppressWarnings("SuspiciousNameCombination")
     public static PointF[] tankPolygon(float x, float y, float deg, float w, float h) {
         PointF rectTop, rectRight, rectBottom, rectLeft;
@@ -42,7 +43,7 @@ public abstract class Tank {
         PointF gunCenter, bodyCenter;
         float risingEdge, fallingEdge, theta;
 
-        // Get the edge lengths of the rotated bounding rectangle
+
         if (inRange( -180, deg,-90)) {
             risingEdge = h;
             fallingEdge = w;
@@ -63,7 +64,7 @@ public abstract class Tank {
             throw new IllegalArgumentException("angle must be between -180 and 180");
         }
 
-        // Get the four corners of the rotated bounding rectangle
+
         rectTop = new PointF(x + risingEdge*cos(theta), y);
         rectRight = new PointF(x + risingEdge*cos(theta) + fallingEdge*sin(theta),
                 y + fallingEdge*cos(theta));
@@ -72,7 +73,7 @@ public abstract class Tank {
         rectLeft = new PointF(x, y+ risingEdge*sin(theta));
 
 
-        // Get the points on the left and right edge of the tank body and the front of the gun
+
         if (inRange( -180, deg,-90)) {
             gunFront1 = weightedMidpoint(rectLeft, rectTop, GUN_LEFT_EDGE_RATIO);
             gunFront2 = weightedMidpoint(rectLeft, rectTop, GUN_RIGHT_EDGE_RATIO);
@@ -153,23 +154,23 @@ public abstract class Tank {
             throw new IllegalArgumentException("angle must be between -180 and 180");
         }
 
-        // Get the points on the front edge of the tank body
+
         bodyFront1 = weightedMidpoint(bodyLeft1, bodyRight1, 0.2f);
         bodyFront2 = weightedMidpoint(bodyLeft1, bodyRight1, GUN_LEFT_EDGE_RATIO);
         bodyFront3= weightedMidpoint(bodyLeft1, bodyRight1, GUN_RIGHT_EDGE_RATIO);
         bodyFront4 = weightedMidpoint(bodyLeft1, bodyRight1, 0.8f);
 
-        // Get the points on the rear edge of the tank body
+
         bodyRear1 = weightedMidpoint(bodyLeft7, bodyRight7, 0.2f);
         bodyRear2 = weightedMidpoint(bodyLeft7, bodyRight7, 0.4f);
         bodyRear3 = weightedMidpoint(bodyLeft7, bodyRight7, 0.6f);
         bodyRear4 = weightedMidpoint(bodyLeft7, bodyRight7, 0.8f);
 
-        // Get the points for the center of various parts of the gun
+
         gunCenter = weightedMidpoint(gunFront1, gunFront2, 0.5f);
         bodyCenter = weightedMidpoint(bodyLeft5, bodyRight5, 0.5f);
 
-        // Return an array with all the PointFs
+
         return new PointF[] {gunCenter, bodyCenter, gunFront1, gunFront2,
                 bodyLeft1, bodyLeft2, bodyLeft3, bodyLeft4, bodyLeft5, bodyLeft6, bodyLeft7,
                 bodyRight1, bodyRight2, bodyRight3, bodyRight4, bodyRight5, bodyRight6, bodyRight7,
@@ -177,17 +178,7 @@ public abstract class Tank {
                 bodyRear1, bodyRear2, bodyRear3, bodyRear4};
     }
 
-    /**
-     * Returns an array of PointFs representing a hitbox perfectly enclosing the tank body.
-     * The hitbox determines if a cannonball has hit the tank.
-     *
-     * @param x     the x-PointF of the tank
-     * @param y     the y-PointF of the tank
-     * @param deg   the angle of the tank in degrees
-     * @param w     the width of the tank
-     * @param h     the height of the tank
-     * @return      the array of PointFs representing the polygon
-     */
+
     @SuppressWarnings("SuspiciousNameCombination")
     public static PointF[] tankHitbox(float x, float y, float deg, float w, float h) {
         PointF rectTop, rectRight, rectBottom, rectLeft;
@@ -202,7 +193,7 @@ public abstract class Tank {
         PointF bodyRight1, bodyRight2, bodyRight3, bodyRight4, bodyRight5, bodyRight6, bodyRight7;
         float risingEdge, fallingEdge, theta;
 
-        // Get the edge lengths of the rotated bounding rectangle
+
         if (inRange( -180, deg,-90)) {
             risingEdge = h;
             fallingEdge = w;
@@ -223,7 +214,7 @@ public abstract class Tank {
             throw new IllegalArgumentException("angle must be between -180 and 180");
         }
 
-        // Get the four corners of the rotated bounding rectangle
+
         rectTop = new PointF(x + risingEdge*cos(theta), y);
         rectRight = new PointF(x + risingEdge*cos(theta) + fallingEdge*sin(theta),
                 y + fallingEdge*cos(theta));
@@ -231,7 +222,7 @@ public abstract class Tank {
                 y + fallingEdge*cos(theta) + risingEdge*sin(theta));
         rectLeft = new PointF(x, y+ risingEdge*sin(theta));
 
-        // Get the points on the left and right edge of the tank body and the front of the gun
+
         if (inRange( -180, deg,-90)) {
             bodyLeft1 = weightedMidpoint(rectLeft, rectBottom, GUN_LENGTH_RATIO);
             bodyLeft2 = weightedMidpoint(rectLeft, rectBottom, 2/7f);
@@ -300,42 +291,42 @@ public abstract class Tank {
             throw new IllegalArgumentException("angle must be between -180 and 180");
         }
 
-        // Get the points on the front edge of the tank body
+
         bodyFront1 = weightedMidpoint(bodyLeft1, bodyRight1, 0.25f);
         bodyFront2 = weightedMidpoint(bodyLeft1, bodyRight1, 0.50f);
         bodyFront3= weightedMidpoint(bodyLeft1, bodyRight1, 0.75f);
 
-        // Get the points for the first midsection
+
         midA1 = weightedMidpoint(bodyLeft2, bodyRight2, 0.25f);
         midA2 = weightedMidpoint(bodyLeft2, bodyRight2, 0.50f);
         midA3= weightedMidpoint(bodyLeft2, bodyRight2, 0.75f);
 
-        // Get the points for the second midsection
+
         midB1 = weightedMidpoint(bodyLeft3, bodyRight3, 0.25f);
         midB2 = weightedMidpoint(bodyLeft3, bodyRight3, 0.50f);
         midB3= weightedMidpoint(bodyLeft3, bodyRight3, 0.75f);
 
-        // Get the points for the third midsection
+
         midC1 = weightedMidpoint(bodyLeft4, bodyRight4, 0.25f);
         midC2 = weightedMidpoint(bodyLeft4, bodyRight4, 0.50f);
         midC3= weightedMidpoint(bodyLeft4, bodyRight4, 0.75f);
 
-        // Get the points for the fourth midsection
+
         midD1 = weightedMidpoint(bodyLeft5, bodyRight5, 0.25f);
         midD2 = weightedMidpoint(bodyLeft5, bodyRight5, 0.50f);
         midD3= weightedMidpoint(bodyLeft5, bodyRight5, 0.75f);
 
-        // Get the points for the fifth midsection
+
         midE1 = weightedMidpoint(bodyLeft6, bodyRight6, 0.25f);
         midE2 = weightedMidpoint(bodyLeft6, bodyRight6, 0.50f);
         midE3= weightedMidpoint(bodyLeft6, bodyRight6, 0.75f);
 
-        // Get the points on the rear edge of the tank body
+
         bodyRear1 = weightedMidpoint(bodyLeft7, bodyRight7, 0.25f);
         bodyRear2 = weightedMidpoint(bodyLeft7, bodyRight7, 0.50f);
         bodyRear3 = weightedMidpoint(bodyLeft7, bodyRight7, 0.75f);
 
-        // Return an array with all the PointFs
+
         return new PointF[] {midA1, midA2, midA3, midB1, midB2, midB3,
                 midC1, midC2, midC3, midD1, midD2, midD3, midE1, midE2, midE3,
                 bodyLeft1, bodyLeft2, bodyLeft3, bodyLeft4, bodyLeft5, bodyLeft6, bodyLeft7,
@@ -343,17 +334,9 @@ public abstract class Tank {
                 bodyFront1, bodyFront2, bodyFront3, bodyRear1, bodyRear2, bodyRear3};
     }
 
-    /**
-     * Returns the weighted midpoint M between two points pt1 and pt2.
-     *
-     * @param   pt1     the smaller value
-     * @param   pt2     the bigger value
-     * @param   weight  the ratio of the distance AM to distance AB
-     * @return          the weighted midpoint
-     * @throws          IllegalArgumentException when weight is outside the interval [0, 1]
-     */
+
     private static PointF weightedMidpoint(PointF pt1, PointF pt2, float weight) {
-        // Check that that the weight is within the interval [0, 1]
+
         if (!inRange(0, weight, 1)) {
             throw new IllegalArgumentException("weight is not between 0 and 1 inclusive");
         } else {
@@ -362,11 +345,7 @@ public abstract class Tank {
         }
     }
 
-    /**
-     * Draws the tank bitmap onto a canvas with the proper rotation.
-     *
-     * @param canvas the canvas on which the tank is drawn.
-     */
+
     public void draw(Canvas canvas) {
         if (mX != 0 || mY != 0) {
             Matrix matrix = new Matrix();
@@ -417,14 +396,7 @@ public abstract class Tank {
         return mIsAlive;
     }
 
-    /**
-     * Returns true if num is in the interval [min, max] and false otherwise.
-     *
-     * @param min   the minimum value of num
-     * @param num   the number to test
-     * @param max   the maximum value of num
-     * @return      true if num is in the interval [min, max] and false otherwise
-     */
+
     private static boolean inRange (float min, float num, float max) {
         return (min <= num && num <= max);
     }

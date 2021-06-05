@@ -31,15 +31,15 @@ public class BluetoothActivity extends AppCompatActivity {
     private Set<BluetoothDevice> nearDevices = new HashSet<>();
     ListView pairedListView, nearListView;
 
-    // Create a BroadcastReceiver for ACTION_FOUND.
+
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             System.out.println("run method");
             nearDevices.clear();
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                // Discovery has found a device. Get the BluetoothDevice
-                // object and its info from the Intent.
+
+
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 nearDevices.add(device);
             }
@@ -54,14 +54,14 @@ public class BluetoothActivity extends AppCompatActivity {
         nearListView = (ListView)findViewById(R.id.bluetoothNearListView);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter == null) {
-           Log.d(TAG, "Device doesn't support Bluetooth");
+//           Log.d(TAG, "Device doesn't support Bluetooth");
         }
         ActivityCompat.requestPermissions(this,
                 new String[] {Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN,
                         Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
                  642);
 
-        // Register for broadcasts when a device is discovered.
+
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(receiver, filter);
     }
@@ -69,14 +69,14 @@ public class BluetoothActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Don't forget to unregister the ACTION_FOUND receiver.
+
         unregisterReceiver(receiver);
     }
 
     public void findDevices(View v) {
         System.out.println("findDevices");
         if (bluetoothAdapter.isDiscovering()) {
-            // Bluetooth is already in modo discovery mode, we cancel to restart it again
+
             bluetoothAdapter.cancelDiscovery();
         }
         bluetoothAdapter.startDiscovery();
@@ -127,21 +127,19 @@ public class BluetoothActivity extends AppCompatActivity {
         final ArrayAdapter adapter = new  ArrayAdapter(this, android.R.layout.simple_list_item_1, list);
 
         pairedListView.setAdapter(adapter);
-        pairedListView.setOnItemClickListener(myListClickListener); //Method called when the device from the list is clicked
+        pairedListView.setOnItemClickListener(myListClickListener);
     }
 
     private AdapterView.OnItemClickListener myListClickListener = new AdapterView.OnItemClickListener()
     {
         public void onItemClick (AdapterView av, View v, int arg2, long arg3)
         {
-            // Get the device MAC address, the last 17 chars in the View
+
             String info = ((TextView) v).getText().toString();
             System.out.println("when clicked" + info);
 //            String address = info.substring(info.length() - 17);
-            // Make an intent to start next activity.
-//            Intent i = new Intent(this, MyCommunicationsActivity.class);
-            //Change the activity.
-//            i.putExtra(EXTRA_ADDRESS, address); //this will be received at CommunicationsActivity
+
+
 //            startActivity(i);
         }
     };

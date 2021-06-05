@@ -3,7 +3,9 @@ package com.afaa.tanktrouble.datahouse;
 import com.afaa.tanktrouble.battle.Position;
 import com.afaa.tanktrouble.cannonball.Cannonball;
 import com.afaa.tanktrouble.cannonball.CannonballSet;
+import com.afaa.tanktrouble.tank.UserTank;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 public class GameData {
@@ -18,6 +20,7 @@ public class GameData {
     String gamePin;
     int thisPlayer;
     int status; // 0: wait to join, 1: playing, -1: cancelled
+    boolean isServer;
 
     private BluetoothService btService;
 
@@ -34,6 +37,10 @@ public class GameData {
 
     public void sync(int syncCode, boolean isSolo)
     {
+        if(btService == null)
+            return;
+//        Log.d("Sync", "sync: btService is found!");
+
         String token;
         token = isSolo ? DataProtocol.tokenizeSoloGameData(
                 (syncCode / 10000) % 2 == 1 ? gamePin: null,
@@ -46,11 +53,21 @@ public class GameData {
                 (syncCode / 1000) % 2 == 1 ? playerIDs: null,
                 (syncCode / 100) % 2 == 1 ? playerUsernames: null,
                 (syncCode / 10) % 2 == 1 ? playerPositions: null,
-                syncCode % 2 == 1 ? newCannonballs: null
+                syncCode % 2 == 1 && newCannonballs.size() > 0 ? newCannonballs: null
             );
 
-        btService.getChannel().send(token.getBytes(/*"UTF-8"*/));
-        newCannonballs.clear();
+        btService.getChannel().send(token.getBytes());
+
+        if(syncCode % 2 == 1)
+            newCannonballs.clear();
+    }
+
+    public void setServer(boolean server) {
+        isServer = server;
+    }
+
+    public boolean getServer() {
+        return  isServer;
     }
 
     public static GameData getInstance() {
@@ -126,7 +143,7 @@ public class GameData {
 //        int newPlayerID = playerIDs.size();
         playerIDs.add(userId);
         playerUsernames.add(username);
-        playerPositions.add(new Position(10, 10, 0));
+        playerPositions.add(UserTank.getRandomInitialPosition());
         aliveBullets.add(0);
         thisPlayer = userId;
     }
@@ -150,10 +167,6 @@ public class GameData {
         aliveBullets = new ArrayList<>();
         status = 1;
         thisPlayer = -1;
-    }
-
-    public void readIncoming(String message) {
-
     }
 
     public void setPlayerIDs(ArrayList<Integer> playerIDs) {

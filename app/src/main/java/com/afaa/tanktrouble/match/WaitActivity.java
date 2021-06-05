@@ -60,32 +60,27 @@ public class WaitActivity extends AppCompatActivity {
         if (btService.getBluetoothAdapter() != null) {
             btService.getBluetoothAdapter().cancelDiscovery();
         }
-//        if (btService != null /* && shouldStop */) {
+//        if (btService != null   ) {
 //            btService.stopSelf();
 //            btService = null;
 //        }
         unbindService(connection);
     }
 
-    /**
-     * Creates a listener to wait for the game to start.
-     *
-     */
+
     private void waitForGameToStart() {
-        // Listen for new people joining the game
+
         if (GameData.getInstance().getStatus() == -1) {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
         } else if (GameData.getInstance().getStatus() == 1) {
             onGameStarted();
         } else {
-            // Should keep waiting!
+
         }
     }
 
-    /**
-     * Called when the host presses the start game button.
-     */
+
     private void onGameStarted() {
         Intent intent = new Intent(getApplicationContext(), BattleActivity.class);
         startActivity(intent);
@@ -96,7 +91,7 @@ public class WaitActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             btService = ((BluetoothService.BtBinder) service).getService();
             btService.registerActivity(WaitActivity.class);
-            // TODO: manage this part
+
             btService.setOnConnected(new BluetoothService.OnConnected() {
                 @Override
                 public void success() {
@@ -119,7 +114,7 @@ public class WaitActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             String data = new String(buffer);
-                            Log.d(TAG, "Wait Message Process: " + data);
+//                            Log.d(TAG, "Wait Message Process: " + data);
                             DataProtocol.detokenizeGameData(data);
                         }
                     });

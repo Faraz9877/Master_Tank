@@ -31,38 +31,38 @@ public class MainActivity extends AppCompatActivity {
     public void onClickHostButton(View view) {
         Intent intent = new Intent(this, HostActivity.class);
         startActivity(intent);
-        Log.d(TAG, "onClickHostButton");
+//        Log.d(TAG, "onClickHostButton");
     }
 
     public void onClickJoinButton(View view) {
         Intent intent = new Intent(this, JoinActivity.class);
         startActivity(intent);
-        Log.d(TAG, "onClickJoinButton");
+//        Log.d(TAG, "onClickJoinButton");
     }
 
     public void onClickTestButton(View view) {
         Intent intent = new Intent(this, BattleActivity.class);
         intent.putExtra(Constants.GAME_PIN_KEY, Constants.TEST_GAME_PIN);
         startActivity(intent);
-        Log.d(TAG, "onClickTestButton");
+//        Log.d(TAG, "onClickTestButton");
     }
 
     public void onClickSettingsButton (View view) {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
-        Log.d(TAG, "onClickSettingsButton");
+//        Log.d(TAG, "onClickSettingsButton");
     }
 
     public void onClickBluetoothButton(View view) {
         Intent intent = new Intent(this, BluetoothActivity.class);
         startActivity(intent);
-        Log.d(TAG, "onClickBluetoothButton");
+//        Log.d(TAG, "onClickBluetoothButton");
     }
 
-    // This is for bluetooth mode
+
     public void onClickBluetoothGame(View view) {
         Intent intent = new Intent(this, DeviceChooserActivity.class);
         startActivity(intent);
-        Log.d(TAG, "onClickBluetoothGame");
+//        Log.d(TAG, "onClickBluetoothGame");
     }
 }

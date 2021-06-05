@@ -11,6 +11,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afaa.tanktrouble.R;
+import com.afaa.tanktrouble.battle.BattleActivity;
 
 import java.util.Set;
 
@@ -82,21 +84,21 @@ public class DeviceChooserActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             btService = ((BluetoothService.BtBinder) service).getService();
-
+            GameData.getInstance().setBtService(btService);
             btService.registerActivity(DeviceChooserActivity.class);
 
             try {
                 btService.initBtAdapter();
-            }
-            catch (BluetoothService.BtUnavailableException e) {
-                Toast.makeText(DeviceChooserActivity.this, R.string.bluetooth_absent, Toast.LENGTH_LONG).show();
+            } catch (BluetoothService.BtUnavailableException e) {
+                Toast.makeText(DeviceChooserActivity.this,
+                        R.string.bluetooth_absent, Toast.LENGTH_LONG).show();
                 finish();
                 return;
             }
 
             if (!btService.getBluetoothAdapter().isEnabled()) {
                 startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),
-                                                  REQUEST_ENABLE_BLUETOOTH);
+                        REQUEST_ENABLE_BLUETOOTH);
             } else {
                 initBt();
             }
@@ -110,11 +112,13 @@ public class DeviceChooserActivity extends AppCompatActivity {
                         public void run() {
                             shouldStop = false;
                             if (btService.isServer()) {
+                                GameData.getInstance().setServer(true);
                                 startActivity(new Intent(DeviceChooserActivity.this,
-                                                         BtGameConfigurationServerActivity.class));
+                                        BattleActivity.class));
                             } else {
+                                GameData.getInstance().setServer(false);
                                 startActivity(new Intent(DeviceChooserActivity.this,
-                                                         BtGameConfigurationClientActivity.class));
+                                        BattleActivity.class));
                             }
                             DeviceChooserActivity.this.finish();
                         }
@@ -136,7 +140,8 @@ public class DeviceChooserActivity extends AppCompatActivity {
         switch (requestCode) {
             case REQUEST_ENABLE_BLUETOOTH:
                 if (resultCode != RESULT_OK) {
-                    Toast.makeText(this, R.string.bluetooth_request, Toast.LENGTH_LONG).show();
+                    Toast.makeText(this,
+                            R.string.bluetooth_request, Toast.LENGTH_LONG).show();
                     finish();
                     break;
                 }
@@ -200,7 +205,8 @@ public class DeviceChooserActivity extends AppCompatActivity {
                 ++devicesFound;
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(intent.getAction())) {
                 progressBar.setVisible(false);
-                makeToast(Integer.toString(devicesFound) + " " + getString(R.string.n_devices_found_suffix));
+                makeToast(Integer.toString(devicesFound) +
+                        " " + getString(R.string.n_devices_found_suffix));
             }
         }
     };

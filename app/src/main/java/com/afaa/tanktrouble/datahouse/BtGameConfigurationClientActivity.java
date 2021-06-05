@@ -46,7 +46,7 @@ public class BtGameConfigurationClientActivity extends AppCompatActivity {
 
     private BluetoothService.MessageChannel messageChannel;
 
-    // Because I can
+
     private static long fromByteArray(byte[] array) {
         long result = 0;
         for (int i = 0; i < 8; ++i) {
@@ -56,7 +56,6 @@ public class BtGameConfigurationClientActivity extends AppCompatActivity {
         return result;
     }
 
-//    public long fromByteArray(byte[] bytes) {
 //        ByteBuffer buffer = ByteBuffer.allocate(8);
 //        buffer.put(bytes);
 //        buffer.flip();
@@ -78,7 +77,7 @@ public class BtGameConfigurationClientActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             String data = new String(buffer);
-                            Log.d(TAG, "BtClient Message Process: " + data);
+//                            Log.d(TAG, "BtClient Message Process: " + data);
                             DataProtocol.detokenizeGameData(data);
                         }
                     });
@@ -141,7 +140,7 @@ public class BtGameConfigurationClientActivity extends AppCompatActivity {
     }
 
     public void onClickEnterGamePin(View view) {
-        // Get the game pin entered by the user
+
         EditText editGamePin = findViewById(R.id.edit_game_pin2);
         mGamePin = editGamePin.getText().toString();
 
@@ -162,7 +161,7 @@ public class BtGameConfigurationClientActivity extends AppCompatActivity {
 
     private void createInvalidPinDialog() {
 
-        // Build an alert dialog using the title and message
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("")
                 .setMessage("We didn't recognize that game PIN. \nPlease try again.")
@@ -170,7 +169,7 @@ public class BtGameConfigurationClientActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {}
                 });
 
-        // Get the AlertDialog from create() and show it
+
         AlertDialog dialog = builder.create();
         dialog.show();
     }
