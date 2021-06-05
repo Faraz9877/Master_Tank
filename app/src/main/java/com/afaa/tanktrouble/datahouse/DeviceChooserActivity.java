@@ -114,11 +114,11 @@ public class DeviceChooserActivity extends AppCompatActivity {
                             if (btService.isServer()) {
                                 GameData.getInstance().setServer(true);
                                 startActivity(new Intent(DeviceChooserActivity.this,
-                                        BattleActivity.class));
+                                        BtGameConfigurationServerActivity.class));
                             } else {
                                 GameData.getInstance().setServer(false);
                                 startActivity(new Intent(DeviceChooserActivity.this,
-                                        BattleActivity.class));
+                                        BtGameConfigurationClientActivity.class));
                             }
                             DeviceChooserActivity.this.finish();
                         }
