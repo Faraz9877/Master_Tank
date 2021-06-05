@@ -27,6 +27,9 @@ public class BtGameConfigurationClientActivity extends AppCompatActivity {
     String mGamePin;
     boolean mWaitActivityStarting;
 
+    private BluetoothService btService;
+    private BluetoothService.MessageChannel messageChannel;
+
     private boolean shouldStop = true;
 
     @Override
@@ -42,10 +45,6 @@ public class BtGameConfigurationClientActivity extends AppCompatActivity {
         bindService(btServiceIntent, connection, Context.BIND_AUTO_CREATE);
     }
 
-    private BluetoothService btService;
-
-    private BluetoothService.MessageChannel messageChannel;
-
 
     private static long fromByteArray(byte[] array) {
         long result = 0;
@@ -55,12 +54,6 @@ public class BtGameConfigurationClientActivity extends AppCompatActivity {
         }
         return result;
     }
-
-//        ByteBuffer buffer = ByteBuffer.allocate(8);
-//        buffer.put(bytes);
-//        buffer.flip();
-//        return buffer.getLong();
-//    }
 
     private final ServiceConnection connection = new ServiceConnection() {
         @Override
