@@ -61,7 +61,7 @@ public class DataProtocol {
         }
 
 
-        if(cannonballs != null) {
+        if(cannonballs != null && cannonballs.size() > 0) {
             token.append("C:");
             for(int i = 0; i < cannonballs.size(); i++)
             {
@@ -124,7 +124,7 @@ public class DataProtocol {
         }
 
 
-        if(cannonballs != null) {
+        if(cannonballs != null && cannonballs.size() > 0) {
             token.append("C:");
             for(int i = 0; i < cannonballs.size(); i++)
             {
@@ -240,11 +240,11 @@ public class DataProtocol {
             for(int i = CsIndex + 2; i < token.indexOf(";", CsIndex) + 1; i++) {
                 if(token.charAt(i) == ',' || token.charAt(i) == ';') {
                     if(varCounter == 0) {
-                        x = Math.round(Float.parseFloat(cursor.toString()));
+                        x = Integer.parseInt(cursor.toString());
                         varCounter ++;
                     }
                     else if(varCounter == 1) {
-                        y = Math.round(Float.parseFloat(cursor.toString()));
+                        y = Integer.parseInt(cursor.toString());
                         varCounter ++;
                     }
                     else if(varCounter == 2) {
@@ -352,11 +352,11 @@ public class DataProtocol {
             for(int i = CsIndex + 2; i < token.indexOf(";", CsIndex) + 1; i++) {
                 if(token.charAt(i) == ',' || token.charAt(i) == ';') {
                     if(varCounter == 0) {
-                        x = Math.round(Float.parseFloat(cursor.toString()));
+                        x = Integer.parseInt(cursor.toString());
                         varCounter ++;
                     }
                     else if(varCounter == 1) {
-                        y = Math.round(Float.parseFloat(cursor.toString()));
+                        y = Integer.parseInt(cursor.toString());
                         varCounter ++;
                     }
                     else if(varCounter == 2) {

@@ -22,7 +22,8 @@ public class CannonballSet {
 
 
     public void addCannonball(Cannonball cannonball) {
-        mCannonballSet.put(cannonball.getUUID(), cannonball);
+        if(mCannonballSet.get(cannonball.getUUID()) == null)
+            mCannonballSet.put(cannonball.getUUID(), cannonball);
     }
 
     public int getCannonballShooter(int uuid) {
