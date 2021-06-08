@@ -58,7 +58,7 @@ public class BtGameConfigurationServerActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             String data = new String(buffer);
-//                            Log.d(TAG, "BtServer Message Process: " + data);
+                            Log.d(TAG, "BtServer Message Process: " + data);
                             DataProtocol.detokenizeGameData(data);
                         }
                     });
@@ -111,7 +111,6 @@ public class BtGameConfigurationServerActivity extends AppCompatActivity {
     @Override
     protected void onRestart(){
         super.onRestart();
-
     }
 
     @Override
@@ -152,13 +151,11 @@ public class BtGameConfigurationServerActivity extends AppCompatActivity {
         textViewGamePin.setText(textGamePin);
 
         GameData.getInstance().setGamePin(mGamePin);
-        GameData.getInstance().addPlayer(mUserId, 0);
-        GameData.getInstance().sync(11110, true);
+        GameData.getInstance().addPlayer(0, mUserId);
+        GameData.getInstance().sync(10000, false);
 
         if (mUserId != null && mUserId.length() > 0) {
-
             onUniqueRandomPinCreated();
-
 
             TextView textPlayersReady = findViewById(R.id.text_players_ready2);
             String newPlayersReadyText = "1 Player Ready";
@@ -173,10 +170,8 @@ public class BtGameConfigurationServerActivity extends AppCompatActivity {
             startActivity(new Intent(this, MainActivity.class));
         }
 
-
         TextView textPlayersReady = findViewById(R.id.text_players_ready2);
         int numPlayers = GameData.getInstance().getPlayerIDs().size();
-
 
         if (numPlayers == 1) {
             String newPlayersReadyText = "1 Player Ready";
@@ -190,8 +185,9 @@ public class BtGameConfigurationServerActivity extends AppCompatActivity {
     public void onClickStartGame(View view) {
         mBattleActivityStarting = true;
         GameData.getInstance().setStatus(1);
+        GameData.getInstance().addPeerPlayers();
+        GameData.getInstance().sync(1111, false);
         Intent intent = new Intent(getApplicationContext(), BattleActivity.class);
-        intent.putExtra(GAME_PIN_KEY, mGamePin);
         startActivity(intent);
     }
 
@@ -220,8 +216,6 @@ public class BtGameConfigurationServerActivity extends AppCompatActivity {
     }
 
     public void launchGame() {
-
-
         System.out.println("ready to launch");
     }
 }

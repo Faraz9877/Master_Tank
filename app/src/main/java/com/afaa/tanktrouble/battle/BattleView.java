@@ -127,7 +127,6 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
             retry = false;
         }
 
-
         GameData.getInstance().sync(1111, false);
 //        removeGame();
     }
@@ -141,9 +140,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         if(GameData.getInstance().getThisPlayer() == 0) {
             drawFireButton(canvas);
             drawJoystick(canvas);
-
         }
-
 
         if (mKillingCannonball == 0 && GameData.getInstance().getThisPlayer() == 0) {
 
@@ -153,13 +150,9 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
                 mUserTank.respawn();
             }
 
-
             GameData.getInstance().getCannonballSet().draw(canvas);
             mKillingCannonball = GameData.getInstance().getCannonballSet().updateAndDetectUserCollision(mUserTank);
         } else {
-
-
-
             if (mUserTank != null && mUserTank.isAlive() && GameData.getInstance().getThisPlayer() == 0) {
                 updateUserTank();
                 mUserTank.draw(canvas);
@@ -167,13 +160,10 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
                 mExplosionAnimations.add(new ExplosionAnimation(mUserTank));
             }
 
-
-
             GameData.getInstance().getCannonballSet().updateAndDetectUserCollision(mUserTank);
             GameData.getInstance().getCannonballSet().draw(canvas);
             mKillingCannonball = 0;
         }
-
 
         for (OpponentTank opponentTank : mOpponentTanks.values()) {
             if (opponentTank != null && opponentTank.isAlive() && GameData.getInstance().getThisPlayer() == 1) {
@@ -181,15 +171,15 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
             }
         }
 
-        GameData.getInstance().sync(1111, false);
+        GameData.getInstance().sync(1011, true);
 
-        for(int i = 0; i < GameData.getInstance().getPlayerPositions().size(); i++) {
+//        for(int i = 0; i < GameData.getInstance().getPlayerPositions().size(); i++) {
 //            Log.d(TAG, "PlayerID: " + GameData.getInstance().getPlayerIDs().get(i));
 //            Log.d(TAG, "Player Position " + i + " : " +
 //                    GameData.getInstance().getPlayerPositions().get(i).x + " " +
 //                    GameData.getInstance().getPlayerPositions().get(i).y + " " +
 //                    GameData.getInstance().getPlayerPositions().get(i).deg);
-        }
+//        }
 
         drawExplosions(canvas);
 //        addEnteringTanks(mActivity);

@@ -103,7 +103,7 @@ public class HostActivity extends AppCompatActivity {
         textViewGamePin.setText(textGamePin);
 
         GameData.getInstance().setGamePin(mGamePin);
-        GameData.getInstance().addPlayer(mUserId, 0);
+        GameData.getInstance().addPlayer(0, mUserId);
 
         if (mUserId != null && mUserId.length() > 0) {
 

@@ -28,13 +28,10 @@ public class BattleActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         battleView = new BattleView(this);
         setContentView(battleView);
 
         bindService(new Intent(this, BluetoothService.class), connection, Context.BIND_AUTO_CREATE);
-
-
     }
 
     @Override
@@ -87,17 +84,10 @@ public class BattleActivity extends AppCompatActivity {
         startActivity( new Intent(this, MainActivity.class));
     }
 
-
     private void validateGame() {
-
-
-
         if (GameData.getInstance().isPlayerInGame()) {
-
-
             return;
         }
-
 
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
     }
@@ -131,7 +121,7 @@ public class BattleActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             String data = new String(buffer);
-//                            Log.d(TAG, "Battle Message Process: " + data);
+                            Log.d(TAG, "Battle Message Process: " + data);
                             DataProtocol.detokenizeGameData(data);
                         }
                     });

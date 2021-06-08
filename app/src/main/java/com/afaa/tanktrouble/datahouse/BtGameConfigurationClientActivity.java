@@ -23,7 +23,7 @@ public class BtGameConfigurationClientActivity extends AppCompatActivity {
 
     private static final String TAG = "ConfigurationClient";
 
-    String mUserId;
+    String mUsername;
     String mGamePin;
     boolean mWaitActivityStarting;
 
@@ -37,7 +37,7 @@ public class BtGameConfigurationClientActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bt_game_configuration_client);
 
-        mUserId = UserUtils.getUserId();
+        mUsername = UserUtils.getUserId();
         mWaitActivityStarting = false;
 
         Intent btServiceIntent = new Intent(this, BluetoothService.class);
@@ -70,7 +70,7 @@ public class BtGameConfigurationClientActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             String data = new String(buffer);
-//                            Log.d(TAG, "BtClient Message Process: " + data);
+                            Log.d(TAG, "BtClient Message Process: " + data);
                             DataProtocol.detokenizeGameData(data);
                         }
                     });
@@ -146,22 +146,37 @@ public class BtGameConfigurationClientActivity extends AppCompatActivity {
     }
 
     private void joinGame() {
-        GameData.getInstance().addPlayer(mUserId, 1);
-        GameData.getInstance().sync(1100, true);
+        GameData.getInstance().addPlayerID(1);
+        GameData.getInstance().addPlayerUsername(1, mUsername);
+        GameData.getInstance().setThisPlayer(1);
+//        GameData.getInstance().addPlayer(1, mUsername);
+        GameData.getInstance().sync(2, true);
+        createWaitDialog();
+        // TODO: Create a Listener for when the client receives info from server
+        // while (GameData.getInstance().getPlayerPositions().size() < 2);
         Intent intent = new Intent(getApplicationContext(), BattleActivity.class);
         startActivity(intent);
     }
 
+    private void createWaitDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("")
+                .setMessage("Waiting for the game to start!")
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {}
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
     private void createInvalidPinDialog() {
-
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("")
                 .setMessage("We didn't recognize that game PIN. \nPlease try again.")
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {}
                 });
-
 
         AlertDialog dialog = builder.create();
         dialog.show();
