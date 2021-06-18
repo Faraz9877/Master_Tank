@@ -12,8 +12,9 @@ import java.util.HashMap;
 public class GameData {
     private static GameData instance = null;
 
-    private static final int SERVER_ID = 1;
     private static final int CLIENT_ID = 0;
+    private static final int SERVER_ID = 1;
+
 
     private ArrayList<Integer> playerIDs;
     private String userUserName;

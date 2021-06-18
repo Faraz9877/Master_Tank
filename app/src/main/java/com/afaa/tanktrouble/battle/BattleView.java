@@ -38,7 +38,6 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
     private OpponentTank mOpponentTank;
     private HashSet<ExplosionAnimation> mExplosionAnimations;
     private Paint mJoystickColor;
-    private boolean[] mUnusedTankColors;
     private int mKillingCannonball;
     private int mJoystickBaseCenterX, mJoystickBaseCenterY;
     private int mFireButtonOffsetX, mFireButtonOffsetY;
@@ -73,7 +72,6 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         mActivity = activity;
         UserUtils.initialize(activity);
         ExplosionAnimation.initialize(activity);
-        mUnusedTankColors = new boolean[]{true, true, true, true};
         mJoystickColor = TankColor.BLUE.getPaint();
         mKillingCannonball = 0;
         mExplosionAnimations = new HashSet<>();
@@ -138,7 +136,8 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
 
             GameData.getInstance().getCannonballSet().draw(canvas);
             mKillingCannonball = GameData.getInstance().getCannonballSet().updateAndDetectUserCollision(mUserTank);
-        } else {
+        }
+        else {
             if (mUserTank != null && mUserTank.isAlive()) {
                 updateUserTank();
                 mUserTank.draw(canvas);
@@ -156,7 +155,6 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         }
 
         GameData.getInstance().sync(1111);
-
         drawExplosions(canvas);
         mOpponentTank.updatePosition(Math.round(GameData.getInstance().getOpponentPosition().x),
                 Math.round(GameData.getInstance().getOpponentPosition().y),
@@ -223,11 +221,13 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
     }
 
     private void addEnteringTanks(final Activity activity) {
+        final int BLUE_INDEX_JOYSTICK_COLOR = 0;
+        mJoystickColor = TankColor.values()[BLUE_INDEX_JOYSTICK_COLOR].getPaint();
         if (mUserTank == null) {
             TankColor tankColor = TankColor.values()[GameData.getInstance().getUserId()];
             mUserTank = new UserTank(activity, tankColor);
             mUserDeg = mUserTank.getDegrees();
-            mJoystickColor = tankColor.getPaint();
+
         }
         if (mOpponentTank == null) {
             TankColor tankColor = TankColor.values()[GameData.getInstance().getOpponentId()];
@@ -260,7 +260,6 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         mFireButtonDiameter = Math.round(FIRE_BUTTON_DIAMETER_CONST * controlHeight);
         mFireButtonPressedDiameter = Math.round(FIRE_BUTTON_PRESSED_DIAMETER_CONST * controlHeight);
 
-
         if (mFireButtonDiameter > 0) {
             mFireBitmap = Bitmap.createScaledBitmap(
                     BitmapFactory.decodeResource (activity.getResources(), R.drawable.fire_button),
@@ -269,10 +268,8 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
                     mFireButtonPressedDiameter, mFireButtonPressedDiameter, false);
         }
 
-
         int controlXMargin = UserUtils.scaleGraphicsInt(CONTROL_MARGIN_X_CONST);
         int controlYMargin = (int) (controlHeight - 2*mJoystickBaseRadius) / 2;
-
 
         mJoystickBaseCenterX = controlXMargin + mJoystickBaseRadius;
         mJoystickBaseCenterY = (int) screenHeight - controlYMargin - mJoystickBaseRadius;
@@ -280,8 +277,6 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         mJoystickY = mJoystickBaseCenterY;
         mFireButtonOffsetX = (int)(screenWidth - 1.5*controlXMargin - mFireButtonDiameter);
         mFireButtonOffsetY =  mJoystickBaseCenterY - mFireButtonDiameter/2;
-
-
         mJoystickPointerId = MotionEvent.INVALID_POINTER_ID;
         mFireButtonPointerId = MotionEvent.INVALID_POINTER_ID;
     }
@@ -409,21 +404,17 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
     }
 
     private void updateFireButtonData(int pointerX, int pointerY, int pointerId) {
-
         int deltaX = pointerX - (mFireButtonOffsetX + mFireButtonDiameter/2);
         int deltaY = pointerY - (mFireButtonOffsetY + mFireButtonDiameter/2);
         float displacement = calcDistance(deltaX, deltaY);
 
-
         if (displacement <= mFireButtonDiameter) {
-
             if (!mFireButtonPressed && GameData.getInstance().getUserAliveBulletsCount() < MAX_USER_CANNONBALLS) {
                 Cannonball cannonball = mUserTank.fire();
                 GameData.getInstance().incrementUserAliveBulletsCount();
                 GameData.getInstance().getCannonballSet().addCannonball(cannonball);
                 GameData.getInstance().getNewCannonballs().add(cannonball);
                 shootSoundPool.play(shootSoundId, 1, 1, 0, 0, 2);
-
             }
             mFireButtonPressed = true;
             mFireButtonPointerId = pointerId;
@@ -434,37 +425,20 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
     }
 
     private void removeGame() {
-
-
         if (GameData.getInstance().getPlayerIDs().size() == 0) {
             GameData.getInstance().reset();
         }
     }
-
-    private TankColor getUnusedTankColor() {
-        TankColor tankColor = TankColor.ORANGE;
-
-        for (int i = 0; i < NUM_TANK_COLORS; i++) {
-            if (mUnusedTankColors[i]) {
-                tankColor = TankColor.values()[i];
-                mUnusedTankColors[i] = false;
-                break;
-            }
-        }
-        return tankColor;
-    }
-
 
     private float calcDegrees(int x, int y) {
 
         float displacement = calcDistance(x, y);
         float angle = (float) Math.acos(x/displacement);
 
-
-
         if (y >= 0) {
             return (float) Math.toDegrees(angle);
-        } else {
+        }
+        else {
             return (float) -Math.toDegrees(angle);
         }
     }

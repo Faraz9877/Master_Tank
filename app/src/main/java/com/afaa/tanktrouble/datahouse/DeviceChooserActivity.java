@@ -115,7 +115,6 @@ public class DeviceChooserActivity extends AppCompatActivity {
                                 startActivity(new Intent(DeviceChooserActivity.this,
                                         BattleActivity.class));
                             } else {
-                                GameData.getInstance().setServer(false);
                                 startActivity(new Intent(DeviceChooserActivity.this,
                                         BattleActivity.class));
                             }

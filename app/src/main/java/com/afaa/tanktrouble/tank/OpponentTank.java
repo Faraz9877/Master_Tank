@@ -13,7 +13,6 @@ public class OpponentTank extends Tank {
     private static final String TAG = "WL/OpponentTank";
     private int opponentID;
 
-
     public OpponentTank(Activity activity, int _opponentId, TankColor tankColor) {
         mWidth = Math.max(UserUtils.scaleGraphicsInt(TANK_WIDTH_CONST), 1);
         mHeight = Math.max(UserUtils.scaleGraphicsInt(TANK_HEIGHT_CONST), 1);
