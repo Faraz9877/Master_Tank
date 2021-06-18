@@ -26,18 +26,11 @@ public class UserUtils {
     private static final String TAG = "WL/UserUtils";
 
     public static void initialize(Activity activity) {
-//        Log.d(TAG, "initialize UserUtils");
-
-
         sAdjectiveList = activity.getResources().getStringArray(R.array.adjective_list);
         sNounList = activity.getResources().getStringArray(R.array.noun_list);
-
-
         sSharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
         sUserId = sSharedPref.getString(USER_ID_KEY, "");
         sUsername = sSharedPref.getString(USERNAME_KEY, "");
-
-
         setScreenSize(activity);
         setUsername(sUsername);
     }
@@ -82,12 +75,10 @@ public class UserUtils {
 
 
     private static void setFirstUsername(final String firstUsername) {
-        sUserId = Integer.toString(GameData.getInstance().getThisPlayer());
+        sUserId = Integer.toString(GameData.getInstance().getUserId());
         sUsername = firstUsername;
         putStringInPrefs(USER_ID_KEY, sUserId);
         putStringInPrefs(USERNAME_KEY, firstUsername);
-//        Log.d(TAG, "added new user with sUserId=" + sUserId
-//                + " and sUsername=" + sUsername);
     }
 
 

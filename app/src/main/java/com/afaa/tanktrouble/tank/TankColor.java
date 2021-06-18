@@ -77,4 +77,5 @@ public enum TankColor {
 
         return index;
     }
+
 }

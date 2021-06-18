@@ -35,7 +35,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
     private Bitmap mFireBitmap, mFirePressedBitmap;
     private BattleThread mBattleThread;
     private UserTank mUserTank;
-    private HashMap<Integer, OpponentTank> mOpponentTanks;
+    private OpponentTank mOpponentTank;
     private HashSet<ExplosionAnimation> mExplosionAnimations;
     private Paint mJoystickColor;
     private boolean[] mUnusedTankColors;
@@ -70,26 +70,15 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
 
     public BattleView(Activity activity) {
         super(activity);
-
         mActivity = activity;
-
         UserUtils.initialize(activity);
         ExplosionAnimation.initialize(activity);
-
-
         mUnusedTankColors = new boolean[]{true, true, true, true};
-        mOpponentTanks = new HashMap<>();
         mJoystickColor = TankColor.BLUE.getPaint();
-
-
         mKillingCannonball = 0;
         mExplosionAnimations = new HashSet<>();
-
         addEnteringTanks(activity);
-
-
         getHolder().addCallback(this);
-
         mBattleThread = new BattleThread(getHolder(), this);
         setFocusable(true);
         setControlGraphicsData(activity);
@@ -128,120 +117,80 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         }
 
 
-        GameData.getInstance().sync(1111, false);
+        GameData.getInstance().sync(1111);
 //        removeGame();
     }
-
 
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
         canvas.drawColor(Color.WHITE);
         MapUtils.drawMap(canvas);
-        if(GameData.getInstance().getThisPlayer() == 0) {
-            drawFireButton(canvas);
-            drawJoystick(canvas);
+        drawFireButton(canvas);
+        drawJoystick(canvas);
 
-        }
-
-
-        if (mKillingCannonball == 0 && GameData.getInstance().getThisPlayer() == 0) {
-
-            if (mUserTank != null && GameData.getInstance().getThisPlayer() == 0) {
+        if (mKillingCannonball == 0) {
+            if (mUserTank != null) {
                 updateUserTank();
                 mUserTank.draw(canvas);
                 mUserTank.respawn();
             }
 
-
             GameData.getInstance().getCannonballSet().draw(canvas);
             mKillingCannonball = GameData.getInstance().getCannonballSet().updateAndDetectUserCollision(mUserTank);
         } else {
-
-
-
-            if (mUserTank != null && mUserTank.isAlive() && GameData.getInstance().getThisPlayer() == 0) {
+            if (mUserTank != null && mUserTank.isAlive()) {
                 updateUserTank();
                 mUserTank.draw(canvas);
                 mUserTank.kill(mKillingCannonball);
                 mExplosionAnimations.add(new ExplosionAnimation(mUserTank));
             }
 
-
-
             GameData.getInstance().getCannonballSet().updateAndDetectUserCollision(mUserTank);
             GameData.getInstance().getCannonballSet().draw(canvas);
             mKillingCannonball = 0;
         }
 
-
-        for (OpponentTank opponentTank : mOpponentTanks.values()) {
-            if (opponentTank != null && opponentTank.isAlive() && GameData.getInstance().getThisPlayer() == 1) {
-                opponentTank.draw(canvas);
-            }
+        if (mOpponentTank != null && mOpponentTank.isAlive()) {
+            mOpponentTank.draw(canvas);
         }
 
-        GameData.getInstance().sync(1111, false);
-
-        for(int i = 0; i < GameData.getInstance().getPlayerPositions().size(); i++) {
-//            Log.d(TAG, "PlayerID: " + GameData.getInstance().getPlayerIDs().get(i));
-//            Log.d(TAG, "Player Position " + i + " : " +
-//                    GameData.getInstance().getPlayerPositions().get(i).x + " " +
-//                    GameData.getInstance().getPlayerPositions().get(i).y + " " +
-//                    GameData.getInstance().getPlayerPositions().get(i).deg);
-        }
+        GameData.getInstance().sync(1111);
 
         drawExplosions(canvas);
-//        addEnteringTanks(mActivity);
-        mUserTank.updatePosition(Math.round(GameData.getInstance().getPlayerPositions().get(0).x),
-                Math.round(GameData.getInstance().getPlayerPositions().get(0).y),
-                GameData.getInstance().getPlayerPositions().get(0).deg);
-//        mUserTank.draw(canvas);
+        mOpponentTank.updatePosition(Math.round(GameData.getInstance().getOpponentPosition().x),
+                Math.round(GameData.getInstance().getOpponentPosition().y),
+                GameData.getInstance().getOpponentPosition().deg);
+        mOpponentTank.draw(canvas);
         drawScores(canvas);
     }
 
-
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-
         int pointerIndex = motionEvent.getActionIndex();
         int pointerId = motionEvent.getPointerId(pointerIndex);
-
 
         int pointerX = (int) motionEvent.getX(pointerIndex);
         int pointerY = (int) motionEvent.getY(pointerIndex);
 
-
         int action = motionEvent.getActionMasked();
-
-
         switch (action) {
-
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_POINTER_DOWN:
-
-
                 if (mJoystickPointerId == MotionEvent.INVALID_POINTER_ID) {
                     updateJoystickData(pointerX, pointerY, pointerId, action);
                 }
-
-
 
                 if (mFireButtonPointerId == MotionEvent.INVALID_POINTER_ID) {
                     updateFireButtonData(pointerX, pointerY, pointerId);
                 }
                 break;
 
-
             case MotionEvent.ACTION_MOVE:
-
-
                 for (int index = 0; index < motionEvent.getPointerCount(); index++) {
                     int id = motionEvent.getPointerId(index);
                     int x = (int) motionEvent.getX(index);
                     int y = (int) motionEvent.getY(index);
-
-
 
                     if (id == mJoystickPointerId) {
                         updateJoystickData(x, y, id, action);
@@ -253,12 +202,9 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
                 }
                 break;
 
-
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_POINTER_UP:
             case MotionEvent.ACTION_CANCEL:
-
-
                 if (pointerId == mJoystickPointerId) {
                     mJoystickX = mJoystickBaseCenterX;
                     mJoystickY = mJoystickBaseCenterY;
@@ -276,60 +222,24 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         return true;
     }
 
-
     private void addEnteringTanks(final Activity activity) {
-        int userId = GameData.getInstance().getThisPlayer();
-
-
-        Log.d("AddEnteringTanks", "This is addEnteringTanks. Tanks: " + GameData.getInstance().getPlayerIDs().size());
-        for (int playerID : GameData.getInstance().getPlayerIDs()) {
-
-            if (playerID == userId && mUserTank == null && GameData.getInstance().getThisPlayer() == 0) {
-
-                TankColor tankColor = getUnusedTankColor();
-                mUserTank = new UserTank(activity, tankColor);
-                mUserDeg = mUserTank.getDegrees();
-                mJoystickColor = tankColor.getPaint();
-            } else if (playerID != userId && !mOpponentTanks.containsKey(playerID)
-                    && GameData.getInstance().getThisPlayer() == 1) {
-
-                TankColor tankColor = getUnusedTankColor();
-                Log.d(TAG, "addEnteringTanks: HERE IS SUPPOSED TO ADD ADVERSARY TANKS!");
-                mOpponentTanks.put(playerID, new OpponentTank(activity, playerID, tankColor));
-//                        mCannonballSet.addOpponent(playerID);
-                addDeathDataRefListener(playerID);
-                removeExitingTanks(playerID);
-            }
+        if (mUserTank == null) {
+            TankColor tankColor = TankColor.values()[GameData.getInstance().getUserId()];
+            mUserTank = new UserTank(activity, tankColor);
+            mUserDeg = mUserTank.getDegrees();
+            mJoystickColor = tankColor.getPaint();
+        }
+        if (mOpponentTank == null) {
+            TankColor tankColor = TankColor.values()[GameData.getInstance().getOpponentId()];
+            mOpponentTank = new OpponentTank(activity,
+                    GameData.getInstance().getOpponentId(), tankColor);
+            addDeathDataRefListener(GameData.getInstance().getOpponentId());
         }
     }
-
-
-    private void removeExitingTanks(final int opponentId){
-
-
-
-        if (GameData.getInstance().getPlayerIDs().contains(opponentId)) {
-            return;
-        }
-
-
-        OpponentTank opponentTank = mOpponentTanks.get(opponentId);
-
-        if (opponentTank != null) {
-            mUnusedTankColors[opponentTank.getColorIndex()] = true;
-            mOpponentTanks.remove(opponentId);
-        }
-    }
-
 
     private void addDeathDataRefListener(final int opponentId) {
-
-
         Integer killingCannonball = 0;
-
-
-        OpponentTank opponentTank = mOpponentTanks.get(opponentId);
-
+        OpponentTank opponentTank = mOpponentTank;
         if (killingCannonball != null && opponentTank != null) {
             GameData.getInstance().getCannonballSet().remove(killingCannonball);
             mExplosionAnimations.add(new ExplosionAnimation(opponentTank));
@@ -340,14 +250,10 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         }
     }
 
-
     private void setControlGraphicsData(Activity activity) {
-
         float screenHeight = UserUtils.getScreenHeight();
         float screenWidth = UserUtils.getScreenWidth();
         float controlHeight = screenHeight - UserUtils.scaleGraphicsInt(TOP_Y_CONST) - screenWidth;
-
-
         mJoystickBaseRadius = Math.round(JOYSTICK_BASE_RADIUS_CONST * controlHeight);
         mJoystickThresholdRadius = Math.round(JOYSTICK_THRESHOLD_RADIUS_CONST * controlHeight);
         mJoystickMaxDisplacement = Math.round(JOYSTICK_DISPLACEMENT_CONST * mJoystickBaseRadius);
@@ -380,10 +286,8 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         mFireButtonPointerId = MotionEvent.INVALID_POINTER_ID;
     }
 
-
     @SuppressWarnings("UnnecessaryReturnStatement")
     private void updateUserTank() {
-
         int deltaX = mJoystickX-mJoystickBaseCenterX;
         int deltaY = mJoystickY-mJoystickBaseCenterY;
 
@@ -394,9 +298,9 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
             return;
         }
         else if (velocityX == 0 && velocityY == 0) {
-            mUserTank.updatePosition(Math.round(GameData.getInstance().getPlayerPositions().get(0).x),
-                    Math.round(GameData.getInstance().getPlayerPositions().get(0).y),
-                    GameData.getInstance().getPlayerPositions().get(0).deg);
+            mUserTank.updatePosition(Math.round(GameData.getInstance().getUserPosition().x),
+                    Math.round(GameData.getInstance().getUserPosition().y),
+                    GameData.getInstance().getUserPosition().deg);
         }
         else {
             mUserDeg = calcDegrees(deltaX, deltaY);
@@ -404,11 +308,8 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         }
     }
 
-
     private void drawJoystick(Canvas canvas) {
         int controlRadius = mJoystickBaseRadius / 2;
-
-
         Paint colors = new Paint();
         colors.setARGB(50, 50, 50, 50);
         canvas.drawCircle(mJoystickBaseCenterX, mJoystickBaseCenterY,
@@ -418,10 +319,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         canvas.drawCircle(mJoystickX, mJoystickY, controlRadius, mJoystickColor);
     }
 
-
     private void drawFireButton(Canvas canvas) {
-
-
         if (mFireButtonPressed) {
             float x = mFireButtonOffsetX + (mFireButtonDiameter-mFireButtonPressedDiameter)/2f;
             float y = mJoystickBaseCenterY - mFireButtonPressedDiameter/2f;
@@ -430,7 +328,6 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
             canvas.drawBitmap(mFireBitmap, mFireButtonOffsetX, mFireButtonOffsetY, null);
         }
     }
-
 
     private void drawExplosions(Canvas canvas) {
         Iterator<ExplosionAnimation> iterator = mExplosionAnimations.iterator();
@@ -447,15 +344,12 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         }
     }
 
-
     private void drawScores(Canvas canvas) {
         if (mUserTank != null) {
 
             String score = Integer.toString(mUserTank.getScore());
-
-
             int screenWidth = UserUtils.getScreenWidth();
-            int numTanks = mOpponentTanks.size() + 1;
+            int numTanks = GameData.getInstance().getPlayerIDs().size();
             int tankWidth = mUserTank.getWidth();            
             int marginX = (screenWidth - numTanks*tankWidth) / (numTanks + 1);
             int marginY = UserUtils.scaleGraphicsInt(SCORE_MARGIN_Y_CONST);
@@ -473,14 +367,12 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
 
             canvas.drawBitmap(mUserTank.getBitmap(), marginX, marginY, null);
             canvas.drawText(score, marginX  + tankWidth / 2f, textY, textPaint);
-
-
-            for (OpponentTank opponentTank : mOpponentTanks.values()) {
+            if (mOpponentTank != null) {
                 if (tankIndex < NUM_TANK_COLORS) {
 
-                    Bitmap bitmap = opponentTank.getBitmap();
+                    Bitmap bitmap = mOpponentTank.getBitmap();
                     int offsetX = marginX + tankIndex * (tankWidth + marginX);
-                    score = Integer.toString(opponentTank.getScore());
+                    score = Integer.toString(mOpponentTank.getScore());
                     tankIndex++;
 
 
@@ -490,7 +382,6 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
             }
         }
     }
-
 
     private void updateJoystickData(int pointerX, int pointerY, int pointerId, int action) {
 
@@ -517,7 +408,6 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         }
     }
 
-
     private void updateFireButtonData(int pointerX, int pointerY, int pointerId) {
 
         int deltaX = pointerX - (mFireButtonOffsetX + mFireButtonDiameter/2);
@@ -527,11 +417,9 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
 
         if (displacement <= mFireButtonDiameter) {
 
-
-
-            if (!mFireButtonPressed && GameData.getInstance().getPlayerAliveBullets() < MAX_USER_CANNONBALLS) {
+            if (!mFireButtonPressed && GameData.getInstance().getUserAliveBulletsCount() < MAX_USER_CANNONBALLS) {
                 Cannonball cannonball = mUserTank.fire();
-                GameData.getInstance().incrementUserAliveBullets();
+                GameData.getInstance().incrementUserAliveBulletsCount();
                 GameData.getInstance().getCannonballSet().addCannonball(cannonball);
                 GameData.getInstance().getNewCannonballs().add(cannonball);
                 shootSoundPool.play(shootSoundId, 1, 1, 0, 0, 2);
@@ -545,7 +433,6 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         }
     }
 
-
     private void removeGame() {
 
 
@@ -553,7 +440,6 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
             GameData.getInstance().reset();
         }
     }
-
 
     private TankColor getUnusedTankColor() {
         TankColor tankColor = TankColor.ORANGE;
@@ -565,7 +451,6 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
                 break;
             }
         }
-
         return tankColor;
     }
 
@@ -583,7 +468,6 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
             return (float) -Math.toDegrees(angle);
         }
     }
-
 
     private float calcDistance (int x, int y) {
         return (float) Math.sqrt(x*x + y*y);

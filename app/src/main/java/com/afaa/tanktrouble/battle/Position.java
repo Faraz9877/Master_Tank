@@ -28,4 +28,13 @@ public class Position {
     public Position scalePosition() {
         return new Position( (int) (x * SCREEN_SCALE), (int) (y * SCREEN_SCALE), deg);
     }
+
+    @Override
+    public String toString() {
+        return "Position{" +
+                "x=" + x +
+                ", y=" + y +
+                ", deg=" + deg +
+                '}';
+    }
 }

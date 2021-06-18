@@ -46,7 +46,6 @@ public class CannonballSet {
         long nowTime = System.currentTimeMillis();
         ArrayList<Integer> keysToRemove =  new ArrayList<>();
 
-
         for(int i = 0; i < mCannonballSet.size(); i++) {
             int key = mCannonballSet.keyAt(i);
 
@@ -67,7 +66,7 @@ public class CannonballSet {
         }
 
         for (int i = 0; i < keysToRemove.size(); i++) {
-            GameData.getInstance().decrementUserAliveBullets();
+            GameData.getInstance().decrementUserAliveBulletsCount();
             mCannonballSet.remove(keysToRemove.get(i));
         }
 

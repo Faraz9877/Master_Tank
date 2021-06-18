@@ -14,7 +14,6 @@ import com.afaa.tanktrouble.MainActivity;
 import com.afaa.tanktrouble.datahouse.BluetoothService;
 import com.afaa.tanktrouble.datahouse.DataProtocol;
 import com.afaa.tanktrouble.datahouse.GameData;
-import com.afaa.tanktrouble.match.WaitActivity;
 
 public class BattleActivity extends AppCompatActivity {
 
@@ -27,14 +26,9 @@ public class BattleActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         battleView = new BattleView(this);
         setContentView(battleView);
-
         bindService(new Intent(this, BluetoothService.class), connection, Context.BIND_AUTO_CREATE);
-
-
     }
 
     @Override
@@ -50,20 +44,14 @@ public class BattleActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-//        Log.d(TAG, "onPause");
-//        Log.d(TAG, "isFinishing()==" + isFinishing());
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-
         if (btService != null) {
             btService.unregisterActivity();
         }
-
-//        Log.d(TAG, "onStop");
-//        Log.d(TAG, "isFinishing()==" + isFinishing());
     }
 
     @Override
@@ -78,15 +66,12 @@ public class BattleActivity extends AppCompatActivity {
 //            btService = null;
 //        }
         unbindService(connection);
-
-//        Log.d(TAG, "onDestroy");
     }
 
     @Override
     public void onBackPressed() {
         startActivity( new Intent(this, MainActivity.class));
     }
-
 
     private void validateGame() {
 
@@ -106,7 +91,6 @@ public class BattleActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             btService = ((BluetoothService.BtBinder) service).getService();
-            btService.registerActivity(WaitActivity.class);
             GameData.getInstance().setBtService(btService);
 
             btService.setOnConnected(new BluetoothService.OnConnected() {

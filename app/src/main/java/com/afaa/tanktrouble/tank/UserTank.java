@@ -30,9 +30,9 @@ public class UserTank extends Tank {
         mScore = 0;
         mIsAlive = true;
 
-        mX = Math.round(GameData.getInstance().getPlayerPositions().get(0).x);
-        mX = Math.round(GameData.getInstance().getPlayerPositions().get(0).y);
-        mDeg = GameData.getInstance().getPlayerPositions().get(0).deg;
+        mX = Math.round(GameData.getInstance().getUserPosition().x);
+        mX = Math.round(GameData.getInstance().getUserPosition().y);
+        mDeg = GameData.getInstance().getUserPosition().deg;
 
 
 //        {
@@ -42,7 +42,7 @@ public class UserTank extends Tank {
                         UserUtils.scaleGraphicsInt(0.9f*Constants.MAP_TOP_Y_CONST + 1));
                 mDeg = UserUtils.randomInt(-180, 180);
             } while (MapUtils.tankWallCollision(mX, mY, mDeg, mWidth, mHeight));
-            GameData.getInstance().setPlayerPosition(0, new Position(mX, mY, mDeg));
+            GameData.getInstance().setUserPosition(new Position(mX, mY, mDeg));
 //        }
     }
 
@@ -155,7 +155,7 @@ public class UserTank extends Tank {
 
         Position position = new Position(mX, mY, mDeg);
 //        position = position.standardizePosition();
-        GameData.getInstance().setPosition(position);
+        GameData.getInstance().setUserPosition(position);
         lastTime = nowTime;
     }
 
@@ -186,7 +186,7 @@ public class UserTank extends Tank {
         PointF[] tankPolygon = Tank.tankPolygon(mX, mY, mDeg, mWidth, mHeight);
 
         Cannonball c = new Cannonball((int) tankPolygon[0].x, (int) tankPolygon[0].y, mDeg,
-                UserUtils.randomInt(1, Integer.MAX_VALUE-10), GameData.getInstance().getThisPlayer());
+                UserUtils.randomInt(1, Integer.MAX_VALUE-10), GameData.getInstance().getUserId());
 
         return c;
     }

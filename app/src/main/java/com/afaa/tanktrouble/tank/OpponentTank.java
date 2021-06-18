@@ -17,15 +17,12 @@ public class OpponentTank extends Tank {
     public OpponentTank(Activity activity, int _opponentId, TankColor tankColor) {
         mWidth = Math.max(UserUtils.scaleGraphicsInt(TANK_WIDTH_CONST), 1);
         mHeight = Math.max(UserUtils.scaleGraphicsInt(TANK_HEIGHT_CONST), 1);
-
         opponentID = _opponentId;
-
         mBitmap = tankColor.getTankBitmap(activity);
         mBitmap = Bitmap.createScaledBitmap(mBitmap, mWidth, mHeight, false);
         mColorIndex = tankColor.getIndex();
         mScore = 0;
         mIsAlive = true;
-
         if (opponentID > -1) {
             addPosDataRefListeners();
 
@@ -35,12 +32,8 @@ public class OpponentTank extends Tank {
         }
     }
 
-
-
     private void addPosDataRefListeners() {
-
-        Position position = GameData.getInstance().getPlayerPosition(opponentID);
-
+        Position position = GameData.getInstance().getOpponentPosition();
         if (position != null) {
             position = position.scalePosition();
             mX = (int) position.x;

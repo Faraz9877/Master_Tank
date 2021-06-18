@@ -6,57 +6,55 @@ import com.afaa.tanktrouble.cannonball.CannonballSet;
 import com.afaa.tanktrouble.tank.UserTank;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class GameData {
     private static GameData instance = null;
 
-    ArrayList<Integer> playerIDs;
-    ArrayList<String> playerUsernames;
-    ArrayList<Position> playerPositions;
-    ArrayList<Integer> aliveBullets;
-    CannonballSet cannonballSet;
-    ArrayList<Cannonball> newCannonballs;
-    String gamePin;
-    int thisPlayer;
+    private static final int SERVER_ID = 1;
+    private static final int CLIENT_ID = 0;
+
+    private ArrayList<Integer> playerIDs;
+    private String userUserName;
+    private String opponentUserName;
+    private Position userPosition;
+    private Position opponentPosition;
+    private Integer userAliveBulletsCount;
+    private Integer opponentAliveBulletsCount;
+    private CannonballSet cannonballSet;
+    private ArrayList<Cannonball> newCannonballs;
+    int userId;
+    int opponentId;
     int status;
     boolean isServer;
-
     private BluetoothService btService;
 
     private GameData() {
-        playerIDs = new ArrayList<>();
-        playerIDs.add(0);
-        playerUsernames = new ArrayList<>();
-        playerUsernames.add("King Slayer");
-        playerPositions = new ArrayList<>();
-        playerPositions.add(UserTank.getRandomInitialPosition());
-        aliveBullets = new ArrayList<>();
-        aliveBullets.add(0);
+        playerIDs = new ArrayList<>(Arrays.asList(SERVER_ID, CLIENT_ID));
+        userUserName = "";
+        opponentUserName = "";
+        userPosition = UserTank.getRandomInitialPosition();
+        opponentPosition = UserTank.getRandomInitialPosition();
+        userAliveBulletsCount = 0;
+        opponentAliveBulletsCount = 0;
         newCannonballs = new ArrayList<>();
         cannonballSet = new CannonballSet();
         status = 0;
         isServer = false;
-        thisPlayer = 0;
+        userId = CLIENT_ID;
+        opponentId = SERVER_ID;
     }
 
-    public void sync(int syncCode, boolean isSolo)
+    public void sync(int syncCode)
     {
-        if(btService == null || ! isServer)
+        if(btService == null)
             return;
-//        Log.d("Sync", "sync: btService is found!");
 
         String token;
-        token = isSolo ? DataProtocol.tokenizeSoloGameData(
-                (syncCode / 10000) % 2 == 1 ? gamePin: null,
-                playerIDs.get(thisPlayer),
-                (syncCode / 100) % 2 == 1 ? playerUsernames.get(thisPlayer): null,
-                (syncCode / 10) % 2 == 1 ? playerPositions.get(thisPlayer): null,
-                syncCode % 2 == 1 ? newCannonballs: null
-            ) : DataProtocol.tokenizeGameData(
-                (syncCode / 10000) % 2 == 1 ? gamePin: null,
-                (syncCode / 1000) % 2 == 1 ? playerIDs: null,
-                (syncCode / 100) % 2 == 1 ? playerUsernames: null,
-                (syncCode / 10) % 2 == 1 ? playerPositions: null,
+        token = DataProtocol.tokenizeGameData(
+                (syncCode / 100) % 2 == 1 ? userUserName: null,
+                (syncCode / 10) % 2 == 1 ? userPosition: null,
                 syncCode % 2 == 1 && newCannonballs.size() > 0 ? newCannonballs: null
             );
 
@@ -66,8 +64,18 @@ public class GameData {
             newCannonballs.clear();
     }
 
+    public String getOpponentUserName() {
+        return opponentUserName;
+    }
+
+    public void setOpponentUserName(String opponentUserName) {
+        this.opponentUserName = opponentUserName;
+    }
+
     public void setServer(boolean server) {
         isServer = server;
+        userId =  SERVER_ID;
+        opponentId = CLIENT_ID;
     }
 
     public boolean getServer() {
@@ -77,12 +85,7 @@ public class GameData {
     public static GameData getInstance() {
         if(instance == null)
             instance = new GameData();
-
         return instance;
-    }
-
-    public void setGamePin(String gamePin) {
-        this.gamePin = gamePin;
     }
 
     public void setStatus(int status) {
@@ -91,8 +94,12 @@ public class GameData {
 
     public void setBtService(BluetoothService btService) { this.btService = btService; }
 
-    public int getThisPlayer() {
-        return 0;
+    public int getUserId() {
+        return userId;
+    }
+
+    public int getOpponentId() {
+        return opponentId;
     }
 
     public CannonballSet getCannonballSet() {
@@ -107,93 +114,67 @@ public class GameData {
         return status;
     }
 
-    public String getGamePin() {
-        return gamePin;
+    public Position getUserPosition() {
+        return userPosition;
     }
 
-    public Position getPlayerPosition(int playerID) {
-        return playerPositions.get(0);
+    public Position getOpponentPosition() {
+        return opponentPosition;
     }
 
-    public int getPlayerAliveBullets() {
-        return aliveBullets.get(0);
+    public int getUserAliveBulletsCount() {
+        return userAliveBulletsCount;
     }
 
-    public void incrementUserAliveBullets() {
-        aliveBullets.set(thisPlayer, aliveBullets.get(0) + 1);
+    public int getOpponentAliveBulletsCount() {
+        return opponentAliveBulletsCount;
     }
 
-    public void decrementUserAliveBullets() {
-        aliveBullets.set(thisPlayer, aliveBullets.get(0) - 1);
+    public void incrementUserAliveBulletsCount() {
+        userAliveBulletsCount += 1;
     }
 
-    public void setPosition(Position position) {
-        if(thisPlayer != 0)
-            return;
-        playerPositions.set(thisPlayer, position);
+    public void decrementUserAliveBulletsCount() {
+        userAliveBulletsCount -= 1;
+    }
+    public void incrementOpponentAliveBulletsCount() {
+        opponentAliveBulletsCount += 1;
+    }
+
+    public void decrementOpponentAliveBulletsCount() {
+        opponentAliveBulletsCount -= 1;
+    }
+
+    public void setUserPosition(Position position) {
+        userPosition = position;
+    }
+    public void setOpponentPosition(Position position) {
+        opponentPosition = position;
     }
 
     public ArrayList<Integer> getPlayerIDs() {
         return playerIDs;
     }
 
-    public ArrayList<Position> getPlayerPositions() {
-        return playerPositions;
-    }
-
-    public void addPlayer(String username, int userId) {
-//        int newPlayerID = playerIDs.size();
-//        playerIDs.add(userId);
-//        playerUsernames.add(username);
-//        playerPositions.add(UserTank.getRandomInitialPosition());
-//        aliveBullets.add(0);
-//        thisPlayer = userId;
-    }
-
     public boolean isPlayerInGame() {
-        return playerIDs.contains(thisPlayer);
+        return playerIDs.contains(userId);
     }
 
     public void reset() {
         playerIDs = new ArrayList<>();
-        playerUsernames = new ArrayList<>();
-        playerPositions = new ArrayList<>();
-        aliveBullets = new ArrayList<>();
+        userUserName = "";
+        opponentUserName = "";
+        userPosition = null;
+        opponentPosition = null;
+        userAliveBulletsCount = 0;
+        opponentAliveBulletsCount = 0;
         status = 1;
-        thisPlayer = -1;
-    }
-
-    public void setPlayerIDs(ArrayList<Integer> playerIDs) {
-//        this.playerIDs = playerIDs;
-    }
-
-    public void setPlayerUsernames(ArrayList<String> playerUsernames) {
-//        this.playerUsernames = playerUsernames;
-    }
-
-    public void setPlayerPositions(ArrayList<Position> playerPositions) {
-        this.playerPositions = playerPositions;
+        userId = -1;
+        opponentId = -1;
     }
 
     public void addCannonball(Cannonball cannonball) {
         cannonballSet.addCannonball(cannonball);
     }
 
-    public void addPlayerID(int playerID) {
-//        if(!playerIDs.contains(playerID)) {
-//            playerIDs.add(playerID);
-//        }
-    }
-
-    public void addPlayerUsername(int id, String username) {
-//        if(!playerUsernames.contains(username) && playerIDs.size() > playerUsernames.size()) {
-//            playerUsernames.add(username);
-//        }
-    }
-
-    public void setPlayerPosition(int playerID, Position position) {
-        playerPositions.get(0).x = position.x;
-        playerPositions.get(0).y = position.y;
-        playerPositions.get(0).deg = position.deg;
-    }
 }

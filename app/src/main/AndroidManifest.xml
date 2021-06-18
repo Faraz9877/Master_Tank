@@ -19,8 +19,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.afaa.tanktrouble.datahouse.BtGameConfigurationServerActivity" />
-        <activity android:name="com.afaa.tanktrouble.datahouse.BtGameConfigurationClientActivity" />
         <activity
             android:name="com.afaa.tanktrouble.datahouse.DeviceChooserActivity"
             android:label="@string/device_chooser_header"
@@ -37,10 +35,6 @@
             android:name="com.afaa.tanktrouble.battle.BattleActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity android:name="com.afaa.tanktrouble.match.JoinActivity" />
-        <activity android:name="com.afaa.tanktrouble.match.HostActivity" />
-        <activity android:name="com.afaa.tanktrouble.match.WaitActivity" />
-        <activity android:name="com.afaa.tanktrouble.match.BluetoothActivity" />
 
         <service android:name="com.afaa.tanktrouble.datahouse.BluetoothService" />
     </application>
