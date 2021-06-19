@@ -271,6 +271,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
 //        }
 //    }
 
+
     private void setControlGraphicsData(Activity activity) {
         float screenHeight = UserUtils.getScreenHeight();
         float screenWidth = UserUtils.getScreenWidth();
@@ -432,9 +433,9 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         if (displacement <= mFireButtonDiameter) {
             if (!mFireButtonPressed && GameData.getInstance().getUserAliveBulletsCount() < MAX_USER_CANNONBALLS) {
                 Cannonball cannonball = mUserTank.fire();
-                GameData.getInstance().incrementUserAliveBulletsCount();
                 GameData.getInstance().getCannonballSet().addCannonball(cannonball);
-                GameData.getInstance().getNewCannonballs().add(cannonball);
+                GameData.getInstance().addCannonBallToNewCannonballs(cannonball);
+                GameData.getInstance().incrementUserAliveBulletsCount();
             }
             mFireButtonPressed = true;
             mFireButtonPointerId = pointerId;

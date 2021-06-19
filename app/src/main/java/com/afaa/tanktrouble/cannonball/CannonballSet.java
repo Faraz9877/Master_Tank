@@ -59,18 +59,22 @@ public class CannonballSet {
 
             if (deltaTime > CANNONBALL_LIFESPAN) {
                 keysToRemove.add(key);
-            } else {
+                if (cannonball.getShooterID() == GameData.getInstance().getUserId())
+                    GameData.getInstance().decrementUserAliveBulletsCount();
+            }
+            else {
                 cannonball.update();
-
                 if (tank.detectCollision(cannonball)) {
                     collisionHappened = true;
+
                     keysToRemove.add(key);
+                    if (cannonball.getShooterID() == GameData.getInstance().getUserId())
+                        GameData.getInstance().decrementUserAliveBulletsCount();
                 }
             }
         }
 
         for (int i = 0; i < keysToRemove.size(); i++) {
-            GameData.getInstance().decrementUserAliveBulletsCount();
             mCannonballSet.remove(keysToRemove.get(i));
         }
 
