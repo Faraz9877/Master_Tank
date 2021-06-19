@@ -32,9 +32,6 @@ public class GameData {
     int userId;
     int opponentId;
     int status;
-
-
-
     int lastOpponentCannonId;
     boolean isServer;
     private BluetoothService btService;

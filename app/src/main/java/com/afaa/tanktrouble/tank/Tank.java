@@ -21,9 +21,11 @@ public abstract class Tank {
 
     static final float TANK_WIDTH_CONST = Constants.TANK_WIDTH_CONST;
     static final float TANK_HEIGHT_CONST = Constants.TANK_HEIGHT_CONST;
+    static final int INITIAL_SCORE = 10;
     private static final float GUN_LENGTH_RATIO = 1/7f;
     private static final float GUN_LEFT_EDGE_RATIO = 39/100f;
     private static final float GUN_RIGHT_EDGE_RATIO = 61/100f;
+
 
     public void updatePosition(int x, int y, float deg) {
         mX = x;
@@ -359,7 +361,7 @@ public abstract class Tank {
 
     public void kill() {
         mIsAlive = false;
-        incrementScore();
+        decrementScore();
     }
 
     public PointF getCenter() {
@@ -390,8 +392,8 @@ public abstract class Tank {
         return mScore;
     }
 
-    public void incrementScore() {
-        mScore++;
+    public void decrementScore() {
+        mScore--;
     }
 
     public boolean detectCollision(Cannonball cannonball) {

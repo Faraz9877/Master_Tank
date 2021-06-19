@@ -20,7 +20,7 @@ public class OpponentTank extends Tank {
         mBitmap = tankColor.getTankBitmap(activity);
         mBitmap = Bitmap.createScaledBitmap(mBitmap, mWidth, mHeight, false);
         mColorIndex = tankColor.getIndex();
-        mScore = 0;
+        mScore = INITIAL_SCORE;
         mIsAlive = true;
         if (opponentID > -1) {
             addPosDataRefListeners();

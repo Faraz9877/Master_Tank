@@ -5,7 +5,7 @@ import android.view.SurfaceHolder;
 
 public class BattleThread extends Thread {
 
-    private BattleView mBattleView;
+    private final BattleView mBattleView;
     private final SurfaceHolder mSurfaceHolder;
     private boolean mRunning;
 
@@ -28,10 +28,7 @@ public class BattleThread extends Thread {
             Canvas canvas = null;
 
             try {
-
                 canvas = mSurfaceHolder.lockCanvas();
-
-
                 synchronized (mSurfaceHolder) {
                     if (canvas != null && mBattleView != null) {
                         mBattleView.draw(canvas);

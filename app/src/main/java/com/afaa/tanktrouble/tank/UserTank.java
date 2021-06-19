@@ -17,7 +17,7 @@ public class UserTank extends Tank {
     private static final float SPEED_CONST = UserUtils.scaleGraphicsFloat(40/1080f)/100f;
 
     private int cannonCounter;
-    private int userId;
+    private final int userId;
 
     public UserTank(Activity activity, TankColor tankColor, int userId) {
         mWidth = Math.max(UserUtils.scaleGraphicsInt(TANK_WIDTH_CONST), 1);
@@ -26,7 +26,7 @@ public class UserTank extends Tank {
         mBitmap = tankColor.getTankBitmap(activity);
         mBitmap = Bitmap.createScaledBitmap(mBitmap, mWidth, mHeight, false);
         mColorIndex = tankColor.getIndex();
-        mScore = 0;
+        mScore = INITIAL_SCORE;
         mIsAlive = true;
 
         mX = Math.round(GameData.getInstance().getUserPosition().x);

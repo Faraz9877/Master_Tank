@@ -364,7 +364,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
     private void drawScores(Canvas canvas) {
         if (mUserTank != null) {
 
-            String score = Integer.toString(mOpponentTank.getScore());
+            String score = Integer.toString(mUserTank.getScore());
             int screenWidth = UserUtils.getScreenWidth();
             int numTanks = GameData.getInstance().getPlayerIDs().size();
             int tankWidth = mUserTank.getWidth();            
@@ -389,7 +389,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
 
                     Bitmap bitmap = mOpponentTank.getBitmap();
                     int offsetX = marginX + tankIndex * (tankWidth + marginX);
-                    score = Integer.toString(mUserTank.getScore());
+                    score = Integer.toString(mOpponentTank.getScore());
                     tankIndex++;
 
 
