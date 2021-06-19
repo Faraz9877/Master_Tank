@@ -228,20 +228,6 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
             TankColor tankColor = TankColor.values()[GameData.getInstance().getOpponentId()];
             mOpponentTank = new OpponentTank(activity,
                     GameData.getInstance().getOpponentId(), tankColor);
-//            addDeathDataRefListener(GameData.getInstance().getOpponentId());
-        }
-    }
-
-    private void addDeathDataRefListener(final int opponentId) {
-        Integer killingCannonball = 0;
-        OpponentTank opponentTank = mOpponentTank;
-        if (killingCannonball != null && opponentTank != null) {
-            GameData.getInstance().getCannonballSet().remove(killingCannonball);
-            mExplosionAnimations.add(new ExplosionAnimation(opponentTank));
-            opponentTank.incrementScore();
-            opponentTank.kill();
-        } else if (killingCannonball == null && opponentTank != null) {
-            opponentTank.respawn();
         }
     }
 
@@ -406,9 +392,9 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         if (displacement <= mFireButtonDiameter) {
             if (!mFireButtonPressed && GameData.getInstance().getUserAliveBulletsCount() < MAX_USER_CANNONBALLS) {
                 Cannonball cannonball = mUserTank.fire();
-                GameData.getInstance().incrementUserAliveBulletsCount();
                 GameData.getInstance().getCannonballSet().addCannonball(cannonball);
-                GameData.getInstance().getNewCannonballs().add(cannonball);
+                GameData.getInstance().addCannonBallToNewCannonballs(cannonball);
+                GameData.getInstance().incrementUserAliveBulletsCount();
             }
             mFireButtonPressed = true;
             mFireButtonPointerId = pointerId;

@@ -27,7 +27,6 @@ public class GameData {
     private Position userPosition;
     private Position opponentPosition;
     private Integer userAliveBulletsCount;
-    private Integer opponentAliveBulletsCount;
     private CannonballSet cannonballSet;
     private ArrayList<Cannonball> newCannonballs;
     int userId;
@@ -45,7 +44,6 @@ public class GameData {
         userPosition = UserTank.getRandomInitialPosition();
         opponentPosition = UserTank.getRandomInitialPosition();
         userAliveBulletsCount = 0;
-        opponentAliveBulletsCount = 0;
         newCannonballs = new ArrayList<>();
         cannonballSet = new CannonballSet();
         status = 0;
@@ -53,7 +51,6 @@ public class GameData {
         userId = CLIENT_ID;
         opponentId = SERVER_ID;
     }
-
 
     public void createSoundPool(Activity activity){
         shootSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
@@ -130,8 +127,8 @@ public class GameData {
         return cannonballSet;
     }
 
-    public ArrayList<Cannonball> getNewCannonballs() {
-        return newCannonballs;
+    public void addCannonBallToNewCannonballs(Cannonball cannonball){
+        newCannonballs.add(cannonball);
     }
 
     public int getStatus() {
@@ -150,10 +147,6 @@ public class GameData {
         return userAliveBulletsCount;
     }
 
-    public int getOpponentAliveBulletsCount() {
-        return opponentAliveBulletsCount;
-    }
-
     public void incrementUserAliveBulletsCount() {
         userAliveBulletsCount += 1;
     }
@@ -161,17 +154,11 @@ public class GameData {
     public void decrementUserAliveBulletsCount() {
         userAliveBulletsCount -= 1;
     }
-    public void incrementOpponentAliveBulletsCount() {
-        opponentAliveBulletsCount += 1;
-    }
-
-    public void decrementOpponentAliveBulletsCount() {
-        opponentAliveBulletsCount -= 1;
-    }
 
     public void setUserPosition(Position position) {
         userPosition = position;
     }
+
     public void setOpponentPosition(Position position) {
         opponentPosition = position;
     }
@@ -191,7 +178,6 @@ public class GameData {
         userPosition = null;
         opponentPosition = null;
         userAliveBulletsCount = 0;
-        opponentAliveBulletsCount = 0;
         status = 1;
         userId = -1;
         opponentId = -1;
