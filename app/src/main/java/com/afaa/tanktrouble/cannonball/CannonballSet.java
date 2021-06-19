@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.util.SparseArray;
 
 import com.afaa.tanktrouble.datahouse.GameData;
+import com.afaa.tanktrouble.tank.Tank;
 import com.afaa.tanktrouble.tank.UserTank;
 
 import java.util.ArrayList;
@@ -44,8 +45,8 @@ public class CannonballSet {
     }
 
 
-    public int updateAndDetectUserCollision(UserTank userTank) {
-        int detectedUserCollision = 0;
+    public boolean updateAndDetectUserCollision(Tank tank) {
+        boolean collisionHappened = false;
         long nowTime = System.currentTimeMillis();
         ArrayList<Integer> keysToRemove =  new ArrayList<>();
 
@@ -61,8 +62,8 @@ public class CannonballSet {
             } else {
                 cannonball.update();
 
-                if (userTank.detectCollision(cannonball)) {
-                    detectedUserCollision = key;
+                if (tank.detectCollision(cannonball)) {
+                    collisionHappened = true;
                     keysToRemove.add(key);
                 }
             }
@@ -73,7 +74,7 @@ public class CannonballSet {
             mCannonballSet.remove(keysToRemove.get(i));
         }
 
-        return detectedUserCollision;
+        return collisionHappened;
     }
 
 

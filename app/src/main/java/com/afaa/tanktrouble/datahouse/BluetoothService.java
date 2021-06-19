@@ -368,7 +368,7 @@ public class BluetoothService extends Service {
         private void write(byte[] bytes) {
             try {
                 outputStream.write(bytes);
-//                Log.d(TAG, "write");
+                Log.d("Sender", "write");
             } catch (IOException ignored) {
             }
         }

@@ -41,9 +41,9 @@ public class OpponentTank extends Tank {
         }
     }
 
-    public void kill() {
-        mIsAlive = false;
-    }
+//    public void kill() {
+//        mIsAlive = false;
+//    }
 
     public void respawn() {
         mIsAlive = true;

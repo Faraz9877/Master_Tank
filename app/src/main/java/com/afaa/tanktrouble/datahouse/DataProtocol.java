@@ -55,6 +55,9 @@ public class DataProtocol {
     }
 
     public static void detokenizeGameData(String token) {
+
+        Log.d("Receiver:", token);
+
         int UsIndex = token.indexOf("U:");
         int PsIndex = token.indexOf("P:");
         int CsIndex = token.indexOf("C:");
@@ -101,6 +104,7 @@ public class DataProtocol {
         }
 
         if(CsIndex != -1) {
+            int maxCannonId = -1;
             StringBuilder cursor = new StringBuilder();
             int x = 10, y = 20, uuid = 0, shooterID = 0;
             float deg = 0;
@@ -121,14 +125,17 @@ public class DataProtocol {
                     }
                     else if(varCounter == 3) {
                         uuid = Integer.parseInt(cursor.toString());
+                        if (uuid > maxCannonId) maxCannonId = uuid;
                         varCounter ++;
                     }
                     else if(varCounter == 4) {
                         shooterID = Integer.parseInt(cursor.toString());
-                        GameData.getInstance().getCannonballSet().addCannonball(
-                                new Cannonball(Math.round(x * Position.SCREEN_SCALE),
-                                Math.round(y * Position.SCREEN_SCALE), deg, uuid, shooterID)
-                        );
+                        if (uuid > GameData.getInstance().getLastOpponentCannonId()) {
+                            GameData.getInstance().getCannonballSet().addCannonball(
+                                    new Cannonball(Math.round(x * Position.SCREEN_SCALE),
+                                            Math.round(y * Position.SCREEN_SCALE), deg, uuid, shooterID)
+                            );
+                        }
                         varCounter = 0;
                     }
                     cursor = new StringBuilder();
@@ -137,6 +144,7 @@ public class DataProtocol {
                     cursor.append(token.charAt(i));
                 }
             }
+            GameData.getInstance().setLastOpponentCannonId(maxCannonId);
         }
     }
 

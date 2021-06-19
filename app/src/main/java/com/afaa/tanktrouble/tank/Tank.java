@@ -6,6 +6,7 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 
 import com.afaa.tanktrouble.Constants;
+import com.afaa.tanktrouble.cannonball.Cannonball;
 
 public abstract class Tank {
     Bitmap mBitmap;
@@ -357,7 +358,8 @@ public abstract class Tank {
     }
 
     public void kill() {
-
+        mIsAlive = false;
+        incrementScore();
     }
 
     public PointF getCenter() {
@@ -390,6 +392,26 @@ public abstract class Tank {
 
     public void incrementScore() {
         mScore++;
+    }
+
+    public boolean detectCollision(Cannonball cannonball) {
+        PointF[] hitbox = Tank.tankHitbox(mX, mY, mDeg, mWidth, mHeight);
+        int cannonballX = cannonball.getX();
+        int cannonballY = cannonball.getY();
+        int cannonballRadius = cannonball.getRadius();
+
+        for (PointF pointF : hitbox) {
+            if (calcDistance(pointF.x, pointF.y, cannonballX, cannonballY) < cannonballRadius) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    private static float calcDistance (float x1, float y1, float x2, float y2) {
+        return (float) Math.sqrt(Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2));
     }
 
     public boolean isAlive() {

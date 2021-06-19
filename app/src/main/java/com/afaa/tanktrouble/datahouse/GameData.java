@@ -33,6 +33,10 @@ public class GameData {
     int userId;
     int opponentId;
     int status;
+
+
+
+    int lastOpponentCannonId;
     boolean isServer;
     private BluetoothService btService;
     SoundPool shootSoundPool, explosionSoundPool;
@@ -49,6 +53,7 @@ public class GameData {
         newCannonballs = new ArrayList<>();
         cannonballSet = new CannonballSet();
         status = 0;
+        lastOpponentCannonId = -1;
         isServer = false;
         userId = CLIENT_ID;
         opponentId = SERVER_ID;
@@ -136,6 +141,14 @@ public class GameData {
 
     public int getStatus() {
         return status;
+    }
+
+    public int getLastOpponentCannonId() {
+        return lastOpponentCannonId;
+    }
+
+    public void setLastOpponentCannonId(int cannonId) {
+        lastOpponentCannonId = cannonId;
     }
 
     public Position getUserPosition() {

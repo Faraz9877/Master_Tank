@@ -16,10 +16,12 @@ public class UserTank extends Tank {
     private static final String TAG = "WL/UserTank";
     private static final float SPEED_CONST = UserUtils.scaleGraphicsFloat(40/1080f)/100f;
 
-    public UserTank(Activity activity, TankColor tankColor) {
+    private int cannonCounter;
+    private int userId;
+
+    public UserTank(Activity activity, TankColor tankColor, int userId) {
         mWidth = Math.max(UserUtils.scaleGraphicsInt(TANK_WIDTH_CONST), 1);
         mHeight = Math.max(UserUtils.scaleGraphicsInt(TANK_HEIGHT_CONST), 1);
-
 
         mBitmap = tankColor.getTankBitmap(activity);
         mBitmap = Bitmap.createScaledBitmap(mBitmap, mWidth, mHeight, false);
@@ -30,6 +32,8 @@ public class UserTank extends Tank {
         mX = Math.round(GameData.getInstance().getUserPosition().x);
         mX = Math.round(GameData.getInstance().getUserPosition().y);
         mDeg = GameData.getInstance().getUserPosition().deg;
+        cannonCounter = 0;
+        this.userId = userId;
 
         do {
             mX = UserUtils.randomInt(50, UserUtils.getScreenWidth());
@@ -125,40 +129,39 @@ public class UserTank extends Tank {
         lastTime = nowTime;
     }
 
-    public boolean detectCollision(Cannonball cannonball) {
-        PointF[] hitbox = Tank.tankHitbox(mX, mY, mDeg, mWidth, mHeight);
-        int cannonballX = cannonball.getX();
-        int cannonballY = cannonball.getY();
-        int cannonballRadius = cannonball.getRadius();
-
-        for (PointF pointF : hitbox) {
-            if (calcDistance(pointF.x, pointF.y, cannonballX, cannonballY) < cannonballRadius) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-
-    private static float calcDistance (float x1, float y1, float x2, float y2) {
-        return (float) Math.sqrt(Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2));
-    }
+//    public boolean detectCollision(Cannonball cannonball) {
+//        PointF[] hitbox = Tank.tankHitbox(mX, mY, mDeg, mWidth, mHeight);
+//        int cannonballX = cannonball.getX();
+//        int cannonballY = cannonball.getY();
+//        int cannonballRadius = cannonball.getRadius();
+//
+//        for (PointF pointF : hitbox) {
+//            if (calcDistance(pointF.x, pointF.y, cannonballX, cannonballY) < cannonballRadius) {
+//                return true;
+//            }
+//        }
+//
+//        return false;
+//    }
+//
+//
+//    private static float calcDistance (float x1, float y1, float x2, float y2) {
+//        return (float) Math.sqrt(Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2));
+//    }
 
 
     public Cannonball fire() {
         PointF[] tankPolygon = Tank.tankPolygon(mX, mY, mDeg, mWidth, mHeight);
 
-        Cannonball c = new Cannonball((int) tankPolygon[0].x, (int) tankPolygon[0].y, mDeg,
-                UserUtils.randomInt(1, Integer.MAX_VALUE-10), GameData.getInstance().getUserId());
+        return new Cannonball((int) tankPolygon[0].x, (int) tankPolygon[0].y, mDeg,
+                         userId + (cannonCounter++) * 2, GameData.getInstance().getUserId());
 
-        return c;
     }
 
-    public void kill(int killingCannonball) {
-        incrementScore();
-        mIsAlive = false;
-    }
+//    public void kill(int killingCannonball) {
+//        incrementScore();
+//        mIsAlive = false;
+//    }
 
     public void respawn() {
         mIsAlive = true;
