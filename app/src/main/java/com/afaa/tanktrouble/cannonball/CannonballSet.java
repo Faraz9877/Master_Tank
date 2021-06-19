@@ -22,8 +22,11 @@ public class CannonballSet {
 
 
     public void addCannonball(Cannonball cannonball) {
-        if(mCannonballSet.get(cannonball.getUUID()) == null)
+        if(mCannonballSet.get(cannonball.getUUID()) == null) {
             mCannonballSet.put(cannonball.getUUID(), cannonball);
+            GameData.getInstance().playShootSound();
+        }
+
     }
 
     public int getCannonballShooter(int uuid) {

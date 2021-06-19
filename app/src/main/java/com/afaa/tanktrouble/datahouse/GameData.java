@@ -1,5 +1,10 @@
 package com.afaa.tanktrouble.datahouse;
 
+import android.app.Activity;
+import android.media.AudioManager;
+import android.media.SoundPool;
+
+import com.afaa.tanktrouble.R;
 import com.afaa.tanktrouble.battle.Position;
 import com.afaa.tanktrouble.cannonball.Cannonball;
 import com.afaa.tanktrouble.cannonball.CannonballSet;
@@ -30,6 +35,8 @@ public class GameData {
     int status;
     boolean isServer;
     private BluetoothService btService;
+    SoundPool shootSoundPool, explosionSoundPool;
+    int shootSoundId, explosionSoundId;
 
     private GameData() {
         playerIDs = new ArrayList<>(Arrays.asList(SERVER_ID, CLIENT_ID));
@@ -45,6 +52,22 @@ public class GameData {
         isServer = false;
         userId = CLIENT_ID;
         opponentId = SERVER_ID;
+    }
+
+
+    public void createSoundPool(Activity activity){
+        shootSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+        shootSoundId = shootSoundPool.load(activity, R.raw.fire, 1);
+        explosionSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+        explosionSoundId = explosionSoundPool.load(activity, R.raw.explosion, 1);
+    }
+
+    public void playShootSound() {
+        shootSoundPool.play(shootSoundId, 1, 1, 0, 0, 2);
+    }
+
+    public void playExplosionSound() {
+        explosionSoundPool.play(explosionSoundId, 1, 1, 0, 0, 1);
     }
 
     public void sync(int syncCode)

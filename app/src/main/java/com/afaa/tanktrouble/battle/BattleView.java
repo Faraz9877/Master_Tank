@@ -47,8 +47,6 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
     private int mFireButtonDiameter, mFireButtonPressedDiameter;
     private float mUserDeg;
     private boolean mFireButtonPressed;
-    SoundPool shootSoundPool, explosionSoundPool;
-    int shootSoundId, explosionSoundId;
 
     Activity mActivity;
 
@@ -81,10 +79,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         setFocusable(true);
         setControlGraphicsData(activity);
         setOnTouchListener(this);
-        shootSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-        shootSoundId = shootSoundPool.load(activity, R.raw.fire, 1);
-        explosionSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-        explosionSoundId = explosionSoundPool.load(activity, R.raw.explosion, 1);
+        GameData.getInstance().createSoundPool(activity);
     }
 
     @Override
@@ -333,7 +328,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
             if (ExplosionAnimation.isRemovable()) {
                 iterator.remove();
             } else {
-                explosionSoundPool.play(explosionSoundId, 1, 1, 0, 0, 1);
+                GameData.getInstance().playExplosionSound();
                 ExplosionAnimation.draw(canvas);
             }
         }
@@ -414,7 +409,6 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
                 GameData.getInstance().incrementUserAliveBulletsCount();
                 GameData.getInstance().getCannonballSet().addCannonball(cannonball);
                 GameData.getInstance().getNewCannonballs().add(cannonball);
-                shootSoundPool.play(shootSoundId, 1, 1, 0, 0, 2);
             }
             mFireButtonPressed = true;
             mFireButtonPointerId = pointerId;
