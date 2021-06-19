@@ -228,7 +228,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
             TankColor tankColor = TankColor.values()[GameData.getInstance().getOpponentId()];
             mOpponentTank = new OpponentTank(activity,
                     GameData.getInstance().getOpponentId(), tankColor);
-            addDeathDataRefListener(GameData.getInstance().getOpponentId());
+//            addDeathDataRefListener(GameData.getInstance().getOpponentId());
         }
     }
 
