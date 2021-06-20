@@ -45,19 +45,6 @@ public class UserTank extends Tank {
 
     }
 
-    public static Position getRandomInitialPosition() {
-        int x, y, deg;
-        do {
-            x = UserUtils.randomInt(50, UserUtils.getScreenWidth());
-            y = UserUtils.randomInt(UserUtils.scaleGraphicsInt(1.1f * Constants.MAP_TOP_Y_CONST),
-                    UserUtils.scaleGraphicsInt(0.9f*Constants.MAP_TOP_Y_CONST + 1));
-            deg = UserUtils.randomInt(-180, 180);
-        } while (MapUtils.tankWallCollision(x, y, deg,
-                Math.max(UserUtils.scaleGraphicsInt(TANK_WIDTH_CONST), 1),
-                Math.max(UserUtils.scaleGraphicsInt(TANK_HEIGHT_CONST), 1)));
-        return new Position(x, y, deg);
-    }
-
 
     public void update(float velocityX, float velocityY, float angle) {
         long nowTime = System.currentTimeMillis();

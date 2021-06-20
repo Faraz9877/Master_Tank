@@ -6,7 +6,10 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 
 import com.afaa.tanktrouble.Constants;
+import com.afaa.tanktrouble.UserUtils;
+import com.afaa.tanktrouble.battle.Position;
 import com.afaa.tanktrouble.cannonball.Cannonball;
+import com.afaa.tanktrouble.map.MapUtils;
 
 public abstract class Tank {
     Bitmap mBitmap;
@@ -335,6 +338,19 @@ public abstract class Tank {
                 bodyLeft1, bodyLeft2, bodyLeft3, bodyLeft4, bodyLeft5, bodyLeft6, bodyLeft7,
                 bodyRight1, bodyRight2, bodyRight3, bodyRight4, bodyRight5, bodyRight6, bodyRight7,
                 bodyFront1, bodyFront2, bodyFront3, bodyRear1, bodyRear2, bodyRear3};
+    }
+
+    public static Position getRandomInitialPosition() {
+        int x, y, deg;
+        do {
+            x = UserUtils.randomInt(50, UserUtils.getScreenWidth());
+            y = UserUtils.randomInt(UserUtils.scaleGraphicsInt(1.1f * Constants.MAP_TOP_Y_CONST),
+                    UserUtils.scaleGraphicsInt(0.9f*Constants.MAP_TOP_Y_CONST + 1));
+            deg = UserUtils.randomInt(-180, 180);
+        } while (MapUtils.tankWallCollision(x, y, deg,
+                Math.max(UserUtils.scaleGraphicsInt(TANK_WIDTH_CONST), 1),
+                Math.max(UserUtils.scaleGraphicsInt(TANK_HEIGHT_CONST), 1)));
+        return new Position(x, y, deg);
     }
 
 

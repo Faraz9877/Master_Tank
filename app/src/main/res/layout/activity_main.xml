@@ -26,15 +26,15 @@
         <Button
             android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:onClick="onClickSettingsButton"
-            android:text="@string/str_settings" />
+            android:onClick="onClickBluetoothGame"
+            android:text="@string/bt_game" />
 
 
         <Button
             android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:onClick="onClickBluetoothGame"
-            android:text="@string/bt_game" />
+            android:onClick="onClickSettingsButton"
+            android:text="@string/str_settings" />
     </LinearLayout>
 
 </FrameLayout>

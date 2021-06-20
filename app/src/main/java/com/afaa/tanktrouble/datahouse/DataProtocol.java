@@ -56,8 +56,6 @@ public class DataProtocol {
 
     public static void detokenizeGameData(String token) {
 
-        Log.d("Receiver:", token);
-
         int UsIndex = token.indexOf("U:");
         int PsIndex = token.indexOf("P:");
         int CsIndex = token.indexOf("C:");

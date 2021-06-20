@@ -81,6 +81,10 @@ public class CannonballSet {
         return collisionHappened;
     }
 
+    public void clear() {
+        mCannonballSet.clear();
+    }
+
 
     public void draw(Canvas canvas) {
 

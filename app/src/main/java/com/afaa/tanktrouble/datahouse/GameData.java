@@ -8,6 +8,7 @@ import com.afaa.tanktrouble.R;
 import com.afaa.tanktrouble.battle.Position;
 import com.afaa.tanktrouble.cannonball.Cannonball;
 import com.afaa.tanktrouble.cannonball.CannonballSet;
+import com.afaa.tanktrouble.tank.Tank;
 import com.afaa.tanktrouble.tank.UserTank;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class GameData {
     private static final int CLIENT_ID = 0;
     private static final int SERVER_ID = 1;
 
+    public static String GAME_OVER_MESSAGE = "#Game Over!#";
 
     private ArrayList<Integer> playerIDs;
     private String userUserName;
@@ -34,6 +36,7 @@ public class GameData {
     int status;
     int lastOpponentCannonId;
     boolean isServer;
+    boolean gameOver;
     private BluetoothService btService;
     SoundPool shootSoundPool, explosionSoundPool;
     int shootSoundId, explosionSoundId;
@@ -42,14 +45,15 @@ public class GameData {
         playerIDs = new ArrayList<>(Arrays.asList(SERVER_ID, CLIENT_ID));
         userUserName = "";
         opponentUserName = "";
-        userPosition = UserTank.getRandomInitialPosition();
-        opponentPosition = UserTank.getRandomInitialPosition();
+        userPosition = Tank.getRandomInitialPosition();
+        opponentPosition = Tank.getRandomInitialPosition();
         userAliveBulletsCount = 0;
         newCannonballs = new ArrayList<>();
         cannonballSet = new CannonballSet();
         status = 0;
         lastOpponentCannonId = -1;
         isServer = false;
+        gameOver = false;
         userId = CLIENT_ID;
         opponentId = SERVER_ID;
     }
@@ -69,22 +73,28 @@ public class GameData {
         explosionSoundPool.play(explosionSoundId, 1, 1, 0, 0, 1);
     }
 
-    public void sync(int syncCode)
+    public void sync(boolean gameOver)
     {
         if(btService == null)
             return;
 
         String token;
-        token = DataProtocol.tokenizeGameData(
-                (syncCode / 100) % 2 == 1 ? userUserName: null,
-                (syncCode / 10) % 2 == 1 ? userPosition: null,
-                syncCode % 2 == 1 && newCannonballs.size() > 0 ? newCannonballs: null
-            );
+        if (!gameOver) {
+            token = DataProtocol.tokenizeGameData(userUserName, userPosition,
+                                                  newCannonballs.size() > 0 ? newCannonballs: null);
+            newCannonballs.clear();
+        }
+        else {
+            token = GAME_OVER_MESSAGE;
+        }
+
 
         btService.getChannel().send(token.getBytes());
 
-        if(syncCode % 2 == 1)
-            newCannonballs.clear();
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
     }
 
     public String getOpponentUserName() {
@@ -156,6 +166,10 @@ public class GameData {
         return userPosition;
     }
 
+    public void setUserPosition(Position position) {
+        userPosition = position;
+    }
+
     public Position getOpponentPosition() {
         return opponentPosition;
     }
@@ -170,10 +184,6 @@ public class GameData {
 
     public void decrementUserAliveBulletsCount() {
         userAliveBulletsCount -= 1;
-    }
-
-    public void setUserPosition(Position position) {
-        userPosition = position;
     }
 
     public void setOpponentPosition(Position position) {

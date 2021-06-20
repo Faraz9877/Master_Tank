@@ -2,10 +2,12 @@ package com.afaa.tanktrouble.battle;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -70,19 +72,30 @@ public class BattleActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        startActivity( new Intent(this, MainActivity.class));
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure you want to leave the game?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        finish();
+                        dialog.cancel();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert = builder.create();
+        alert.setTitle("Confirmation Dialog");
+        alert.show();
     }
 
     private void validateGame() {
-
-
-
         if (GameData.getInstance().isPlayerInGame()) {
-
-
             return;
         }
-
 
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
     }
@@ -115,8 +128,12 @@ public class BattleActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             String data = new String(buffer);
-//                            Log.d(TAG, "Battle Message Process: " + data);
-                            DataProtocol.detokenizeGameData(data);
+                            if (data.contains(GameData.GAME_OVER_MESSAGE)) {
+                                finish();
+                            }
+                            else {
+                                DataProtocol.detokenizeGameData(data);
+                            }
                         }
                     });
                 }
