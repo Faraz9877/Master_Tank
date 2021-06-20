@@ -111,10 +111,8 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         }
 
 
-        GameData.getInstance().sync(1111);
 //        removeGame();
     }
-
 
     public void terminateShowResult(Boolean win){
         Intent intent = new Intent(mActivity, ResultActivity.class);
@@ -139,6 +137,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         GameData.getInstance().getCannonballSet().draw(canvas);
 
         updateUserTank();
+        GameData.getInstance().syncPosition();
         mUserTank.draw(canvas);
 
         if (!userTankHit) {
@@ -192,7 +191,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
 //            mOpponentTank.draw(canvas);
 //        }
 
-        GameData.getInstance().sync(1111);
+//        GameData.getInstance().sync(1111);
         drawExplosions(canvas);
         mOpponentTank.updatePosition(Math.round(GameData.getInstance().getOpponentPosition().x),
                 Math.round(GameData.getInstance().getOpponentPosition().y),
@@ -287,7 +286,6 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
 //            opponentTank.respawn();
 //        }
 //    }
-
 
     private void setControlGraphicsData(Activity activity) {
         float screenHeight = UserUtils.getScreenHeight();
@@ -392,12 +390,10 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
             int textSize = UserUtils.scaleGraphicsInt(SCORE_TEXT_SIZE_CONST);
             int tankIndex = 1;
 
-
             Paint textPaint = new Paint();
             textPaint.setARGB(255, 0, 0, 0);
             textPaint.setTextAlign(Paint.Align.CENTER);
             textPaint.setTextSize(textSize);
-
 
             canvas.drawBitmap(mUserTank.getBitmap(), marginX, marginY, null);
             canvas.drawText(score, marginX  + tankWidth / 2f, textY, textPaint);
@@ -418,17 +414,13 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
     }
 
     private void updateJoystickData(int pointerX, int pointerY, int pointerId, int action) {
-
         float deltaX = pointerX - mJoystickBaseCenterX;
         float deltaY = pointerY - mJoystickBaseCenterY;
         float displacement = calcDistance((int) deltaX, (int) deltaY);
 
-
         if (displacement <= mJoystickMaxDisplacement) {
             mJoystickX = pointerX;
             mJoystickY = pointerY;
-
-
             mJoystickPointerId = pointerId;
         } else if ((action == MotionEvent.ACTION_MOVE && pointerId == mJoystickPointerId)
                 || (displacement <= mJoystickThresholdRadius)){
@@ -451,7 +443,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
             if (!mFireButtonPressed && GameData.getInstance().getUserAliveBulletsCount() < MAX_USER_CANNONBALLS) {
                 Cannonball cannonball = mUserTank.fire();
                 GameData.getInstance().getCannonballSet().addCannonball(cannonball);
-                GameData.getInstance().addCannonBallToNewCannonballs(cannonball);
+                GameData.getInstance().syncCannonBall(cannonball);
                 GameData.getInstance().incrementUserAliveBulletsCount();
             }
             mFireButtonPressed = true;

@@ -217,6 +217,10 @@ public class Cannonball {
         return mFiringTime;
     }
 
+    public void setmFiringTime(long mFiringTime) {
+        this.mFiringTime = mFiringTime;
+    }
+
     public int getUUID() {
         return mUUID;
     }

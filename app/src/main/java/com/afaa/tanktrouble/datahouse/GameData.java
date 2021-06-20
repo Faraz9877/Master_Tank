@@ -28,7 +28,6 @@ public class GameData {
     private Position opponentPosition;
     private Integer userAliveBulletsCount;
     private CannonballSet cannonballSet;
-    private ArrayList<Cannonball> newCannonballs;
     int userId;
     int opponentId;
     int status;
@@ -45,7 +44,6 @@ public class GameData {
         userPosition = UserTank.getRandomInitialPosition();
         opponentPosition = UserTank.getRandomInitialPosition();
         userAliveBulletsCount = 0;
-        newCannonballs = new ArrayList<>();
         cannonballSet = new CannonballSet();
         status = 0;
         lastOpponentCannonId = -1;
@@ -69,22 +67,18 @@ public class GameData {
         explosionSoundPool.play(explosionSoundId, 1, 1, 0, 0, 1);
     }
 
-    public void sync(int syncCode)
-    {
-        if(btService == null)
+    public void syncPosition(){
+        if(btService == null || userPosition == null)
             return;
-
-        String token;
-        token = DataProtocol.tokenizeGameData(
-                (syncCode / 100) % 2 == 1 ? userUserName: null,
-                (syncCode / 10) % 2 == 1 ? userPosition: null,
-                syncCode % 2 == 1 && newCannonballs.size() > 0 ? newCannonballs: null
-            );
-
+        String token = DataProtocol.tokenizePosition(userPosition);
         btService.getChannel().send(token.getBytes());
+    }
 
-        if(syncCode % 2 == 1)
-            newCannonballs.clear();
+    public void syncCannonBall(Cannonball cannonball) {
+        if(btService == null || cannonball == null)
+            return;
+        String token = DataProtocol.tokenizeCannonBall(cannonball);
+        btService.getChannel().send(token.getBytes());
     }
 
     public String getOpponentUserName() {
@@ -136,9 +130,6 @@ public class GameData {
         return cannonballSet;
     }
 
-    public void addCannonBallToNewCannonballs(Cannonball cannonball){
-        newCannonballs.add(cannonball);
-    }
 
     public int getStatus() {
         return status;

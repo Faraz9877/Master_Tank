@@ -116,7 +116,8 @@ public class BattleActivity extends AppCompatActivity {
                         public void run() {
                             String data = new String(buffer);
 //                            Log.d(TAG, "Battle Message Process: " + data);
-                            DataProtocol.detokenizeGameData(data);
+                            DataProtocol.detokenizePosition(data);
+                            DataProtocol.detokenizeCannonBall(data);
                         }
                     });
                 }
