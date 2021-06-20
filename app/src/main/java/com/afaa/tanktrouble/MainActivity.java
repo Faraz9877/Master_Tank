@@ -25,10 +25,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickSettingsButton (View view) {
-//        Intent intent = new Intent(this, SettingsActivity.class);
-//        startActivity(intent);
-        Intent intent = new Intent(this, ResultActivity.class);
-        intent.putExtra("win", 1);
+        Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
 
