@@ -97,8 +97,15 @@ public class GameData {
 
     public void setServer(boolean server) {
         isServer = server;
-        userId =  SERVER_ID;
-        opponentId = CLIENT_ID;
+        if (isServer){
+            userId =  SERVER_ID;
+            opponentId = CLIENT_ID;
+        }
+        else{
+            userId =  CLIENT_ID;
+            opponentId = SERVER_ID;
+        }
+
     }
 
     public boolean getServer() {
