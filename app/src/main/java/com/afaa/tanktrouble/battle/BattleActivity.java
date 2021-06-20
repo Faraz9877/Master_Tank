@@ -93,7 +93,7 @@ public class BattleActivity extends AppCompatActivity {
                 });
 
         AlertDialog alert = builder.create();
-        alert.setTitle("Confirmation Dialog");
+        alert.setTitle("Are You Sure?");
         alert.show();
     }
 

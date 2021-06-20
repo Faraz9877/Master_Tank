@@ -37,7 +37,6 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
     private OpponentTank mOpponentTank;
     private HashSet<ExplosionAnimation> mExplosionAnimations;
     private Paint mJoystickColor;
-//    private int mKillingCannonball;
     private int mJoystickBaseCenterX, mJoystickBaseCenterY;
     private int mFireButtonOffsetX, mFireButtonOffsetY;
     private int mJoystickX, mJoystickY;
@@ -70,7 +69,6 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         UserUtils.initialize(activity);
         ExplosionAnimation.initialize(activity);
         mJoystickColor = TankColor.BLUE.getPaint();
-//        mKillingCannonball = 0;
         mExplosionAnimations = new HashSet<>();
         addEnteringTanks(activity);
         getHolder().addCallback(this);
@@ -103,9 +101,6 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-
-//        Log.d("ended", "ended");
-
         GameData.getInstance().sync(true);
         GameData.getInstance().reset();
     }
@@ -143,8 +138,6 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
 
 
         if (!userTankHit) {
-//            updateUserTank();
-//            mUserTank.draw(canvas);
             mUserTank.respawn();
         }
         else {
@@ -157,7 +150,6 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
 
         if (!opponentTankHit) {
             mOpponentTank.respawn();
-//            mOpponentTank.draw(canvas);
         }
         else {
             mOpponentTank.kill();

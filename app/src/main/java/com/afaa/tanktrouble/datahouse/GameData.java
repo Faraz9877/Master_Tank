@@ -36,7 +36,6 @@ public class GameData {
     int status;
     int lastOpponentCannonId;
     boolean isServer;
-    boolean gameOver;
     private BluetoothService btService;
     SoundPool shootSoundPool, explosionSoundPool;
     int shootSoundId, explosionSoundId;
@@ -53,7 +52,6 @@ public class GameData {
         status = 0;
         lastOpponentCannonId = -1;
         isServer = false;
-        gameOver = false;
         userId = CLIENT_ID;
         opponentId = SERVER_ID;
     }
@@ -91,10 +89,6 @@ public class GameData {
 
         btService.getChannel().send(token.getBytes());
 
-    }
-
-    public boolean isGameOver() {
-        return gameOver;
     }
 
     public String getOpponentUserName() {
