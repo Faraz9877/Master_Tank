@@ -2,6 +2,7 @@ package com.afaa.tanktrouble.battle;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -114,6 +115,16 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
 //        removeGame();
     }
 
+
+    public void terminateShowResult(Boolean win){
+        Intent intent = new Intent(mActivity, ResultActivity.class);
+        if (win)
+            intent.putExtra("win", 1);
+        else
+            intent.putExtra("win", 0);
+        mActivity.startActivity(intent);
+    }
+
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
@@ -138,6 +149,9 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         else {
             mUserTank.kill();
             mExplosionAnimations.add(new ExplosionAnimation(mUserTank));
+            if (mUserTank.getScore() == 0){
+                terminateShowResult(false);
+            }
         }
 
         if (!opponentTankHit) {
@@ -146,6 +160,9 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         else {
             mOpponentTank.kill();
             mExplosionAnimations.add(new ExplosionAnimation(mOpponentTank));
+            if (mOpponentTank.getScore() == 0){
+                terminateShowResult(true);
+            }
         }
 
 //        if (mKillingCannonball == 0) {

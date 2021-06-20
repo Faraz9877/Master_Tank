@@ -20,23 +20,24 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.afaa.tanktrouble.datahouse.DeviceChooserActivity"
+            android:name=".datahouse.DeviceChooserActivity"
             android:label="@string/device_chooser_header"
             android:screenOrientation="portrait" />
-        <activity android:name="com.afaa.tanktrouble.MainActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.afaa.tanktrouble.SettingsActivity" />
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".battle.ResultActivity" />
         <activity
-            android:name="com.afaa.tanktrouble.battle.BattleActivity"
+            android:name=".battle.BattleActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
-        <service android:name="com.afaa.tanktrouble.datahouse.BluetoothService" />
+        <service android:name=".datahouse.BluetoothService" />
     </application>
 
 </manifest>

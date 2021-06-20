@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
+
+import com.afaa.tanktrouble.battle.ResultActivity;
 import com.afaa.tanktrouble.datahouse.DeviceChooserActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,7 +25,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickSettingsButton (View view) {
-        Intent intent = new Intent(this, SettingsActivity.class);
+//        Intent intent = new Intent(this, SettingsActivity.class);
+//        startActivity(intent);
+        Intent intent = new Intent(this, ResultActivity.class);
+        intent.putExtra("win", 1);
         startActivity(intent);
     }
 
