@@ -92,23 +92,26 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         }
     }
 
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
+    public void finishThread() {
         try {
             mBattleThread.setRunning(false);
             mBattleThread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
 
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
 
-        Log.d("---------------", "here!");
+//        Log.d("ended", "ended");
+
         GameData.getInstance().sync(true);
-//        removeGame();
+        GameData.getInstance().reset();
     }
 
 
-    public void terminateShowResult(Boolean win){
+    public void endGame(Boolean win){
         Intent intent = new Intent(mActivity, ResultActivity.class);
         if (win)
             intent.putExtra("win", 1);
@@ -148,7 +151,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
             mUserTank.kill();
             mExplosionAnimations.add(new ExplosionAnimation(mUserTank));
             if (mUserTank.getScore() == 0) {
-                terminateShowResult(false);
+                endGame(false);
             }
         }
 
@@ -160,7 +163,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
             mOpponentTank.kill();
             mExplosionAnimations.add(new ExplosionAnimation(mOpponentTank));
             if (mOpponentTank.getScore() == 0) {
-                terminateShowResult(true);
+                endGame(true);
             }
         }
 
@@ -422,12 +425,6 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         else {
             mFireButtonPressed = false;
             mFireButtonPointerId = MotionEvent.INVALID_POINTER_ID;
-        }
-    }
-
-    private void removeGame() {
-        if (GameData.getInstance().getPlayerIDs().size() == 0) {
-            GameData.getInstance().reset();
         }
     }
 

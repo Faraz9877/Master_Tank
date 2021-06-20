@@ -352,12 +352,10 @@ public class BluetoothService extends Service {
 
         public void run() {
             byte[] buffer = new byte[1024];
-            int bytes;
 
             while (true) {
                 try {
-                    bytes = inputStream.read(buffer);
-//                    Log.d(TAG, "read");
+                    inputStream.read(buffer);
                     process(buffer);
                 } catch (IOException e) {
                     break;
@@ -368,7 +366,6 @@ public class BluetoothService extends Service {
         private void write(byte[] bytes) {
             try {
                 outputStream.write(bytes);
-                Log.d("Sender", "write");
             } catch (IOException ignored) {
             }
         }

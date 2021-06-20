@@ -56,6 +56,11 @@ public class BattleActivity extends AppCompatActivity {
         }
     }
 
+    private void endGame() {
+        ((BattleView)battleView).finishThread();
+        finish();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -77,7 +82,7 @@ public class BattleActivity extends AppCompatActivity {
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        finish();
+                        endGame();
                         dialog.cancel();
                     }
                 })
@@ -129,7 +134,7 @@ public class BattleActivity extends AppCompatActivity {
                         public void run() {
                             String data = new String(buffer);
                             if (data.contains(GameData.GAME_OVER_MESSAGE)) {
-                                finish();
+                                endGame();
                             }
                             else {
                                 DataProtocol.detokenizeGameData(data);

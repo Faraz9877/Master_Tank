@@ -2,15 +2,15 @@
     <string name="app_name">Tank Trouble</string>
 
     <!-- Bluetooth Activity -->
-<!--    <string name="bluetooth_absent">Device is not supported</string>-->
-<!--    <string name="bluetooth_request">Enabled bluetooth required</string>-->
-<!--    <string name="device_chooser_header">Device list</string>-->
-<!--    <string name="scan_for_devices">Scan for devices</string>-->
-<!--    <string name="scanning_for_devices">Scanning…</string>-->
-<!--    <string name="n_devices_found_suffix">devices found</string>-->
-<!--    <string name="enable_discoverable">Make discoverable</string>-->
-<!--    <string name="not_connected">Not connected</string>-->
-<!--    <string name="wait_for_server">Waiting for server to configure game…</string>-->
+    <string name="bluetooth_absent">Device is not supported</string>
+    <string name="bluetooth_request">Enabled bluetooth required</string>
+    <string name="device_chooser_header">Device list</string>
+    <string name="scan_for_devices">Scan for devices</string>
+    <string name="scanning_for_devices">Scanning…</string>
+    <string name="n_devices_found_suffix">devices found</string>
+    <string name="enable_discoverable">Make discoverable</string>
+    <string name="not_connected">Not connected</string>
+    <string name="wait_for_server">Waiting for server to configure game…</string>
     <!-- Chat -->
     <string name="send">Send</string>
     <string name="close">Close</string>

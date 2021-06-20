@@ -97,7 +97,6 @@ public class DataProtocol {
                 }
             }
             position = (new Position(x, y, deg)).scalePosition();
-            System.out.println(position);
             GameData.getInstance().setOpponentPosition(position);
         }
 
