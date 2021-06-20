@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class CannonballSet {
 
-    private SparseArray<Cannonball> cannons;
+    private final SparseArray<Cannonball> cannons;
 
     private static final long CANNONBALL_LIFESPAN = 10000;
     private static final String TAG = "WL/CannonballSet";

@@ -116,7 +116,7 @@ public class DataProtocol {
                         if (uuid > GameData.getInstance().getLastOpponentCannonId()) {
                             Cannonball cannonball = new Cannonball(Math.round(x * Position.SCREEN_SCALE),
                                     Math.round(y * Position.SCREEN_SCALE), deg, uuid, shooterID);
-                            cannonball.setmFiringTime(firingTime);
+                            cannonball.setFiringTime(firingTime);
                             GameData.getInstance().getCannonballSet().addCannonball(cannonball);
                         }
                     }

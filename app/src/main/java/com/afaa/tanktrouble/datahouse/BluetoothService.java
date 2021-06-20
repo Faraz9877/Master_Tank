@@ -19,12 +19,9 @@ import java.util.UUID;
 
 
 public class BluetoothService extends Service {
-//    private static BluetoothService instance = null;
 
     private static final String TAG = "BluetoothService";
     private static final UUID MY_UUID = UUID.fromString("27e86a38-a29c-421e-9d17-fe9c0c3bf2e6");
-
-    private static final int NOTIFICATION_ID = 1;
 
     private BluetoothAdapter btAdapter;
     private BluetoothSocket btSocket;
@@ -33,17 +30,11 @@ public class BluetoothService extends Service {
     private ConnectThread connectThread;
     private ConnectedThread connectedThread;
 
-    public boolean localPlayerColor;
 
     @Override
     public void onCreate() {
-//        instance = this;
-
         super.onCreate();
     }
-
-//        return instance;
-//    }
 
     @Override
     public void onDestroy() {
@@ -149,12 +140,6 @@ public class BluetoothService extends Service {
     private synchronized void changeRegCount(int d) {
         int newRegCount = regCount + d;
 
-        if (newRegCount == 0 && regCount != 0) {
-            showNotification(lastClass, getString(R.string.bt_game),
-                    isConnected() ?
-                            getBluetoothSocket().getRemoteDevice().getName() :
-                            getString(R.string.not_connected));
-        }
         if (newRegCount != 0 && regCount == 0) {
             hideNotification();
         }
@@ -209,25 +194,7 @@ public class BluetoothService extends Service {
         channel.onMessageReceivedListener.process(message);
     }
 
-    private void showNotification(Class<?> aClass, String title, String text) {
-//        Log.d(TAG, "notification shown");
-
-
-//                .setContentTitle(title)
-//                .setContentText(text)
-//                .setSmallIcon(R.drawable.ic_bt_notification)
-//                .setContentIntent(PendingIntent.getActivity(this, 0,
-//                        new Intent(this, aClass)
-//                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP)
-//                                .putExtra(BtGameActivity.LOCAL_PLAYER_COLOR, localPlayerColor),
-//                        0));
-//
-//        startForeground(NOTIFICATION_ID, builder.build());
-    }
-
     private void hideNotification() {
-//        Log.d(TAG, "notification hidden");
-
         stopForeground(true);
     }
 
@@ -307,7 +274,6 @@ public class BluetoothService extends Service {
 
             try {
                 socket.connect();
-//                Log.d(TAG, Boolean.toString(socket.isConnected()));
             } catch (IOException connectException) {
                 try {
                     socket.close();

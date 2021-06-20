@@ -11,7 +11,7 @@ import com.afaa.tanktrouble.datahouse.GameData;
 public class OpponentTank extends Tank {
 
     private static final String TAG = "WL/OpponentTank";
-    private int opponentID;
+    private final int opponentID;
 
     public OpponentTank(Activity activity, int _opponentId, TankColor tankColor) {
         width = Math.max(UserUtils.scaleGraphicsInt(TANK_WIDTH_CONST), 1);

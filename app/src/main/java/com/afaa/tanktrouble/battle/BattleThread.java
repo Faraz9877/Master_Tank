@@ -7,7 +7,7 @@ public class BattleThread extends Thread {
 
     private final BattleView battleView;
     private final SurfaceHolder surfaceHolder;
-    private boolean mRunning;
+    private boolean running;
 
 
     BattleThread(SurfaceHolder surfaceHolder, BattleView battleView) {
@@ -18,13 +18,13 @@ public class BattleThread extends Thread {
 
 
     public void setRunning(boolean isRunning) {
-        mRunning = isRunning;
+        running = isRunning;
     }
 
 
     @Override
     public void run() {
-        while (mRunning) {
+        while (running) {
             Canvas canvas = null;
 
             try {

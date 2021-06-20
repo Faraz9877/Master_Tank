@@ -16,7 +16,7 @@ public class Cannonball {
     private int prevPathIndex;
     private float x, y;
     private final float deg;
-    private long mFiringTime, mLastTime;
+    private long firingTime, lastTime;
     private final int UUID, shooterID;
 
 
@@ -36,8 +36,8 @@ public class Cannonball {
         this.x = x;
         this.y = y;
         this.deg = deg;
-        mFiringTime = System.currentTimeMillis();
-        mLastTime = mFiringTime;
+        firingTime = System.currentTimeMillis();
+        lastTime = firingTime;
         UUID = uuid;
         this.shooterID = shooterID;
     }
@@ -107,8 +107,8 @@ public class Cannonball {
     public void update() {
 
         long nowTime = System.currentTimeMillis();
-        long deltaTime = nowTime - mLastTime;
-        mLastTime = nowTime;
+        long deltaTime = nowTime - lastTime;
+        lastTime = nowTime;
 
 
         float movementDist = deltaTime * SPEED;
@@ -148,7 +148,7 @@ public class Cannonball {
 
     public void draw(Canvas canvas) {
         long nowTime = System.currentTimeMillis();
-        long ageTime = nowTime - mFiringTime;
+        long ageTime = nowTime - firingTime;
 
 //            for (int i = 0; i < mPath.size(); i++) {
 //                Paint paint = new Paint();
@@ -214,11 +214,11 @@ public class Cannonball {
     }
 
     public long getFiringTime() {
-        return mFiringTime;
+        return firingTime;
     }
 
-    public void setmFiringTime(long mFiringTime) {
-        this.mFiringTime = mFiringTime;
+    public void setFiringTime(long firingTime) {
+        this.firingTime = firingTime;
     }
 
     public int getUUID() {
