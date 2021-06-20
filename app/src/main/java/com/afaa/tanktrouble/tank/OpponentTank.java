@@ -14,14 +14,14 @@ public class OpponentTank extends Tank {
     private int opponentID;
 
     public OpponentTank(Activity activity, int _opponentId, TankColor tankColor) {
-        mWidth = Math.max(UserUtils.scaleGraphicsInt(TANK_WIDTH_CONST), 1);
-        mHeight = Math.max(UserUtils.scaleGraphicsInt(TANK_HEIGHT_CONST), 1);
+        width = Math.max(UserUtils.scaleGraphicsInt(TANK_WIDTH_CONST), 1);
+        height = Math.max(UserUtils.scaleGraphicsInt(TANK_HEIGHT_CONST), 1);
         opponentID = _opponentId;
-        mBitmap = tankColor.getTankBitmap(activity);
-        mBitmap = Bitmap.createScaledBitmap(mBitmap, mWidth, mHeight, false);
-        mColorIndex = tankColor.getIndex();
-        mScore = INITIAL_SCORE;
-        mIsAlive = true;
+        bitmap = tankColor.getTankBitmap(activity);
+        bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
+        colorIndex = tankColor.getIndex();
+        score = INITIAL_SCORE;
+        isAlive = true;
         if (opponentID > -1) {
             addPosDataRefListeners();
 
@@ -35,9 +35,9 @@ public class OpponentTank extends Tank {
         Position position = GameData.getInstance().getOpponentPosition();
         if (position != null) {
             position = position.scalePosition();
-            mX = (int) position.x;
-            mY = (int) position.y;
-            mDeg = position.deg;
+            x = (int) position.x;
+            y = (int) position.y;
+            deg = position.deg;
         }
     }
 
@@ -46,6 +46,6 @@ public class OpponentTank extends Tank {
 //    }
 
     public void respawn() {
-        mIsAlive = true;
+        isAlive = true;
     }
 }

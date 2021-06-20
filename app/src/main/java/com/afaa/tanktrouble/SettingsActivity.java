@@ -8,7 +8,7 @@ import android.widget.EditText;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private EditText mEditUsername;
+    private EditText editUsername;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,8 +16,8 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         String username = UserUtils.getUsername();
-        mEditUsername = findViewById(R.id.edit_username);
-        mEditUsername.setText(username);
+        editUsername = findViewById(R.id.edit_username);
+        editUsername.setText(username);
     }
 
 
@@ -32,7 +32,7 @@ public class SettingsActivity extends AppCompatActivity {
     public void onClickRandomizeButton(View view) {
         String randomUsername = UserUtils.generateRandomUsername();
         UserUtils.setUsername(randomUsername);
-        mEditUsername.setText(randomUsername);
+        editUsername.setText(randomUsername);
     }
 
 }

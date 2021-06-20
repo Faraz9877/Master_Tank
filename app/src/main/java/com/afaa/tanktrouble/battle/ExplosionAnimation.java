@@ -12,10 +12,10 @@ import com.afaa.tanktrouble.tank.Tank;
 
 public class ExplosionAnimation {
     
-    private long mPrevFrameTime;
-    private int mFrameIndex;
-    private int mX;
-    private int mY;
+    private long prevFrameTime;
+    private int frameIndex;
+    private final int x;
+    private final int y;
 
     private static Bitmap[] sExplosionBitmaps;
     private static int sExplosionWidth;
@@ -57,31 +57,31 @@ public class ExplosionAnimation {
     ExplosionAnimation(Tank tank) {
         PointF tankCenter = tank.getCenter();
 
-        mPrevFrameTime = System.currentTimeMillis();
-        mFrameIndex = 0;
-        mX = (int) tankCenter.x - sExplosionWidth/2;
-        mY = (int) tankCenter.y - sExplosionHeight/2;
+        prevFrameTime = System.currentTimeMillis();
+        frameIndex = 0;
+        x = (int) tankCenter.x - sExplosionWidth/2;
+        y = (int) tankCenter.y - sExplosionHeight/2;
     }
 
 
     public boolean isRemovable() {
-        return mFrameIndex >= sExplosionBitmaps.length;
+        return frameIndex >= sExplosionBitmaps.length;
     }
 
 
     public void draw(Canvas canvas) {
         long nowTime = System.currentTimeMillis();
-        long deltaTime = nowTime - mPrevFrameTime;
+        long deltaTime = nowTime - prevFrameTime;
 
 
         if (deltaTime > EXPLOSION_FRAME_DURATION) {
-            mPrevFrameTime = nowTime;
-            mFrameIndex++;
+            prevFrameTime = nowTime;
+            frameIndex++;
         } 
 
 
-        if (mFrameIndex < sExplosionBitmaps.length) {
-            canvas.drawBitmap(sExplosionBitmaps[mFrameIndex], mX, mY, null);
+        if (frameIndex < sExplosionBitmaps.length) {
+            canvas.drawBitmap(sExplosionBitmaps[frameIndex], x, y, null);
         }
     }
 }

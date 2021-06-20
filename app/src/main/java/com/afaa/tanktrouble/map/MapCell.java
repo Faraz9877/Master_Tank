@@ -2,28 +2,28 @@ package com.afaa.tanktrouble.map;
 
 public class MapCell {
 
-    private boolean mTopWall, mRightWall, mBottomWall, mLeftWall;
+    private boolean topWall, rightWall, bottomWall, leftWall;
 
     MapCell(String code) {
-        mLeftWall = code.contains("L");
-        mTopWall = code.contains("T");
-        mRightWall = code.contains("R");
-        mBottomWall = code.contains("B");
+        leftWall = code.contains("L");
+        topWall = code.contains("T");
+        rightWall = code.contains("R");
+        bottomWall = code.contains("B");
     }
 
     public boolean hasLeftWall() {
-        return mLeftWall;
+        return leftWall;
     }
 
     public boolean hasTopWall() {
-        return mTopWall;
+        return topWall;
     }
 
     public boolean hasRightWall() {
-        return mRightWall;
+        return rightWall;
     }
 
     public boolean hasBottomWall() {
-        return mBottomWall;
+        return bottomWall;
     }
 }

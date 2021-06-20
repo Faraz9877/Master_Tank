@@ -12,13 +12,13 @@ import com.afaa.tanktrouble.cannonball.Cannonball;
 import com.afaa.tanktrouble.map.MapUtils;
 
 public abstract class Tank {
-    Bitmap mBitmap;
-    int mX, mY;
-    float mDeg;
-    int mWidth, mHeight;
-    int mColorIndex;
-    int mScore;
-    boolean mIsAlive;
+    Bitmap bitmap;
+    int x, y;
+    float deg;
+    int width, height;
+    int colorIndex;
+    int score;
+    boolean isAlive;
 
     protected long lastTime;
 
@@ -31,9 +31,9 @@ public abstract class Tank {
 
 
     public void updatePosition(int x, int y, float deg) {
-        mX = x;
-        mY = y;
-        mDeg = deg;
+        this.x = x;
+        this.y = y;
+        this.deg = deg;
 
         lastTime = System.currentTimeMillis();
     }
@@ -366,54 +366,54 @@ public abstract class Tank {
 
 
     public void draw(Canvas canvas) {
-        if (mX != 0 || mY != 0) {
+        if (x != 0 || y != 0) {
             Matrix matrix = new Matrix();
-            matrix.setRotate(mDeg);
-            Bitmap rotatedBitmap = Bitmap.createBitmap(mBitmap, 0, 0,
-                    mBitmap.getWidth(), mBitmap.getHeight(), matrix, false);
-            canvas.drawBitmap(rotatedBitmap, mX, mY, null);
+            matrix.setRotate(deg);
+            Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0,
+                    bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+            canvas.drawBitmap(rotatedBitmap, x, y, null);
         }
     }
 
     public void kill() {
-        mIsAlive = false;
+        isAlive = false;
         decrementScore();
     }
 
     public PointF getCenter() {
-        return Tank.tankHitbox(mX, mY, mDeg, mWidth, mHeight)[7];
+        return Tank.tankHitbox(x, y, deg, width, height)[7];
     }
 
     public Bitmap getBitmap() {
-        return mBitmap;
+        return bitmap;
     }
 
     public int getWidth() {
-        return mWidth;
+        return width;
     }
 
     public int getHeight() {
-        return mHeight;
+        return height;
     }
 
     public float getDegrees() {
-        return mDeg;
+        return deg;
     }
 
     public int getColorIndex() {
-        return mColorIndex;
+        return colorIndex;
     }
 
     public int getScore() {
-        return mScore;
+        return score;
     }
 
     public void decrementScore() {
-        mScore--;
+        score--;
     }
 
     public boolean detectCollision(Cannonball cannonball) {
-        PointF[] hitbox = Tank.tankHitbox(mX, mY, mDeg, mWidth, mHeight);
+        PointF[] hitbox = Tank.tankHitbox(x, y, deg, width, height);
         int cannonballX = cannonball.getX();
         int cannonballY = cannonball.getY();
         int cannonballRadius = cannonball.getRadius();
@@ -433,7 +433,7 @@ public abstract class Tank {
     }
 
     public boolean isAlive() {
-        return mIsAlive;
+        return isAlive;
     }
 
 

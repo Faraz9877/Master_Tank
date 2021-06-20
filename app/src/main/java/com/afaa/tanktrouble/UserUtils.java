@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
-import android.util.Log;
 
 import com.afaa.tanktrouble.datahouse.GameData;
 
@@ -14,11 +13,11 @@ import org.jetbrains.annotations.Contract;
 import java.util.Random;
 
 public class UserUtils {
-    private static SharedPreferences sSharedPref;
-    private static String[] sAdjectiveList, sNounList;
-    private static String sUsername, sUserId;
-    private static int sScreenWidth, sScreenHeight;
-    private static float sScreenScale;
+    private static SharedPreferences sharedPrefs;
+    private static String[] adjectiveList, nounList;
+    private static String username, userId;
+    private static int screenWidth, screenHeight;
+    private static float screenScale;
 
     private static final String USERS_KEY = Constants.USERS_KEY;
     private static final String USER_ID_KEY = Constants.USER_ID_KEY;
@@ -26,13 +25,13 @@ public class UserUtils {
     private static final String TAG = "WL/UserUtils";
 
     public static void initialize(Activity activity) {
-        sAdjectiveList = activity.getResources().getStringArray(R.array.adjective_list);
-        sNounList = activity.getResources().getStringArray(R.array.noun_list);
-        sSharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
-        sUserId = sSharedPref.getString(USER_ID_KEY, "");
-        sUsername = sSharedPref.getString(USERNAME_KEY, "");
+        adjectiveList = activity.getResources().getStringArray(R.array.adjective_list);
+        nounList = activity.getResources().getStringArray(R.array.noun_list);
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
+        userId = sharedPrefs.getString(USER_ID_KEY, "");
+        username = sharedPrefs.getString(USERNAME_KEY, "");
         setScreenSize(activity);
-        setUsername(sUsername);
+        setUsername(username);
     }
 
 
@@ -47,25 +46,25 @@ public class UserUtils {
             statusBarHeight = activity.getResources().getDimensionPixelSize(resourceId);
         }
 
-        sScreenWidth = metrics.widthPixels;
-        sScreenHeight = metrics.heightPixels - statusBarHeight;
-        sScreenScale = sScreenWidth / 1080f;
+        screenWidth = metrics.widthPixels;
+        screenHeight = metrics.heightPixels - statusBarHeight;
+        screenScale = screenWidth / 1080f;
     }
 
 
     public static float scaleGraphicsFloat(float scale) {
-        return scale*sScreenWidth;
+        return scale* screenWidth;
     }
 
 
     public static int scaleGraphicsInt(float scale) {
-        return Math.round(scale*sScreenWidth);
+        return Math.round(scale* screenWidth);
     }
 
 
 
     public static void setUsername(String newUsername){
-        if (sUserId.length() == 0 || sUsername.length() == 0) {
+        if (userId.length() == 0 || username.length() == 0) {
             String randomUsername = generateRandomUsername();
             setFirstUsername(randomUsername);
         } else {
@@ -75,18 +74,16 @@ public class UserUtils {
 
 
     private static void setFirstUsername(final String firstUsername) {
-        sUserId = Integer.toString(GameData.getInstance().getUserId());
-        sUsername = firstUsername;
-        putStringInPrefs(USER_ID_KEY, sUserId);
+        userId = Integer.toString(GameData.getInstance().getUserId());
+        username = firstUsername;
+        putStringInPrefs(USER_ID_KEY, userId);
         putStringInPrefs(USERNAME_KEY, firstUsername);
     }
 
 
     private static void updateUsername(final String newUsername) {
-        sUsername = newUsername;
+        username = newUsername;
         putStringInPrefs(USERNAME_KEY, newUsername);
-//        Log.d(TAG, "updated new username for sUserId=" + sUserId
-//                + " with sUsername=" + sUsername);
     }
 
 
@@ -96,9 +93,9 @@ public class UserUtils {
         Random random = new Random();
 
 
-        String adjective1 = sAdjectiveList[random.nextInt(sAdjectiveList.length)];
-        String adjective2 = sAdjectiveList[random.nextInt(sAdjectiveList.length)];
-        String noun = sNounList[random.nextInt(sNounList.length)];
+        String adjective1 = adjectiveList[random.nextInt(adjectiveList.length)];
+        String adjective2 = adjectiveList[random.nextInt(adjectiveList.length)];
+        String noun = nounList[random.nextInt(nounList.length)];
 
 
         adjective1 = adjective1.substring(0, 1).toUpperCase()
@@ -113,7 +110,7 @@ public class UserUtils {
 
 
     private static void putStringInPrefs (String key, String value) {
-        SharedPreferences.Editor sSharedPrefEditor = sSharedPref.edit();
+        SharedPreferences.Editor sSharedPrefEditor = sharedPrefs.edit();
         sSharedPrefEditor.putString(key, value);
         sSharedPrefEditor.apply();
     }
@@ -125,19 +122,19 @@ public class UserUtils {
     }
 
     @Contract(pure = true)
-    public static String getUsername() { return sUsername; }
+    public static String getUsername() { return username; }
 
     @Contract(pure = true)
-    public static String getUserId() { return sUserId; }
+    public static String getUserId() { return userId; }
 
     @Contract(pure = true)
-    public static int getScreenWidth() { return sScreenWidth; }
+    public static int getScreenWidth() { return screenWidth; }
 
     @Contract(pure = true)
-    public static int getScreenHeight() { return sScreenHeight; }
+    public static int getScreenHeight() { return screenHeight; }
 
     @Contract(pure = true)
-    public static float getScreenScale() { return sScreenScale; }
+    public static float getScreenScale() { return screenScale; }
 
 
 

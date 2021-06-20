@@ -5,15 +5,15 @@ import android.view.SurfaceHolder;
 
 public class BattleThread extends Thread {
 
-    private final BattleView mBattleView;
-    private final SurfaceHolder mSurfaceHolder;
+    private final BattleView battleView;
+    private final SurfaceHolder surfaceHolder;
     private boolean mRunning;
 
 
     BattleThread(SurfaceHolder surfaceHolder, BattleView battleView) {
         super();
-        mSurfaceHolder = surfaceHolder;
-        mBattleView = battleView;
+        this.surfaceHolder = surfaceHolder;
+        this.battleView = battleView;
     }
 
 
@@ -28,10 +28,10 @@ public class BattleThread extends Thread {
             Canvas canvas = null;
 
             try {
-                canvas = mSurfaceHolder.lockCanvas();
-                synchronized (mSurfaceHolder) {
-                    if (canvas != null && mBattleView != null) {
-                        mBattleView.draw(canvas);
+                canvas = surfaceHolder.lockCanvas();
+                synchronized (surfaceHolder) {
+                    if (canvas != null && battleView != null) {
+                        battleView.draw(canvas);
                     }
                 }
             } catch (Exception e) {
@@ -41,7 +41,7 @@ public class BattleThread extends Thread {
 
             if (canvas != null) {
                 try {
-                    mSurfaceHolder.unlockCanvasAndPost(canvas);
+                    surfaceHolder.unlockCanvasAndPost(canvas);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

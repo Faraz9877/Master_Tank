@@ -12,12 +12,12 @@ import java.util.ArrayList;
 
 public class Cannonball {
 
-    private ArrayList<Coordinate> mPath;
-    private int mPrevPathIndex;
-    private float mX, mY;
-    private float mDeg;
+    private final ArrayList<Coordinate> path;
+    private int prevPathIndex;
+    private float x, y;
+    private final float deg;
     private long mFiringTime, mLastTime;
-    private int mUUID, mShooterID;
+    private final int UUID, shooterID;
 
 
     private static final float SPEED =
@@ -31,15 +31,15 @@ public class Cannonball {
 
 
     public Cannonball(int x, int y, float deg, int uuid, int shooterID) {
-        mPath = generatePath(x, y, deg);
-        mPrevPathIndex = 0;
-        mX = x;
-        mY = y;
-        mDeg = deg;
+        path = generatePath(x, y, deg);
+        prevPathIndex = 0;
+        this.x = x;
+        this.y = y;
+        this.deg = deg;
         mFiringTime = System.currentTimeMillis();
         mLastTime = mFiringTime;
-        mUUID = uuid;
-        mShooterID = shooterID;
+        UUID = uuid;
+        this.shooterID = shooterID;
     }
 
 
@@ -116,8 +116,8 @@ public class Cannonball {
 
         while (movementDist > 0) {
 
-            Coordinate prevPathCoord = mPath.get(mPrevPathIndex);
-            Coordinate nextPathCoord = mPath.get(mPrevPathIndex + 1);
+            Coordinate prevPathCoord = path.get(prevPathIndex);
+            Coordinate nextPathCoord = path.get(prevPathIndex + 1);
 
 
             float pathDx = nextPathCoord.x - prevPathCoord.x;
@@ -127,19 +127,19 @@ public class Cannonball {
 
             float dx = movementDist * pathDx / pathDist;
             float dy = movementDist * pathDy / pathDist;
-            float prevDist = calcDistance(prevPathCoord.x, prevPathCoord.y, mX+dx, mY+dy);
+            float prevDist = calcDistance(prevPathCoord.x, prevPathCoord.y, x +dx, y +dy);
 
 
             if (prevDist > pathDist) {
 
-                mPrevPathIndex++;
-                mX = nextPathCoord.x;
-                mY = nextPathCoord.y;
-                movementDist -= calcDistance(mX, mY, nextPathCoord.x, nextPathCoord.y);
+                prevPathIndex++;
+                x = nextPathCoord.x;
+                y = nextPathCoord.y;
+                movementDist -= calcDistance(x, y, nextPathCoord.x, nextPathCoord.y);
             } else {
 
-                mX += dx;
-                mY += dy;
+                x += dx;
+                y += dy;
                 movementDist = 0;
             }
         }
@@ -162,25 +162,25 @@ public class Cannonball {
 
             Paint paint = new Paint();
             paint.setARGB(255, 0, 0, 0);
-            canvas.drawCircle(mX, mY, RADIUS, paint);
+            canvas.drawCircle(x, y, RADIUS, paint);
         } else {
 
             int tint = (int) Math.max(255 * (CANNONBALL_LIFESPAN - ageTime)/
                     (CANNONBALL_LIFESPAN-START_FADING_AGE), 0);
             Paint paint = new Paint();
             paint.setARGB(tint, 0, 0, 0);
-            canvas.drawCircle(mX, mY, RADIUS, paint);
+            canvas.drawCircle(x, y, RADIUS, paint);
         }
     }
 
     public Path getStandardizedPath() {
         ArrayList<Coordinate> standardizedCoords = new ArrayList<>();
 
-        for (Coordinate coordinate : mPath) {
+        for (Coordinate coordinate : path) {
             standardizedCoords.add(coordinate.standardized());
         }
 
-        return new Path(standardizedCoords, mUUID);
+        return new Path(standardizedCoords, UUID);
     }
 
 
@@ -194,19 +194,19 @@ public class Cannonball {
     }
 
     public int getX() {
-        return (int) mX;
+        return (int) x;
     }
 
     public int getY() {
-        return (int) mY;
+        return (int) y;
     }
 
     public float getDeg() {
-        return mDeg;
+        return deg;
     }
 
     public Position getPosition() {
-        return new Position((int) mX, (int) mY, mDeg);
+        return new Position((int) x, (int) y, deg);
     }
 
     public int getRadius() {
@@ -222,10 +222,10 @@ public class Cannonball {
     }
 
     public int getUUID() {
-        return mUUID;
+        return UUID;
     }
 
     public int getShooterID() {
-        return mShooterID;
+        return shooterID;
     }
 }
