@@ -30,7 +30,6 @@ public class GameData {
     private Position opponentPosition;
     private Integer userAliveBulletsCount;
     private CannonballSet cannonballSet;
-    private ArrayList<Cannonball> newCannonballs;
     int userId;
     int opponentId;
     int status;
@@ -47,7 +46,6 @@ public class GameData {
         userPosition = Tank.getRandomInitialPosition();
         opponentPosition = Tank.getRandomInitialPosition();
         userAliveBulletsCount = 0;
-        newCannonballs = new ArrayList<>();
         cannonballSet = new CannonballSet();
         status = 0;
         lastOpponentCannonId = -1;
@@ -71,22 +69,26 @@ public class GameData {
         explosionSoundPool.play(explosionSoundId, 1, 1, 0, 0, 1);
     }
 
-    public void sync(boolean gameOver)
-    {
-        if(btService == null)
+    public void signalEnd() {
+        if (btService == null)
             return;
 
-        String token;
-        if (!gameOver) {
-            token = DataProtocol.tokenizeGameData(userUserName, userPosition,
-                                                  newCannonballs.size() > 0 ? newCannonballs: null);
-            newCannonballs.clear();
-        }
-        else {
-            token = GAME_OVER_MESSAGE;
-        }
+        btService.getChannel().send(GAME_OVER_MESSAGE.getBytes());
+    }
 
 
+    public void syncPosition(){
+        if(btService == null || userPosition == null)
+            return;
+        String token = DataProtocol.tokenizePosition(userPosition);
+        btService.getChannel().send(token.getBytes());
+    }
+
+
+    public void syncCannonBall(Cannonball cannonball) {
+        if(btService == null || cannonball == null)
+            return;
+        String token = DataProtocol.tokenizeCannonBall(cannonball);
         btService.getChannel().send(token.getBytes());
 
     }
@@ -140,9 +142,6 @@ public class GameData {
         return cannonballSet;
     }
 
-    public void addCannonBallToNewCannonballs(Cannonball cannonball){
-        newCannonballs.add(cannonball);
-    }
 
     public int getStatus() {
         return status;

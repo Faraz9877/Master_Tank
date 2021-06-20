@@ -137,7 +137,8 @@ public class BattleActivity extends AppCompatActivity {
                                 endGame();
                             }
                             else {
-                                DataProtocol.detokenizeGameData(data);
+                                DataProtocol.detokenizePosition(data);
+                                DataProtocol.detokenizeCannonBall(data);
                             }
                         }
                     });
