@@ -15,6 +15,7 @@ import com.afaa.tanktrouble.R;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.UUID;
 
 
@@ -321,8 +322,9 @@ public class BluetoothService extends Service {
 
             while (true) {
                 try {
-                    inputStream.read(buffer);
-                    process(buffer);
+                    int countReadBytes = inputStream.read(buffer);
+                    process(Arrays.copyOfRange(buffer, 0, countReadBytes));
+                    buffer = new byte[1024];
                 } catch (IOException e) {
                     break;
                 }

@@ -18,6 +18,7 @@ public class DataProtocol {
             token.append(",");
             token.append(stdPos.deg);
             token.append(";");
+            token.append("\n");
         }
         return token.toString();
     }
@@ -39,6 +40,7 @@ public class DataProtocol {
             token.append(",");
             token.append(cannonball.getFiringTime());
             token.append(";");
+            token.append("\n");
         }
         return token.toString();
     }
