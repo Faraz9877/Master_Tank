@@ -179,6 +179,10 @@ public class GameData {
         userAliveBulletsCount -= 1;
     }
 
+    public void resetUserAliveBulletsCount() {
+        userAliveBulletsCount = 0;
+    }
+
     public void setOpponentPosition(Position position) {
         opponentPosition = position;
     }

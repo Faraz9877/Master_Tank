@@ -168,6 +168,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
 
     private void resetTanks() {
         GameData.getInstance().getCannonballSet().clear();
+        GameData.getInstance().resetUserAliveBulletsCount();
         GameData.getInstance().setUserPosition(Tank.getRandomInitialPosition());
         GameData.getInstance().setOpponentPosition(Tank.getRandomInitialPosition());
     }
