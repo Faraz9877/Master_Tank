@@ -48,7 +48,6 @@ public class DataProtocol {
     public static void detokenizePosition(String token){
         int PsIndex = token.indexOf("P:");
         if (PsIndex != -1){
-            Log.d("Receiver Position:", token);
             Position position;
             StringBuilder cursor = new StringBuilder();
             int xydegCounter = 0;
@@ -82,7 +81,6 @@ public class DataProtocol {
     public static void detokenizeCannonBall(String token){
         int CsIndex = token.indexOf("C:");
         if (CsIndex != -1){
-            Log.d("Receiver CannonBall:", token);
             int maxCannonId = -1;
             StringBuilder cursor = new StringBuilder();
             int x = 10, y = 20, uuid = 0, shooterID = 0;

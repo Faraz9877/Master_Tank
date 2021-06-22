@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
@@ -12,10 +13,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import com.afaa.tanktrouble.Constants;
 import com.afaa.tanktrouble.MainActivity;
+import com.afaa.tanktrouble.UserUtils;
+import com.afaa.tanktrouble.cannonball.Cannonball;
 import com.afaa.tanktrouble.datahouse.BluetoothService;
 import com.afaa.tanktrouble.datahouse.DataProtocol;
 import com.afaa.tanktrouble.datahouse.GameData;
+import com.afaa.tanktrouble.tank.Tank;
 
 public class BattleActivity extends AppCompatActivity {
 
@@ -133,12 +138,17 @@ public class BattleActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             String data = new String(buffer);
+                            Log.d("Receiver data", data);
                             if (data.contains(GameData.GAME_OVER_MESSAGE)) {
                                 endGame();
                             }
+                            else if(data.contains(GameData.TANK_FIRE)){
+                                Cannonball cannonball = GameData.getInstance().opponentTankFire();
+                                GameData.getInstance().getCannonballSet().addCannonball(cannonball);
+                            }
                             else {
                                 DataProtocol.detokenizePosition(data);
-                                DataProtocol.detokenizeCannonBall(data);
+//                                DataProtocol.detokenizeCannonBall(data);
                             }
                         }
                     });

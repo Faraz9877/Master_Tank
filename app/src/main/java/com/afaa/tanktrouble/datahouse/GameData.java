@@ -1,10 +1,13 @@
 package com.afaa.tanktrouble.datahouse;
 
 import android.app.Activity;
+import android.graphics.PointF;
 import android.media.AudioManager;
 import android.media.SoundPool;
 
+import com.afaa.tanktrouble.Constants;
 import com.afaa.tanktrouble.R;
+import com.afaa.tanktrouble.UserUtils;
 import com.afaa.tanktrouble.battle.Position;
 import com.afaa.tanktrouble.cannonball.Cannonball;
 import com.afaa.tanktrouble.cannonball.CannonballSet;
@@ -21,7 +24,8 @@ public class GameData {
     private static final int CLIENT_ID = 0;
     private static final int SERVER_ID = 1;
 
-    public static String GAME_OVER_MESSAGE = "#Game Over!#";
+    public static String GAME_OVER_MESSAGE = "#Game Over!#\n";
+    public static String TANK_FIRE = "#Tank Fire!#\n";
 
     private ArrayList<Integer> playerIDs;
     private String userUserName;
@@ -34,6 +38,7 @@ public class GameData {
     int opponentId;
     int status;
     int lastOpponentCannonId;
+    int opponentCannonCounter;
     boolean isServer;
     private BluetoothService btService;
     SoundPool shootSoundPool, explosionSoundPool;
@@ -49,6 +54,7 @@ public class GameData {
         cannonballSet = new CannonballSet();
         status = 0;
         lastOpponentCannonId = -1;
+        opponentCannonCounter = 0;
         isServer = false;
         userId = CLIENT_ID;
         opponentId = SERVER_ID;
@@ -91,6 +97,10 @@ public class GameData {
         String token = DataProtocol.tokenizeCannonBall(cannonball);
         btService.getChannel().send(token.getBytes());
 
+    }
+
+    public void signalTankFire() {
+        btService.getChannel().send(TANK_FIRE.getBytes());
     }
 
     public String getOpponentUserName() {
@@ -145,6 +155,21 @@ public class GameData {
 
     public int getStatus() {
         return status;
+    }
+
+    public Cannonball opponentTankFire(){
+        PointF[] tankPolygon = Tank.tankPolygon(
+                getOpponentPosition().x,
+                getOpponentPosition().y,
+                getOpponentPosition().deg,
+                Math.max(UserUtils.scaleGraphicsInt(Constants.TANK_WIDTH_CONST), 1),
+                Math.max(UserUtils.scaleGraphicsInt(Constants.TANK_HEIGHT_CONST), 1));
+        Cannonball cannonball = new Cannonball((int) tankPolygon[0].x,
+                (int) tankPolygon[0].y,
+                getOpponentPosition().deg,
+                getOpponentId() + opponentCannonCounter * 2, getOpponentId());
+        opponentCannonCounter++;
+        return cannonball;
     }
 
     public int getLastOpponentCannonId() {

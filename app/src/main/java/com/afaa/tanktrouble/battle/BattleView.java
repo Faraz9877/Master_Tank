@@ -398,9 +398,10 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
 
         if (displacement <= fireButtonDiameter) {
             if (!fireButtonPressed && GameData.getInstance().getUserAliveBulletsCount() < MAX_USER_CANNONBALLS) {
+                GameData.getInstance().signalTankFire();
                 Cannonball cannonball = userTank.fire();
                 GameData.getInstance().getCannonballSet().addCannonball(cannonball);
-                GameData.getInstance().syncCannonBall(cannonball);
+//                GameData.getInstance().syncCannonBall(cannonball);
                 GameData.getInstance().incrementUserAliveBulletsCount();
             }
             fireButtonPressed = true;
