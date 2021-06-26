@@ -26,6 +26,7 @@ import com.afaa.tanktrouble.tank.UserTank;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Timer;
 
 @SuppressLint("ViewConstructor")
 public class BattleView extends SurfaceView implements SurfaceHolder.Callback, View.OnTouchListener {
@@ -44,6 +45,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
     private int fireButtonDiameter, fireButtonPressedDiameter;
     private float userDeg;
     private boolean fireButtonPressed;
+    private Timer battleTimer;
 
     Activity activity;
 
@@ -71,7 +73,10 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         explosionAnimations = new HashSet<>();
         addEnteringTanks(activity);
         getHolder().addCallback(this);
+
+        battleTimer = new Timer("BattleTimer");
         battleThread = new BattleThread(getHolder(), this);
+
         setFocusable(true);
         setControlGraphicsData(activity);
         setOnTouchListener(this);
@@ -83,19 +88,22 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        if (battleThread.getState() == Thread.State.NEW) {
-            battleThread.setRunning(true);
-            battleThread.start();
-        }
+//        if (battleThread.getState() == Thread.State.NEW) {
+//            battleThread.setRunning(true);
+//            battleThread.start();
+//        }
+        battleTimer.scheduleAtFixedRate(battleThread, 0, 30);
+
     }
 
     public void finishThread() {
-        try {
-            battleThread.setRunning(false);
-            battleThread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            battleThread.setRunning(false);
+//            battleThread.join();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        battleTimer.cancel();
     }
 
     @Override

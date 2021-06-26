@@ -3,7 +3,9 @@ package com.afaa.tanktrouble.battle;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
-public class BattleThread extends Thread {
+import java.util.TimerTask;
+
+public class BattleThread extends TimerTask {
 
     private final BattleView battleView;
     private final SurfaceHolder surfaceHolder;
@@ -16,15 +18,13 @@ public class BattleThread extends Thread {
         this.battleView = battleView;
     }
 
-
     public void setRunning(boolean isRunning) {
         running = isRunning;
     }
 
-
     @Override
     public void run() {
-        while (running) {
+//        while (running) {
             Canvas canvas = null;
 
             try {
@@ -38,7 +38,6 @@ public class BattleThread extends Thread {
                 e.printStackTrace();
             }
 
-
             if (canvas != null) {
                 try {
                     surfaceHolder.unlockCanvasAndPost(canvas);
@@ -46,6 +45,6 @@ public class BattleThread extends Thread {
                     e.printStackTrace();
                 }
             }
-        }
+//        }
     }
 }
