@@ -146,6 +146,9 @@ public class BattleActivity extends AppCompatActivity {
                                 Cannonball cannonball = GameData.getInstance().opponentTankFire();
                                 GameData.getInstance().getCannonballSet().addCannonball(cannonball);
                             }
+                            else if(data.contains(GameData.TANK_DIED)){
+                                GameData.getInstance().setOpponentTankHit(true);
+                            }
                             else {
                                 DataProtocol.detokenizePosition(data);
 //                                DataProtocol.detokenizeCannonBall(data);

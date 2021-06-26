@@ -123,7 +123,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         drawJoystick(canvas);
 
         boolean userTankHit = GameData.getInstance().getCannonballSet().updateAndDetectUserCollision(userTank);
-        boolean opponentTankHit = GameData.getInstance().getCannonballSet().updateAndDetectUserCollision(opponentTank);
+        boolean opponentTankHit = GameData.getInstance().isOpponentTankHit();
 
         GameData.getInstance().getCannonballSet().draw(canvas);
 
@@ -141,6 +141,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
             userTank.respawn();
         }
         else {
+            GameData.getInstance().signalDeath();
             userTank.kill();
             explosionAnimations.add(new ExplosionAnimation(userTank));
             if (userTank.getScore() == 0) {
@@ -160,14 +161,15 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         }
 
         drawExplosions(canvas);
+        drawScores(canvas);
         if (opponentTankHit || userTankHit) {
             resetTanks();
         }
-        drawScores(canvas);
     }
 
     private void resetTanks() {
         GameData.getInstance().getCannonballSet().clear();
+        GameData.getInstance().setOpponentTankHit(false);
         GameData.getInstance().resetUserAliveBulletsCount();
         GameData.getInstance().setUserPosition(Tank.getRandomInitialPosition());
         GameData.getInstance().setOpponentPosition(Tank.getRandomInitialPosition());

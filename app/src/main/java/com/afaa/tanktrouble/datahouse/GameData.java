@@ -25,6 +25,7 @@ public class GameData {
     private static final int SERVER_ID = 1;
 
     public static String GAME_OVER_MESSAGE = "#Game Over!#\n";
+    public static String TANK_DIED = "#Tank Died!#\n";
     public static String TANK_FIRE = "#Tank Fire!#\n";
 
     private ArrayList<Integer> playerIDs;
@@ -43,6 +44,7 @@ public class GameData {
     private BluetoothService btService;
     SoundPool shootSoundPool, explosionSoundPool;
     int shootSoundId, explosionSoundId;
+    private boolean opponentTankHit;
 
     private GameData() {
         playerIDs = new ArrayList<>(Arrays.asList(SERVER_ID, CLIENT_ID));
@@ -58,6 +60,7 @@ public class GameData {
         isServer = false;
         userId = CLIENT_ID;
         opponentId = SERVER_ID;
+        opponentTankHit = false;
     }
 
     public void createSoundPool(Activity activity){
@@ -82,6 +85,20 @@ public class GameData {
         btService.getChannel().send(GAME_OVER_MESSAGE.getBytes());
     }
 
+    public void signalDeath() {
+        if (btService == null)
+            return;
+
+        btService.getChannel().send(TANK_DIED.getBytes());
+    }
+
+    public boolean isOpponentTankHit() {
+        return opponentTankHit;
+    }
+
+    public void setOpponentTankHit(boolean opponentTankHit) {
+        this.opponentTankHit = opponentTankHit;
+    }
 
     public void syncPosition(){
         if(btService == null || userPosition == null)
@@ -89,7 +106,6 @@ public class GameData {
         String token = DataProtocol.tokenizePosition(userPosition);
         btService.getChannel().send(token.getBytes());
     }
-
 
     public void syncCannonBall(Cannonball cannonball) {
         if(btService == null || cannonball == null)
