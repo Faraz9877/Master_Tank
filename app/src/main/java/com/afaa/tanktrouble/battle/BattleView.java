@@ -242,7 +242,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
 
     private void addEnteringTanks(final Activity activity) {
         final int BLUE_INDEX_JOYSTICK_COLOR = 0;
-        joystickColor = TankColor.values()[BLUE_INDEX_JOYSTICK_COLOR].getPaint();
+        joystickColor = TankColor.values()[GameData.getInstance().getUserId()].getPaint();
         if (userTank == null) {
             TankColor tankColor = TankColor.values()[GameData.getInstance().getUserId()];
             userTank = new UserTank(activity, tankColor, GameData.getInstance().getUserId());
@@ -324,7 +324,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
             float y = joystickBaseCenterY - fireButtonPressedDiameter /2f;
             canvas.drawBitmap(firePressedBitmap, (int) x, (int) y, null);
         } else {
-            canvas.drawBitmap(fireBitmap, fireButtonOffsetX, fireButtonOffsetY, null);
+            canvas.drawBitmap(fireBitmap, fireButtonOffsetX, fireButtonOffsetY, joystickColor);
         }
     }
 
