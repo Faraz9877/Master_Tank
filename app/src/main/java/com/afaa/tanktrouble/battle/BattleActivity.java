@@ -143,12 +143,19 @@ public class BattleActivity extends AppCompatActivity {
                                 endGame();
                             }
                             else if(data.contains(GameData.TANK_FIRE)){
+//                                Log.d("Shoot Time Recv:", "signalTankFire receive time: " +
+//                                    GameData.getInstance().getElapsedTime());
                                 Cannonball cannonball = GameData.getInstance().opponentTankFire();
                                 GameData.getInstance().getCannonballSet().addCannonball(cannonball);
                             }
                             else if(data.contains(GameData.TANK_DIED)){
                                 GameData.getInstance().setOpponentTankHit(true);
                             }
+//                            else if(data.contains(GameData.DELAY_TEST)){
+//                                GameData.getInstance().respondAvgBtDelay(
+//                                        data.substring(data.indexOf(GameData.DELAY_TEST))
+//                                );
+//                            }
                             else {
                                 DataProtocol.detokenizePosition(data);
 //                                DataProtocol.detokenizeCannonBall(data);

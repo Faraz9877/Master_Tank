@@ -46,6 +46,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
     private float userDeg;
     private boolean fireButtonPressed;
     private Timer battleTimer;
+    private static long startTime;
 
     Activity activity;
 
@@ -92,6 +93,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
 //            battleThread.setRunning(true);
 //            battleThread.start();
 //        }
+        startTime = System.currentTimeMillis();
         battleTimer.scheduleAtFixedRate(battleThread, 0, 30);
 
     }
@@ -326,6 +328,10 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         } else {
             canvas.drawBitmap(fireBitmap, fireButtonOffsetX, fireButtonOffsetY, joystickColor);
         }
+    }
+
+    public static long getElapsedTime() {
+        return System.currentTimeMillis() - startTime;
     }
 
     private void drawExplosions(Canvas canvas) {

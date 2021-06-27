@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.graphics.PointF;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.util.Log;
 
 import com.afaa.tanktrouble.Constants;
 import com.afaa.tanktrouble.R;
 import com.afaa.tanktrouble.UserUtils;
+import com.afaa.tanktrouble.battle.BattleView;
 import com.afaa.tanktrouble.battle.Position;
 import com.afaa.tanktrouble.cannonball.Cannonball;
 import com.afaa.tanktrouble.cannonball.CannonballSet;
@@ -27,6 +29,8 @@ public class GameData {
     public static String GAME_OVER_MESSAGE = "#Game Over!#\n";
     public static String TANK_DIED = "#Tank Died!#\n";
     public static String TANK_FIRE = "#Tank Fire!#\n";
+    public static String DELAY_TEST = "#Delay Test!#\n";
+    public static String DELAY_RESP = "#Delay Resp!#\n";
 
     private ArrayList<Integer> playerIDs;
     private String userUserName;
@@ -45,6 +49,7 @@ public class GameData {
     SoundPool shootSoundPool, explosionSoundPool;
     int shootSoundId, explosionSoundId;
     private boolean opponentTankHit;
+    private long startTime, averageBtDelay;
 
     private GameData() {
         playerIDs = new ArrayList<>(Arrays.asList(SERVER_ID, CLIENT_ID));
@@ -117,6 +122,29 @@ public class GameData {
 
     public void signalTankFire() {
         btService.getChannel().send(TANK_FIRE.getBytes());
+//        Log.d("Shoot Time Send:", "signalTankFire send time: " + getElapsedTime());
+    }
+
+    public void setStartTime() {
+        startTime = System.currentTimeMillis();
+    }
+
+    public long getElapsedTime() {
+        return System.currentTimeMillis() - startTime;
+    }
+
+    public void calculateAvgBtDelay() {
+        for(int i = 0; i < 10; i++) {
+            btService.getChannel().send((DELAY_TEST + i).getBytes());
+        }
+    }
+
+    public void respondAvgBtDelay(int i) {
+        btService.getChannel().send((DELAY_RESP + i).getBytes());
+    }
+
+    public void calibrateAvgBtDelay() {
+
     }
 
     public String getOpponentUserName() {

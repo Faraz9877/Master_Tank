@@ -47,35 +47,17 @@ public class DataProtocol {
 
     public static void detokenizePosition(String token){
         int PsIndex = token.indexOf("P:");
-        if (PsIndex != -1){
-            Position position;
-            StringBuilder cursor = new StringBuilder();
-            int xydegCounter = 0;
-            int x = 300, y = 300;
-            float deg = 0;
-            for(int i = PsIndex + 2; i < token.indexOf(";", PsIndex) + 1; i++) {
-                if(token.charAt(i) == ',' || token.charAt(i) == ';') {
-                    if(xydegCounter == 0) {
-                        x = Integer.parseInt(cursor.toString());
-                        xydegCounter ++;
-                    }
-                    else if(xydegCounter == 1) {
-                        y = Integer.parseInt(cursor.toString());
-                        xydegCounter ++;
-                    }
-                    else if(xydegCounter == 2) {
-                        deg = Float.parseFloat(cursor.toString());
-                        xydegCounter = 0;
-                    }
-                    cursor = new StringBuilder();
-                }
-                else {
-                    cursor.append(token.charAt(i));
-                }
-            }
-            position = (new Position(x, y, deg)).scalePosition();
-            GameData.getInstance().setOpponentPosition(position);
-        }
+        int sep1 = token.indexOf(",");
+        int sep2 = token.indexOf(",", sep1 + 1);
+        int sep3 = token.indexOf(";", sep2 + 1);
+        if(PsIndex == -1 || sep1 == -1 || sep2 == -1 || sep3 == -1)
+            return;
+        Position position;
+        int x = Integer.parseInt(token.substring(PsIndex + 2, sep1));;
+        int y = Integer.parseInt(token.substring(sep1 + 1, sep2));
+        float deg = Float.parseFloat(token.substring(sep2 + 1, sep3));
+        position = (new Position(x, y, deg)).scalePosition();
+        GameData.getInstance().setOpponentPosition(position);
     }
 
     public static void detokenizeCannonBall(String token){

@@ -57,7 +57,6 @@ public class DeviceChooserActivity extends AppCompatActivity {
         deviceList.setAdapter(arrayAdapter);
         deviceList.setOnItemClickListener(onItemClickListener);
 
-        // TODO: understand this part
         bindService(new Intent(this, BluetoothService.class), connection, Context.BIND_AUTO_CREATE);
 
         IntentFilter intentFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
@@ -103,7 +102,7 @@ public class DeviceChooserActivity extends AppCompatActivity {
                 initBt();
             }
 
-            // TODO: manage this part
+
             btService.setOnConnected(new BluetoothService.OnConnected() {
                 @Override
                 public void success() {
@@ -114,11 +113,11 @@ public class DeviceChooserActivity extends AppCompatActivity {
                             if (btService.isServer()) {
                                 GameData.getInstance().setServer(true);
                                 startActivity(new Intent(DeviceChooserActivity.this,
-                                        BtGameConfigurationServerActivity.class));
+                                        BattleActivity.class));
                             } else {
                                 GameData.getInstance().setServer(false);
                                 startActivity(new Intent(DeviceChooserActivity.this,
-                                        BtGameConfigurationClientActivity.class));
+                                        BattleActivity.class));
                             }
                             DeviceChooserActivity.this.finish();
                         }
@@ -188,7 +187,7 @@ public class DeviceChooserActivity extends AppCompatActivity {
             btService.getBluetoothAdapter().cancelDiscovery();
 
             String str = ((TextView) view).getText().toString();
-            String address = str.substring(str.length() - 17); // Length of address
+            String address = str.substring(str.length() - 17);
 
             makeToast(address);
 
@@ -226,8 +225,9 @@ public class DeviceChooserActivity extends AppCompatActivity {
         }
         unregisterReceiver(broadcastReceiver);
         if (btService != null && shouldStop) {
-            btService.stopSelf();
-            btService = null;
+//            Log.d("DeviceChooser", "onDestroy: BtService is STOPPING!");
+//            btService.stopSelf();
+//            btService = null;
         }
         unbindService(connection);
         super.onDestroy();
