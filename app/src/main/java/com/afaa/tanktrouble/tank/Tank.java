@@ -6,28 +6,34 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 
 import com.afaa.tanktrouble.Constants;
+import com.afaa.tanktrouble.UserUtils;
+import com.afaa.tanktrouble.battle.Position;
+import com.afaa.tanktrouble.cannonball.Cannonball;
+import com.afaa.tanktrouble.map.MapUtils;
 
 public abstract class Tank {
-    Bitmap mBitmap;
-    int mX, mY;
-    float mDeg;
-    int mWidth, mHeight;
-    int mColorIndex;
-    int mScore;
-    boolean mIsAlive;
+    Bitmap bitmap;
+    int x, y;
+    float deg;
+    int width, height;
+    int colorIndex;
+    int score;
+    boolean isAlive;
 
     protected long lastTime;
 
     static final float TANK_WIDTH_CONST = Constants.TANK_WIDTH_CONST;
     static final float TANK_HEIGHT_CONST = Constants.TANK_HEIGHT_CONST;
+    static final int INITIAL_SCORE = 10;
     private static final float GUN_LENGTH_RATIO = 1/7f;
     private static final float GUN_LEFT_EDGE_RATIO = 39/100f;
     private static final float GUN_RIGHT_EDGE_RATIO = 61/100f;
 
+
     public void updatePosition(int x, int y, float deg) {
-        mX = x;
-        mY = y;
-        mDeg = deg;
+        this.x = x;
+        this.y = y;
+        this.deg = deg;
 
         lastTime = System.currentTimeMillis();
     }
@@ -334,6 +340,19 @@ public abstract class Tank {
                 bodyFront1, bodyFront2, bodyFront3, bodyRear1, bodyRear2, bodyRear3};
     }
 
+    public static Position getRandomInitialPosition() {
+        int x, y, deg;
+        do {
+            x = UserUtils.randomInt(50, UserUtils.getScreenWidth());
+            y = UserUtils.randomInt(UserUtils.scaleGraphicsInt(1.1f * Constants.MAP_TOP_Y_CONST),
+                    UserUtils.scaleGraphicsInt(0.9f*Constants.MAP_TOP_Y_CONST + 1));
+            deg = UserUtils.randomInt(-180, 180);
+        } while (MapUtils.tankWallCollision(x, y, deg,
+                Math.max(UserUtils.scaleGraphicsInt(TANK_WIDTH_CONST), 1),
+                Math.max(UserUtils.scaleGraphicsInt(TANK_HEIGHT_CONST), 1)));
+        return new Position(x, y, deg);
+    }
+
 
     private static PointF weightedMidpoint(PointF pt1, PointF pt2, float weight) {
 
@@ -347,53 +366,74 @@ public abstract class Tank {
 
 
     public void draw(Canvas canvas) {
-        if (mX != 0 || mY != 0) {
+        if (x != 0 || y != 0) {
             Matrix matrix = new Matrix();
-            matrix.setRotate(mDeg);
-            Bitmap rotatedBitmap = Bitmap.createBitmap(mBitmap, 0, 0,
-                    mBitmap.getWidth(), mBitmap.getHeight(), matrix, false);
-            canvas.drawBitmap(rotatedBitmap, mX, mY, null);
+            matrix.setRotate(deg);
+            Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0,
+                    bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+            canvas.drawBitmap(rotatedBitmap, x, y, null);
         }
     }
 
     public void kill() {
-
+        isAlive = false;
+        decrementScore();
     }
 
     public PointF getCenter() {
-        return Tank.tankHitbox(mX, mY, mDeg, mWidth, mHeight)[7];
+        return Tank.tankHitbox(x, y, deg, width, height)[7];
     }
 
     public Bitmap getBitmap() {
-        return mBitmap;
+        return bitmap;
     }
 
     public int getWidth() {
-        return mWidth;
+        return width;
     }
 
     public int getHeight() {
-        return mHeight;
+        return height;
     }
 
     public float getDegrees() {
-        return mDeg;
+        return deg;
     }
 
     public int getColorIndex() {
-        return mColorIndex;
+        return colorIndex;
     }
 
     public int getScore() {
-        return mScore;
+        return score;
     }
 
-    public void incrementScore() {
-        mScore++;
+    public void decrementScore() {
+        score--;
+    }
+
+    public boolean detectCollision(Cannonball cannonball) {
+        PointF[] hitbox = Tank.tankHitbox(x, y, deg, width, height);
+        int cannonballX = cannonball.getX();
+        int cannonballY = cannonball.getY();
+        int cannonballRadius = cannonball.getRadius();
+
+        for (PointF pointF : hitbox) {
+            if (calcDistance(pointF.x, pointF.y, cannonballX, cannonballY) < cannonballRadius) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    private static float calcDistance (float x1, float y1, float x2, float y2) {
+        return (float) Math.sqrt(Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2));
     }
 
     public boolean isAlive() {
-        return mIsAlive;
+        return isAlive;
     }
 
 

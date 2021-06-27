@@ -3,8 +3,8 @@ package com.afaa.tanktrouble.cannonball;
 import java.util.ArrayList;
 
 public class Path {
-    private ArrayList<Coordinate> coords;
-    private int uuid;
+    private final ArrayList<Coordinate> coords;
+    private final int uuid;
 
     Path(ArrayList<Coordinate> coords, int uuid) {
         this.uuid = uuid;

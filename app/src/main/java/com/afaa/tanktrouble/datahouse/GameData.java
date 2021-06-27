@@ -1,79 +1,143 @@
 package com.afaa.tanktrouble.datahouse;
 
+import android.app.Activity;
+import android.graphics.PointF;
+import android.media.AudioManager;
+import android.media.SoundPool;
+
+import com.afaa.tanktrouble.Constants;
+import com.afaa.tanktrouble.R;
 import com.afaa.tanktrouble.UserUtils;
 import com.afaa.tanktrouble.battle.Position;
 import com.afaa.tanktrouble.cannonball.Cannonball;
 import com.afaa.tanktrouble.cannonball.CannonballSet;
+import com.afaa.tanktrouble.tank.Tank;
 import com.afaa.tanktrouble.tank.UserTank;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class GameData {
     private static GameData instance = null;
 
-    ArrayList<Integer> playerIDs;
-    ArrayList<String> playerUsernames;
-    ArrayList<Position> playerPositions;
-    int aliveBullets; // Does not sync
-    CannonballSet cannonballSet;
-    ArrayList<Cannonball> newCannonballs;
-    String gamePin;
-    int thisPlayer;
-    int status; // 0: wait to join, 1: playing, -1: cancelled
-    boolean isServer;
+    private static final int CLIENT_ID = 0;
+    private static final int SERVER_ID = 1;
 
+    public static String GAME_OVER_MESSAGE = "#Game Over!#\n";
+    public static String TANK_DIED = "#Tank Died!#\n";
+    public static String TANK_FIRE = "#Tank Fire!#\n";
+
+    private ArrayList<Integer> playerIDs;
+    private String userUserName;
+    private String opponentUserName;
+    private Position userPosition;
+    private Position opponentPosition;
+    private Integer userAliveBulletsCount;
+    private CannonballSet cannonballSet;
+    int userId;
+    int opponentId;
+    int status;
+    int lastOpponentCannonId;
+    int opponentCannonCounter;
+    boolean isServer;
     private BluetoothService btService;
+    SoundPool shootSoundPool, explosionSoundPool;
+    int shootSoundId, explosionSoundId;
+    private boolean opponentTankHit;
 
     private GameData() {
-        playerIDs = new ArrayList<>();
-        playerUsernames = new ArrayList<>();
-        playerPositions = new ArrayList<>();
-        aliveBullets = 0;
-        newCannonballs = new ArrayList<>();
+        playerIDs = new ArrayList<>(Arrays.asList(SERVER_ID, CLIENT_ID));
+        userUserName = "";
+        opponentUserName = "";
+        userPosition = Tank.getRandomInitialPosition();
+        opponentPosition = Tank.getRandomInitialPosition();
+        userAliveBulletsCount = 0;
         cannonballSet = new CannonballSet();
         status = 0;
-        thisPlayer = -1;
+        lastOpponentCannonId = -1;
+        opponentCannonCounter = 0;
+        isServer = false;
+        userId = CLIENT_ID;
+        opponentId = SERVER_ID;
+        opponentTankHit = false;
     }
 
-    public void sync(int syncCode, boolean isSolo)
-    {
-        if(btService == null)
+    public void createSoundPool(Activity activity){
+        shootSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+        shootSoundId = shootSoundPool.load(activity, R.raw.fire, 1);
+        explosionSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+        explosionSoundId = explosionSoundPool.load(activity, R.raw.explosion, 1);
+    }
+
+    public void playShootSound() {
+        shootSoundPool.play(shootSoundId, 1, 1, 0, 0, 2);
+    }
+
+    public void playExplosionSound() {
+        explosionSoundPool.play(explosionSoundId, 1, 1, 0, 0, 1);
+    }
+
+    public void signalEnd() {
+        if (btService == null)
             return;
-//        Log.d("Sync", "sync: btService is found!");
 
-        String token;
-        if(syncCode == 2) { // Special for player register
-            token = DataProtocol.tokenizeSoloGameData(null, thisPlayer,
-                    playerUsernames.get(0), null, null);
-            btService.getChannel().send(token.getBytes());
+        btService.getChannel().send(GAME_OVER_MESSAGE.getBytes());
+    }
+
+    public void signalDeath() {
+        if (btService == null)
             return;
-        }
-        else {
-            token = isSolo ? DataProtocol.tokenizeSoloGameData(
-                    (syncCode / 10000) % 2 == 1 ? gamePin: null,
-                    thisPlayer,
-                    (syncCode / 100) % 2 == 1 ? playerUsernames.get(thisPlayer): null,
-                    (syncCode / 10) % 2 == 1 ? playerPositions.get(thisPlayer): null,
-                    syncCode % 2 == 1 ? newCannonballs: null
-            ) : DataProtocol.tokenizeGameData(
-                    (syncCode / 10000) % 2 == 1 ? gamePin: null,
-                    (syncCode / 1000) % 2 == 1 ? playerIDs: null,
-                    (syncCode / 100) % 2 == 1 ? playerUsernames: null,
-                    (syncCode / 10) % 2 == 1 ? playerPositions: null,
-                    syncCode % 2 == 1 && newCannonballs.size() > 0 ? newCannonballs: null
-            );
 
-        }
+        btService.getChannel().send(TANK_DIED.getBytes());
+    }
 
+    public boolean isOpponentTankHit() {
+        return opponentTankHit;
+    }
+
+    public void setOpponentTankHit(boolean opponentTankHit) {
+        this.opponentTankHit = opponentTankHit;
+    }
+
+    public void syncPosition(){
+        if(btService == null || userPosition == null)
+            return;
+        String token = DataProtocol.tokenizePosition(userPosition);
+        btService.getChannel().send(token.getBytes());
+    }
+
+    public void syncCannonBall(Cannonball cannonball) {
+        if(btService == null || cannonball == null)
+            return;
+        String token = DataProtocol.tokenizeCannonBall(cannonball);
         btService.getChannel().send(token.getBytes());
 
-        if(syncCode % 2 == 1)
-            newCannonballs.clear();
+    }
+
+    public void signalTankFire() {
+        btService.getChannel().send(TANK_FIRE.getBytes());
+    }
+
+    public String getOpponentUserName() {
+        return opponentUserName;
+    }
+
+    public void setOpponentUserName(String opponentUserName) {
+        this.opponentUserName = opponentUserName;
     }
 
     public void setServer(boolean server) {
         isServer = server;
+        if (isServer){
+            userId =  SERVER_ID;
+            opponentId = CLIENT_ID;
+        }
+        else{
+            userId =  CLIENT_ID;
+            opponentId = SERVER_ID;
+        }
+
     }
 
     public boolean getServer() {
@@ -83,12 +147,7 @@ public class GameData {
     public static GameData getInstance() {
         if(instance == null)
             instance = new GameData();
-
         return instance;
-    }
-
-    public void setGamePin(String gamePin) {
-        this.gamePin = gamePin;
     }
 
     public void setStatus(int status) {
@@ -97,129 +156,100 @@ public class GameData {
 
     public void setBtService(BluetoothService btService) { this.btService = btService; }
 
-    public int getThisPlayer() {
-        return thisPlayer;
+    public int getUserId() {
+        return userId;
     }
 
-    public ArrayList<String> getPlayerUsernames() {
-        return playerUsernames;
+    public int getOpponentId() {
+        return opponentId;
     }
 
     public CannonballSet getCannonballSet() {
         return cannonballSet;
     }
 
-    public ArrayList<Cannonball> getNewCannonballs() {
-        return newCannonballs;
-    }
 
     public int getStatus() {
         return status;
     }
 
-    public String getGamePin() {
-        return gamePin;
+    public Cannonball opponentTankFire(){
+        PointF[] tankPolygon = Tank.tankPolygon(
+                getOpponentPosition().x,
+                getOpponentPosition().y,
+                getOpponentPosition().deg,
+                Math.max(UserUtils.scaleGraphicsInt(Constants.TANK_WIDTH_CONST), 1),
+                Math.max(UserUtils.scaleGraphicsInt(Constants.TANK_HEIGHT_CONST), 1));
+        Cannonball cannonball = new Cannonball((int) tankPolygon[0].x,
+                (int) tankPolygon[0].y,
+                getOpponentPosition().deg,
+                getOpponentId() + opponentCannonCounter * 2, getOpponentId());
+        opponentCannonCounter++;
+        return cannonball;
     }
 
-    public Position getPlayerPosition(int playerID) {
-        return playerPositions.get(playerID);
+    public int getLastOpponentCannonId() {
+        return lastOpponentCannonId;
     }
 
-    public int getPlayerAliveBullets() {
-        return aliveBullets;
+    public void setLastOpponentCannonId(int cannonId) {
+        lastOpponentCannonId = cannonId;
     }
 
-    public void incrementUserAliveBullets() {
-        aliveBullets++;
+    public Position getUserPosition() {
+        return userPosition;
     }
 
-    public void decrementUserAliveBullets() {
-        aliveBullets--;
+    public void setUserPosition(Position position) {
+        userPosition = position;
     }
 
-    public void setPosition(Position position) {
-        playerPositions.set(thisPlayer, position);
+    public Position getOpponentPosition() {
+        return opponentPosition;
+    }
+
+    public int getUserAliveBulletsCount() {
+        return userAliveBulletsCount;
+    }
+
+    public void incrementUserAliveBulletsCount() {
+        userAliveBulletsCount += 1;
+    }
+
+    public void decrementUserAliveBulletsCount() {
+        userAliveBulletsCount -= 1;
+    }
+
+    public void resetUserAliveBulletsCount() {
+        userAliveBulletsCount = 0;
+    }
+
+    public void setOpponentPosition(Position position) {
+        opponentPosition = position;
     }
 
     public ArrayList<Integer> getPlayerIDs() {
         return playerIDs;
     }
 
-    public ArrayList<Position> getPlayerPositions() {
-        return playerPositions;
-    }
-
-    public void addPlayer(int userId, String username) {
-        playerIDs.add(userId);
-        playerUsernames.add(username);
-        playerPositions.add(UserTank.getRandomInitialPosition());
-        aliveBullets = 0;
-        thisPlayer = userId;
-    }
-
-    public void addPeerPlayers() {
-        if(playerIDs.size() < 2)
-            return;
-        while(playerUsernames.size() < playerIDs.size())
-            playerUsernames.add(UserUtils.generateRandomUsername());
-        while(playerPositions.size() < playerIDs.size())
-            playerPositions.add(UserTank.getRandomInitialPosition());
-    }
-
-    public void removePlayer() {
-        playerUsernames.remove(playerIDs.indexOf(thisPlayer));
-        playerPositions.remove(playerIDs.indexOf(thisPlayer));
-        aliveBullets = 0;
-        playerIDs.remove(Integer.valueOf(thisPlayer));
-        status = -1;
-    }
-
-    public void setThisPlayer(int playerId) {
-        thisPlayer = playerId;
-    }
-
     public boolean isPlayerInGame() {
-        return playerIDs.contains(thisPlayer);
+        return playerIDs.contains(userId);
     }
 
     public void reset() {
         playerIDs = new ArrayList<>();
-        playerUsernames = new ArrayList<>();
-        playerPositions = new ArrayList<>();
-        aliveBullets = 0;
+        userUserName = "";
+        opponentUserName = "";
+        userPosition = null;
+        opponentPosition = null;
+        userAliveBulletsCount = 0;
         status = 1;
-        thisPlayer = -1;
-    }
-
-    public void setPlayerIDs(ArrayList<Integer> playerIDs) {
-        this.playerIDs = playerIDs;
-    }
-
-    public void setPlayerUsernames(ArrayList<String> playerUsernames) {
-        this.playerUsernames = playerUsernames;
-    }
-
-    public void setPlayerPositions(ArrayList<Position> playerPositions) {
-        this.playerPositions = playerPositions;
+        userId = -1;
+        opponentId = -1;
     }
 
     public void addCannonball(Cannonball cannonball) {
         cannonballSet.addCannonball(cannonball);
     }
 
-    public void addPlayerID(int playerID) {
-        if(!playerIDs.contains(playerID)) {
-            playerIDs.add(playerID);
-        }
-    }
-
-    public void addPlayerUsername(int id, String username) {
-        if(!playerUsernames.contains(username) && playerIDs.size() > playerUsernames.size()) {
-            playerUsernames.add(username);
-        }
-    }
-
-    public void setPlayerPosition(int playerID, Position position) {
-        playerPositions.set(playerIDs.indexOf(playerID), position);
-    }
 }

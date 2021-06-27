@@ -2,14 +2,12 @@ package com.afaa.tanktrouble.battle;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.media.AudioManager;
-import android.media.SoundPool;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -22,36 +20,34 @@ import com.afaa.tanktrouble.cannonball.Cannonball;
 import com.afaa.tanktrouble.datahouse.GameData;
 import com.afaa.tanktrouble.map.MapUtils;
 import com.afaa.tanktrouble.tank.OpponentTank;
+import com.afaa.tanktrouble.tank.Tank;
 import com.afaa.tanktrouble.tank.TankColor;
 import com.afaa.tanktrouble.tank.UserTank;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Timer;
 
 @SuppressLint("ViewConstructor")
 public class BattleView extends SurfaceView implements SurfaceHolder.Callback, View.OnTouchListener {
 
-    private Bitmap mFireBitmap, mFirePressedBitmap;
-    private BattleThread mBattleThread;
-    private UserTank mUserTank;
-    private HashMap<Integer, OpponentTank> mOpponentTanks;
-    private HashSet<ExplosionAnimation> mExplosionAnimations;
-    private Paint mJoystickColor;
-    private boolean[] mUnusedTankColors;
-    private int mKillingCannonball;
-    private int mJoystickBaseCenterX, mJoystickBaseCenterY;
-    private int mFireButtonOffsetX, mFireButtonOffsetY;
-    private int mJoystickX, mJoystickY;
-    private int mJoystickPointerId, mFireButtonPointerId;
-    private int mJoystickBaseRadius, mJoystickThresholdRadius, mJoystickMaxDisplacement;
-    private int mFireButtonDiameter, mFireButtonPressedDiameter;
-    private float mUserDeg;
-    private boolean mFireButtonPressed;
-    SoundPool shootSoundPool, explosionSoundPool;
-    int shootSoundId, explosionSoundId;
+    private Bitmap fireBitmap, firePressedBitmap;
+    private final BattleThread battleThread;
+    private UserTank userTank;
+    private OpponentTank opponentTank;
+    private final HashSet<ExplosionAnimation> explosionAnimations;
+    private Paint joystickColor;
+    private int joystickBaseCenterX, joystickBaseCenterY;
+    private int fireButtonOffsetX, fireButtonOffsetY;
+    private int joystickX, joystickY;
+    private int joystickPointerId, fireButtonPointerId;
+    private int joystickBaseRadius, joystickThresholdRadius, joystickMaxDisplacement;
+    private int fireButtonDiameter, fireButtonPressedDiameter;
+    private float userDeg;
+    private boolean fireButtonPressed;
+    private Timer battleTimer;
 
-    Activity mActivity;
+    Activity activity;
 
     private static final String TAG = "WL/BattleView";
     private static final float TOP_Y_CONST = Constants.MAP_TOP_Y_CONST;
@@ -70,34 +66,21 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
 
     public BattleView(Activity activity) {
         super(activity);
-
-        mActivity = activity;
-
+        this.activity = activity;
         UserUtils.initialize(activity);
         ExplosionAnimation.initialize(activity);
-
-
-        mUnusedTankColors = new boolean[]{true, true, true, true};
-        mOpponentTanks = new HashMap<>();
-        mJoystickColor = TankColor.BLUE.getPaint();
-
-
-        mKillingCannonball = 0;
-        mExplosionAnimations = new HashSet<>();
-
+        joystickColor = TankColor.BLUE.getPaint();
+        explosionAnimations = new HashSet<>();
         addEnteringTanks(activity);
-
-
         getHolder().addCallback(this);
 
-        mBattleThread = new BattleThread(getHolder(), this);
+        battleTimer = new Timer("BattleTimer");
+        battleThread = new BattleThread(getHolder(), this);
+
         setFocusable(true);
         setControlGraphicsData(activity);
         setOnTouchListener(this);
-        shootSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-        shootSoundId = shootSoundPool.load(activity, R.raw.fire, 1);
-        explosionSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-        explosionSoundId = explosionSoundPool.load(activity, R.raw.explosion, 1);
+        GameData.getInstance().createSoundPool(activity);
     }
 
     @Override
@@ -105,157 +88,148 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        if (mBattleThread.getState() == Thread.State.NEW) {
-            mBattleThread.setRunning(true);
-            mBattleThread.start();
-        }
+//        if (battleThread.getState() == Thread.State.NEW) {
+//            battleThread.setRunning(true);
+//            battleThread.start();
+//        }
+        battleTimer.scheduleAtFixedRate(battleThread, 0, 30);
+
+    }
+
+    public void finishThread() {
+//        try {
+//            battleThread.setRunning(false);
+//            battleThread.join();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        battleTimer.cancel();
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-//        Log.d(TAG, "surfaceDestroyed");
-        boolean retry = true;
-
-        while (retry) {
-            try {
-                mBattleThread.setRunning(false);
-                mBattleThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            retry = false;
-        }
-
-        GameData.getInstance().sync(1111, false);
-//        removeGame();
+        GameData.getInstance().signalEnd();
+        GameData.getInstance().reset();
     }
 
+
+    public void endGame(Boolean win){
+        Intent intent = new Intent(activity, ResultActivity.class);
+        if (win)
+            intent.putExtra("win", 1);
+        else
+            intent.putExtra("win", 0);
+        activity.startActivity(intent);
+    }
 
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
         canvas.drawColor(Color.WHITE);
         MapUtils.drawMap(canvas);
-        if(GameData.getInstance().getThisPlayer() == 0) {
-            drawFireButton(canvas);
-            drawJoystick(canvas);
+        drawFireButton(canvas);
+        drawJoystick(canvas);
+
+        boolean userTankHit = GameData.getInstance().getCannonballSet().updateAndDetectUserCollision(userTank);
+        boolean opponentTankHit = GameData.getInstance().isOpponentTankHit();
+
+        GameData.getInstance().getCannonballSet().draw(canvas);
+
+        updateUserTank();
+        GameData.getInstance().syncPosition();
+        userTank.draw(canvas);
+
+        opponentTank.updatePosition(Math.round(GameData.getInstance().getOpponentPosition().x),
+                                     Math.round(GameData.getInstance().getOpponentPosition().y),
+                                     GameData.getInstance().getOpponentPosition().deg);
+        opponentTank.draw(canvas);
+
+
+        if (!userTankHit) {
+            userTank.respawn();
         }
-
-        if (mKillingCannonball == 0 && GameData.getInstance().getThisPlayer() == 0) {
-
-            if (mUserTank != null && GameData.getInstance().getThisPlayer() == 0) {
-                updateUserTank();
-                mUserTank.draw(canvas);
-                mUserTank.respawn();
-            }
-
-            GameData.getInstance().getCannonballSet().draw(canvas);
-            mKillingCannonball = GameData.getInstance().getCannonballSet().updateAndDetectUserCollision(mUserTank);
-        } else {
-            if (mUserTank != null && mUserTank.isAlive() && GameData.getInstance().getThisPlayer() == 0) {
-                updateUserTank();
-                mUserTank.draw(canvas);
-                mUserTank.kill(mKillingCannonball);
-                mExplosionAnimations.add(new ExplosionAnimation(mUserTank));
-            }
-
-            GameData.getInstance().getCannonballSet().updateAndDetectUserCollision(mUserTank);
-            GameData.getInstance().getCannonballSet().draw(canvas);
-            mKillingCannonball = 0;
-        }
-
-        for (OpponentTank opponentTank : mOpponentTanks.values()) {
-            if (opponentTank != null && opponentTank.isAlive() && GameData.getInstance().getThisPlayer() == 1) {
-                opponentTank.draw(canvas);
+        else {
+            GameData.getInstance().signalDeath();
+            userTank.kill();
+            explosionAnimations.add(new ExplosionAnimation(userTank));
+            if (userTank.getScore() == 0) {
+                endGame(false);
             }
         }
 
-        GameData.getInstance().sync(1011, true);
-
-//        for(int i = 0; i < GameData.getInstance().getPlayerPositions().size(); i++) {
-//            Log.d(TAG, "PlayerID: " + GameData.getInstance().getPlayerIDs().get(i));
-//            Log.d(TAG, "Player Position " + i + " : " +
-//                    GameData.getInstance().getPlayerPositions().get(i).x + " " +
-//                    GameData.getInstance().getPlayerPositions().get(i).y + " " +
-//                    GameData.getInstance().getPlayerPositions().get(i).deg);
-//        }
+        if (!opponentTankHit) {
+            opponentTank.respawn();
+        }
+        else {
+            opponentTank.kill();
+            explosionAnimations.add(new ExplosionAnimation(opponentTank));
+            if (opponentTank.getScore() == 0) {
+                endGame(true);
+            }
+        }
 
         drawExplosions(canvas);
-//        addEnteringTanks(mActivity);
-        mUserTank.updatePosition(Math.round(GameData.getInstance().getPlayerPositions().get(0).x),
-                Math.round(GameData.getInstance().getPlayerPositions().get(0).y),
-                GameData.getInstance().getPlayerPositions().get(0).deg);
-//        mUserTank.draw(canvas);
         drawScores(canvas);
+        if (opponentTankHit || userTankHit) {
+            resetTanks();
+        }
     }
 
+    private void resetTanks() {
+        GameData.getInstance().getCannonballSet().clear();
+        GameData.getInstance().setOpponentTankHit(false);
+        GameData.getInstance().resetUserAliveBulletsCount();
+        GameData.getInstance().setUserPosition(Tank.getRandomInitialPosition());
+        GameData.getInstance().setOpponentPosition(Tank.getRandomInitialPosition());
+    }
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-
         int pointerIndex = motionEvent.getActionIndex();
         int pointerId = motionEvent.getPointerId(pointerIndex);
-
 
         int pointerX = (int) motionEvent.getX(pointerIndex);
         int pointerY = (int) motionEvent.getY(pointerIndex);
 
-
         int action = motionEvent.getActionMasked();
-
-
         switch (action) {
-
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_POINTER_DOWN:
-
-
-                if (mJoystickPointerId == MotionEvent.INVALID_POINTER_ID) {
+                if (joystickPointerId == MotionEvent.INVALID_POINTER_ID) {
                     updateJoystickData(pointerX, pointerY, pointerId, action);
                 }
 
-
-
-                if (mFireButtonPointerId == MotionEvent.INVALID_POINTER_ID) {
+                if (fireButtonPointerId == MotionEvent.INVALID_POINTER_ID) {
                     updateFireButtonData(pointerX, pointerY, pointerId);
                 }
                 break;
 
-
             case MotionEvent.ACTION_MOVE:
-
-
                 for (int index = 0; index < motionEvent.getPointerCount(); index++) {
                     int id = motionEvent.getPointerId(index);
                     int x = (int) motionEvent.getX(index);
                     int y = (int) motionEvent.getY(index);
 
-
-
-                    if (id == mJoystickPointerId) {
+                    if (id == joystickPointerId) {
                         updateJoystickData(x, y, id, action);
-                    } else if (mJoystickPointerId == MotionEvent.INVALID_POINTER_ID) {
+                    } else if (joystickPointerId == MotionEvent.INVALID_POINTER_ID) {
                         updateJoystickData(x, y, id, action);
-                    } else if (id == mFireButtonPointerId){
+                    } else if (id == fireButtonPointerId){
                         updateFireButtonData(x, y, id);
                     }
                 }
                 break;
 
-
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_POINTER_UP:
             case MotionEvent.ACTION_CANCEL:
-
-
-                if (pointerId == mJoystickPointerId) {
-                    mJoystickX = mJoystickBaseCenterX;
-                    mJoystickY = mJoystickBaseCenterY;
-                    mJoystickPointerId = MotionEvent.INVALID_POINTER_ID;
-                } else if (pointerId == mFireButtonPointerId){
-                    mFireButtonPressed = false;
-                    mFireButtonPointerId = MotionEvent.INVALID_POINTER_ID;
+                if (pointerId == joystickPointerId) {
+                    joystickX = joystickBaseCenterX;
+                    joystickY = joystickBaseCenterY;
+                    joystickPointerId = MotionEvent.INVALID_POINTER_ID;
+                } else if (pointerId == fireButtonPointerId){
+                    fireButtonPressed = false;
+                    fireButtonPointerId = MotionEvent.INVALID_POINTER_ID;
                 }
                 break;
 
@@ -266,164 +240,96 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         return true;
     }
 
-
     private void addEnteringTanks(final Activity activity) {
-        int userId = GameData.getInstance().getThisPlayer();
-
-
-        Log.d("AddEnteringTanks", "This is addEnteringTanks. Tanks: " + GameData.getInstance().getPlayerIDs().size());
-        for (int playerID : GameData.getInstance().getPlayerIDs()) {
-
-            if (playerID == userId && mUserTank == null && GameData.getInstance().getThisPlayer() == 0) {
-
-                TankColor tankColor = getUnusedTankColor();
-                mUserTank = new UserTank(activity, tankColor);
-                mUserDeg = mUserTank.getDegrees();
-                mJoystickColor = tankColor.getPaint();
-            } else if (playerID != userId && !mOpponentTanks.containsKey(playerID)
-                    && GameData.getInstance().getThisPlayer() == 1) {
-
-                TankColor tankColor = getUnusedTankColor();
-                Log.d(TAG, "addEnteringTanks: HERE IS SUPPOSED TO ADD ADVERSARY TANKS!");
-                mOpponentTanks.put(playerID, new OpponentTank(activity, playerID, tankColor));
-//                        mCannonballSet.addOpponent(playerID);
-                addDeathDataRefListener(playerID);
-                removeExitingTanks(playerID);
-            }
+        final int BLUE_INDEX_JOYSTICK_COLOR = 0;
+        joystickColor = TankColor.values()[GameData.getInstance().getUserId()].getPaint();
+        if (userTank == null) {
+            TankColor tankColor = TankColor.values()[GameData.getInstance().getUserId()];
+            userTank = new UserTank(activity, tankColor, GameData.getInstance().getUserId());
+            userDeg = userTank.getDegrees();
+        }
+        if (opponentTank == null) {
+            TankColor tankColor = TankColor.values()[GameData.getInstance().getOpponentId()];
+            opponentTank = new OpponentTank(activity, GameData.getInstance().getOpponentId(), tankColor);
         }
     }
-
-
-    private void removeExitingTanks(final int opponentId){
-
-
-
-        if (GameData.getInstance().getPlayerIDs().contains(opponentId)) {
-            return;
-        }
-
-
-        OpponentTank opponentTank = mOpponentTanks.get(opponentId);
-
-        if (opponentTank != null) {
-            mUnusedTankColors[opponentTank.getColorIndex()] = true;
-            mOpponentTanks.remove(opponentId);
-        }
-    }
-
-
-    private void addDeathDataRefListener(final int opponentId) {
-
-
-        Integer killingCannonball = 0;
-
-
-        OpponentTank opponentTank = mOpponentTanks.get(opponentId);
-
-        if (killingCannonball != null && opponentTank != null) {
-            GameData.getInstance().getCannonballSet().remove(killingCannonball);
-            mExplosionAnimations.add(new ExplosionAnimation(opponentTank));
-            opponentTank.incrementScore();
-            opponentTank.kill();
-        } else if (killingCannonball == null && opponentTank != null) {
-            opponentTank.respawn();
-        }
-    }
-
 
     private void setControlGraphicsData(Activity activity) {
-
         float screenHeight = UserUtils.getScreenHeight();
         float screenWidth = UserUtils.getScreenWidth();
         float controlHeight = screenHeight - UserUtils.scaleGraphicsInt(TOP_Y_CONST) - screenWidth;
+        joystickBaseRadius = Math.round(JOYSTICK_BASE_RADIUS_CONST * controlHeight);
+        joystickThresholdRadius = Math.round(JOYSTICK_THRESHOLD_RADIUS_CONST * controlHeight);
+        joystickMaxDisplacement = Math.round(JOYSTICK_DISPLACEMENT_CONST * joystickBaseRadius);
+        fireButtonDiameter = Math.round(FIRE_BUTTON_DIAMETER_CONST * controlHeight);
+        fireButtonPressedDiameter = Math.round(FIRE_BUTTON_PRESSED_DIAMETER_CONST * controlHeight);
 
-
-        mJoystickBaseRadius = Math.round(JOYSTICK_BASE_RADIUS_CONST * controlHeight);
-        mJoystickThresholdRadius = Math.round(JOYSTICK_THRESHOLD_RADIUS_CONST * controlHeight);
-        mJoystickMaxDisplacement = Math.round(JOYSTICK_DISPLACEMENT_CONST * mJoystickBaseRadius);
-        mFireButtonDiameter = Math.round(FIRE_BUTTON_DIAMETER_CONST * controlHeight);
-        mFireButtonPressedDiameter = Math.round(FIRE_BUTTON_PRESSED_DIAMETER_CONST * controlHeight);
-
-
-        if (mFireButtonDiameter > 0) {
-            mFireBitmap = Bitmap.createScaledBitmap(
+        if (fireButtonDiameter > 0) {
+            fireBitmap = Bitmap.createScaledBitmap(
                     BitmapFactory.decodeResource (activity.getResources(), R.drawable.fire_button),
-                    mFireButtonDiameter, mFireButtonDiameter, false);
-            mFirePressedBitmap = Bitmap.createScaledBitmap(mFireBitmap,
-                    mFireButtonPressedDiameter, mFireButtonPressedDiameter, false);
+                    fireButtonDiameter, fireButtonDiameter, false);
+            firePressedBitmap = Bitmap.createScaledBitmap(fireBitmap,
+                    fireButtonPressedDiameter, fireButtonPressedDiameter, false);
         }
 
-
         int controlXMargin = UserUtils.scaleGraphicsInt(CONTROL_MARGIN_X_CONST);
-        int controlYMargin = (int) (controlHeight - 2*mJoystickBaseRadius) / 2;
+        int controlYMargin = (int) (controlHeight - 2* joystickBaseRadius) / 2;
 
-
-        mJoystickBaseCenterX = controlXMargin + mJoystickBaseRadius;
-        mJoystickBaseCenterY = (int) screenHeight - controlYMargin - mJoystickBaseRadius;
-        mJoystickX = mJoystickBaseCenterX;
-        mJoystickY = mJoystickBaseCenterY;
-        mFireButtonOffsetX = (int)(screenWidth - 1.5*controlXMargin - mFireButtonDiameter);
-        mFireButtonOffsetY =  mJoystickBaseCenterY - mFireButtonDiameter/2;
-
-
-        mJoystickPointerId = MotionEvent.INVALID_POINTER_ID;
-        mFireButtonPointerId = MotionEvent.INVALID_POINTER_ID;
+        joystickBaseCenterX = controlXMargin + joystickBaseRadius;
+        joystickBaseCenterY = (int) screenHeight - controlYMargin - joystickBaseRadius;
+        joystickX = joystickBaseCenterX;
+        joystickY = joystickBaseCenterY;
+        fireButtonOffsetX = (int)(screenWidth - 1.5*controlXMargin - fireButtonDiameter);
+        fireButtonOffsetY =  joystickBaseCenterY - fireButtonDiameter /2;
+        joystickPointerId = MotionEvent.INVALID_POINTER_ID;
+        fireButtonPointerId = MotionEvent.INVALID_POINTER_ID;
     }
-
 
     @SuppressWarnings("UnnecessaryReturnStatement")
     private void updateUserTank() {
+        int deltaX = joystickX - joystickBaseCenterX;
+        int deltaY = joystickY - joystickBaseCenterY;
 
-        int deltaX = mJoystickX-mJoystickBaseCenterX;
-        int deltaY = mJoystickY-mJoystickBaseCenterY;
+        float velocityX = (float) (deltaX)/ joystickThresholdRadius;
+        float velocityY = (float) (deltaY)/ joystickThresholdRadius;
 
-        float velocityX = (float) (deltaX)/mJoystickThresholdRadius;
-        float velocityY = (float) (deltaY)/mJoystickThresholdRadius;
-
-        if (mUserTank == null) {
+        if (userTank == null) {
             return;
         }
         else if (velocityX == 0 && velocityY == 0) {
-            mUserTank.updatePosition(Math.round(GameData.getInstance().getPlayerPositions().get(0).x),
-                    Math.round(GameData.getInstance().getPlayerPositions().get(0).y),
-                    GameData.getInstance().getPlayerPositions().get(0).deg);
+            userTank.updatePosition(Math.round(GameData.getInstance().getUserPosition().x),
+                    Math.round(GameData.getInstance().getUserPosition().y),
+                    GameData.getInstance().getUserPosition().deg);
         }
         else {
-            mUserDeg = calcDegrees(deltaX, deltaY);
-            mUserTank.update(velocityX, velocityY, mUserDeg);
+            userDeg = calcDegrees(deltaX, deltaY);
+            userTank.update(velocityX, velocityY, userDeg);
         }
     }
-
 
     private void drawJoystick(Canvas canvas) {
-        int controlRadius = mJoystickBaseRadius / 2;
-
-
+        int controlRadius = joystickBaseRadius / 2;
         Paint colors = new Paint();
         colors.setARGB(50, 50, 50, 50);
-        canvas.drawCircle(mJoystickBaseCenterX, mJoystickBaseCenterY,
-                mJoystickBaseRadius, colors);
+        canvas.drawCircle(joystickBaseCenterX, joystickBaseCenterY,
+                joystickBaseRadius, colors);
 
 
-        canvas.drawCircle(mJoystickX, mJoystickY, controlRadius, mJoystickColor);
+        canvas.drawCircle(joystickX, joystickY, controlRadius, joystickColor);
     }
 
-
     private void drawFireButton(Canvas canvas) {
-
-
-        if (mFireButtonPressed) {
-            float x = mFireButtonOffsetX + (mFireButtonDiameter-mFireButtonPressedDiameter)/2f;
-            float y = mJoystickBaseCenterY - mFireButtonPressedDiameter/2f;
-            canvas.drawBitmap(mFirePressedBitmap, (int) x, (int) y, null);
+        if (fireButtonPressed) {
+            float x = fireButtonOffsetX + (fireButtonDiameter - fireButtonPressedDiameter)/2f;
+            float y = joystickBaseCenterY - fireButtonPressedDiameter /2f;
+            canvas.drawBitmap(firePressedBitmap, (int) x, (int) y, null);
         } else {
-            canvas.drawBitmap(mFireBitmap, mFireButtonOffsetX, mFireButtonOffsetY, null);
+            canvas.drawBitmap(fireBitmap, fireButtonOffsetX, fireButtonOffsetY, joystickColor);
         }
     }
 
-
     private void drawExplosions(Canvas canvas) {
-        Iterator<ExplosionAnimation> iterator = mExplosionAnimations.iterator();
+        Iterator<ExplosionAnimation> iterator = explosionAnimations.iterator();
 
 
         while (iterator.hasNext()) {
@@ -431,41 +337,34 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
             if (ExplosionAnimation.isRemovable()) {
                 iterator.remove();
             } else {
-                explosionSoundPool.play(explosionSoundId, 1, 1, 0, 0, 1);
+                GameData.getInstance().playExplosionSound();
                 ExplosionAnimation.draw(canvas);
             }
         }
     }
 
-
     private void drawScores(Canvas canvas) {
-        if (mUserTank != null) {
+        if (userTank != null) {
 
-            String score = Integer.toString(mUserTank.getScore());
-
-
+            String score = Integer.toString(userTank.getScore());
             int screenWidth = UserUtils.getScreenWidth();
-            int numTanks = mOpponentTanks.size() + 1;
-            int tankWidth = mUserTank.getWidth();            
+            int numTanks = GameData.getInstance().getPlayerIDs().size();
+            int tankWidth = userTank.getWidth();
             int marginX = (screenWidth - numTanks*tankWidth) / (numTanks + 1);
             int marginY = UserUtils.scaleGraphicsInt(SCORE_MARGIN_Y_CONST);
             int textMargin = UserUtils.scaleGraphicsInt(SCORE_TEXT_MARGIN_Y_CONST);
-            int textY = marginY + mUserTank.getWidth() + textMargin;
+            int textY = marginY + userTank.getWidth() + textMargin;
             int textSize = UserUtils.scaleGraphicsInt(SCORE_TEXT_SIZE_CONST);
             int tankIndex = 1;
-
 
             Paint textPaint = new Paint();
             textPaint.setARGB(255, 0, 0, 0);
             textPaint.setTextAlign(Paint.Align.CENTER);
             textPaint.setTextSize(textSize);
 
-
-            canvas.drawBitmap(mUserTank.getBitmap(), marginX, marginY, null);
+            canvas.drawBitmap(userTank.getBitmap(), marginX, marginY, null);
             canvas.drawText(score, marginX  + tankWidth / 2f, textY, textPaint);
-
-
-            for (OpponentTank opponentTank : mOpponentTanks.values()) {
+            if (opponentTank != null) {
                 if (tankIndex < NUM_TANK_COLORS) {
 
                     Bitmap bitmap = opponentTank.getBitmap();
@@ -481,99 +380,61 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         }
     }
 
-
     private void updateJoystickData(int pointerX, int pointerY, int pointerId, int action) {
-
-        float deltaX = pointerX - mJoystickBaseCenterX;
-        float deltaY = pointerY - mJoystickBaseCenterY;
+        float deltaX = pointerX - joystickBaseCenterX;
+        float deltaY = pointerY - joystickBaseCenterY;
         float displacement = calcDistance((int) deltaX, (int) deltaY);
 
-
-        if (displacement <= mJoystickMaxDisplacement) {
-            mJoystickX = pointerX;
-            mJoystickY = pointerY;
-
-
-            mJoystickPointerId = pointerId;
-        } else if ((action == MotionEvent.ACTION_MOVE && pointerId == mJoystickPointerId)
-                || (displacement <= mJoystickThresholdRadius)){
-            float joystickScaleRatio = (float) (mJoystickMaxDisplacement) / displacement;
-            mJoystickX = (int) ((float) (mJoystickBaseCenterX) + (deltaX*joystickScaleRatio));
-            mJoystickY = (int) ((float) (mJoystickBaseCenterY) + (deltaY*joystickScaleRatio));
-            mJoystickPointerId = pointerId;
+        if (displacement <= joystickMaxDisplacement) {
+            joystickX = pointerX;
+            joystickY = pointerY;
+            joystickPointerId = pointerId;
+        } else if ((action == MotionEvent.ACTION_MOVE && pointerId == joystickPointerId)
+                || (displacement <= joystickThresholdRadius)){
+            float joystickScaleRatio = (float) (joystickMaxDisplacement) / displacement;
+            joystickX = (int) ((float) (joystickBaseCenterX) + (deltaX*joystickScaleRatio));
+            joystickY = (int) ((float) (joystickBaseCenterY) + (deltaY*joystickScaleRatio));
+            joystickPointerId = pointerId;
         } else {
-            mJoystickX = mJoystickBaseCenterX;
-            mJoystickY = mJoystickBaseCenterY;
+            joystickX = joystickBaseCenterX;
+            joystickY = joystickBaseCenterY;
         }
     }
-
 
     private void updateFireButtonData(int pointerX, int pointerY, int pointerId) {
-
-        int deltaX = pointerX - (mFireButtonOffsetX + mFireButtonDiameter/2);
-        int deltaY = pointerY - (mFireButtonOffsetY + mFireButtonDiameter/2);
+        int deltaX = pointerX - (fireButtonOffsetX + fireButtonDiameter /2);
+        int deltaY = pointerY - (fireButtonOffsetY + fireButtonDiameter /2);
         float displacement = calcDistance(deltaX, deltaY);
 
-
-        if (displacement <= mFireButtonDiameter) {
-
-
-
-            if (!mFireButtonPressed && GameData.getInstance().getPlayerAliveBullets() < MAX_USER_CANNONBALLS) {
-                Cannonball cannonball = mUserTank.fire();
-                GameData.getInstance().incrementUserAliveBullets();
+        if (displacement <= fireButtonDiameter) {
+            if (!fireButtonPressed && GameData.getInstance().getUserAliveBulletsCount() < MAX_USER_CANNONBALLS) {
+                GameData.getInstance().signalTankFire();
+                Cannonball cannonball = userTank.fire();
                 GameData.getInstance().getCannonballSet().addCannonball(cannonball);
-                GameData.getInstance().getNewCannonballs().add(cannonball);
-                shootSoundPool.play(shootSoundId, 1, 1, 0, 0, 2);
-
+//                GameData.getInstance().syncCannonBall(cannonball);
+                GameData.getInstance().incrementUserAliveBulletsCount();
             }
-            mFireButtonPressed = true;
-            mFireButtonPointerId = pointerId;
-        } else {
-            mFireButtonPressed = false;
-            mFireButtonPointerId = MotionEvent.INVALID_POINTER_ID;
+            fireButtonPressed = true;
+            fireButtonPointerId = pointerId;
+        }
+        else {
+            fireButtonPressed = false;
+            fireButtonPointerId = MotionEvent.INVALID_POINTER_ID;
         }
     }
-
-
-    private void removeGame() {
-
-
-        if (GameData.getInstance().getPlayerIDs().size() == 0) {
-            GameData.getInstance().reset();
-        }
-    }
-
-
-    private TankColor getUnusedTankColor() {
-        TankColor tankColor = TankColor.ORANGE;
-
-        for (int i = 0; i < NUM_TANK_COLORS; i++) {
-            if (mUnusedTankColors[i]) {
-                tankColor = TankColor.values()[i];
-                mUnusedTankColors[i] = false;
-                break;
-            }
-        }
-
-        return tankColor;
-    }
-
 
     private float calcDegrees(int x, int y) {
 
         float displacement = calcDistance(x, y);
         float angle = (float) Math.acos(x/displacement);
 
-
-
         if (y >= 0) {
             return (float) Math.toDegrees(angle);
-        } else {
+        }
+        else {
             return (float) -Math.toDegrees(angle);
         }
     }
-
 
     private float calcDistance (int x, int y) {
         return (float) Math.sqrt(x*x + y*y);

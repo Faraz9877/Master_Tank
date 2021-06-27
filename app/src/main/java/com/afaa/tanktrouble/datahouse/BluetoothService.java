@@ -15,20 +15,14 @@ import com.afaa.tanktrouble.R;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 
-/**
- * Service handling bluetooth interaction
- */
+
 public class BluetoothService extends Service {
-//    private static BluetoothService instance = null;
 
     private static final String TAG = "BluetoothService";
     private static final UUID MY_UUID = UUID.fromString("27e86a38-a29c-421e-9d17-fe9c0c3bf2e6");
-
-    private static final int NOTIFICATION_ID = 1;
 
     private BluetoothAdapter btAdapter;
     private BluetoothSocket btSocket;
@@ -37,18 +31,11 @@ public class BluetoothService extends Service {
     private ConnectThread connectThread;
     private ConnectedThread connectedThread;
 
-    public boolean localPlayerColor;
 
     @Override
     public void onCreate() {
-//        instance = this;
-
         super.onCreate();
     }
-
-//    public static BluetoothService getInstance() {
-//        return instance;
-//    }
 
     @Override
     public void onDestroy() {
@@ -137,17 +124,13 @@ public class BluetoothService extends Service {
         return btSocket;
     }
 
-    /**
-        Called to indicate that activity is in foreground and notification is unnecessary
-     */
+
     public void registerActivity(Class<?> activityClass) {
         lastClass = activityClass;
         changeRegCount(1);
     }
 
-    /**
-        Called to indicate that activity is no longer visible and notification may be needed
-     */
+
     public void unregisterActivity() {
         changeRegCount(-1);
     }
@@ -158,12 +141,6 @@ public class BluetoothService extends Service {
     private synchronized void changeRegCount(int d) {
         int newRegCount = regCount + d;
 
-        if (newRegCount == 0 && regCount != 0) {
-            showNotification(lastClass, getString(R.string.bt_game),
-                    isConnected() ?
-                            getBluetoothSocket().getRemoteDevice().getName() :
-                            getString(R.string.not_connected));
-        }
         if (newRegCount != 0 && regCount == 0) {
             hideNotification();
         }
@@ -187,10 +164,9 @@ public class BluetoothService extends Service {
         }
 
         public void send(byte[] bytes) {
-            //noinspection SynchronizeOnNonFinalField
+
             if(connectedThread == null)
                 return;
-
             synchronized (connectedThread) {
                 byte[] buffer = new byte[bytes.length + 1];
                 System.arraycopy(bytes, 0, buffer, 1, bytes.length);
@@ -219,26 +195,7 @@ public class BluetoothService extends Service {
         channel.onMessageReceivedListener.process(message);
     }
 
-    private void showNotification(Class<?> aClass, String title, String text) {
-//        Log.d(TAG, "notification shown");
-
-        // TODO: check this part
-//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-//                .setContentTitle(title)
-//                .setContentText(text)
-//                .setSmallIcon(R.drawable.ic_bt_notification)
-//                .setContentIntent(PendingIntent.getActivity(this, 0,
-//                        new Intent(this, aClass)
-//                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP)
-//                                .putExtra(BtGameActivity.LOCAL_PLAYER_COLOR, localPlayerColor),
-//                        0));
-//
-//        startForeground(NOTIFICATION_ID, builder.build());
-    }
-
     private void hideNotification() {
-//        Log.d(TAG, "notification hidden");
-
         stopForeground(true);
     }
 
@@ -318,7 +275,6 @@ public class BluetoothService extends Service {
 
             try {
                 socket.connect();
-//                Log.d(TAG, Boolean.toString(socket.isConnected()));
             } catch (IOException connectException) {
                 try {
                     socket.close();
@@ -363,13 +319,12 @@ public class BluetoothService extends Service {
 
         public void run() {
             byte[] buffer = new byte[1024];
-            int bytes;
 
             while (true) {
                 try {
-                    bytes = inputStream.read(buffer);
-//                    Log.d(TAG, "read");
-                    process(buffer);
+                    int countReadBytes = inputStream.read(buffer);
+                    process(Arrays.copyOfRange(buffer, 0, countReadBytes));
+                    buffer = new byte[1024];
                 } catch (IOException e) {
                     break;
                 }
@@ -379,7 +334,6 @@ public class BluetoothService extends Service {
         private void write(byte[] bytes) {
             try {
                 outputStream.write(bytes);
-//                Log.d(TAG, "write");
             } catch (IOException ignored) {
             }
         }

@@ -3,52 +3,48 @@ package com.afaa.tanktrouble.battle;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
-public class BattleThread extends Thread {
+import java.util.TimerTask;
 
-    private BattleView mBattleView;
-    private final SurfaceHolder mSurfaceHolder;
-    private boolean mRunning;
+public class BattleThread extends TimerTask {
+
+    private final BattleView battleView;
+    private final SurfaceHolder surfaceHolder;
+    private boolean running;
 
 
     BattleThread(SurfaceHolder surfaceHolder, BattleView battleView) {
         super();
-        mSurfaceHolder = surfaceHolder;
-        mBattleView = battleView;
+        this.surfaceHolder = surfaceHolder;
+        this.battleView = battleView;
     }
-
 
     public void setRunning(boolean isRunning) {
-        mRunning = isRunning;
+        running = isRunning;
     }
-
 
     @Override
     public void run() {
-        while (mRunning) {
+//        while (running) {
             Canvas canvas = null;
 
             try {
-
-                canvas = mSurfaceHolder.lockCanvas();
-
-
-                synchronized (mSurfaceHolder) {
-                    if (canvas != null && mBattleView != null) {
-                        mBattleView.draw(canvas);
+                canvas = surfaceHolder.lockCanvas();
+                synchronized (surfaceHolder) {
+                    if (canvas != null && battleView != null) {
+                        battleView.draw(canvas);
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-
             if (canvas != null) {
                 try {
-                    mSurfaceHolder.unlockCanvasAndPost(canvas);
+                    surfaceHolder.unlockCanvasAndPost(canvas);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-        }
+//        }
     }
 }
