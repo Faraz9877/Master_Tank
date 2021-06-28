@@ -78,7 +78,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         addEnteringTanks(activity);
         getHolder().addCallback(this);
 
-        battleScheduler = Executors.newScheduledThreadPool(4);
+        battleScheduler = Executors.newScheduledThreadPool(1);
         battleThread = new BattleThread(getHolder(), this);
 
         setFocusable(true);
