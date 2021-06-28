@@ -92,7 +92,6 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-//        GameData.getInstance().setStartTime();
         battleScheduler.scheduleWithFixedDelay(battleThread, 0, 30, TimeUnit.MILLISECONDS);
     }
 

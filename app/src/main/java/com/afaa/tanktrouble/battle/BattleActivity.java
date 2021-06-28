@@ -136,11 +136,11 @@ public class BattleActivity extends AppCompatActivity {
                             if (data.contains(GameData.GAME_OVER_MESSAGE)) {
                                 endGame();
                             }
-                            else if(data.contains(GameData.TANK_FIRE)){
+                            else if(data.contains(GameData.TANK_FIRE)) {
                                 Cannonball cannonball = GameData.getInstance().opponentTankFire();
                                 GameData.getInstance().getCannonballSet().addCannonball(cannonball);
                             }
-                            else if(data.contains(GameData.TANK_DIED)){
+                            else if(data.contains(GameData.TANK_DIED)) {
                                 GameData.getInstance().setOpponentTankHit(true);
                             }
                             else {
