@@ -5,7 +5,7 @@ import android.view.SurfaceHolder;
 
 import java.util.TimerTask;
 
-public class BattleThread extends TimerTask {
+public class BattleThread implements Runnable {
 
     private final BattleView battleView;
     private final SurfaceHolder surfaceHolder;

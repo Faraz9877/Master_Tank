@@ -151,11 +151,16 @@ public class BattleActivity extends AppCompatActivity {
                             else if(data.contains(GameData.TANK_DIED)){
                                 GameData.getInstance().setOpponentTankHit(true);
                             }
-//                            else if(data.contains(GameData.DELAY_TEST)){
-//                                GameData.getInstance().respondAvgBtDelay(
-//                                        data.substring(data.indexOf(GameData.DELAY_TEST))
-//                                );
-//                            }
+                            else if(data.contains(GameData.DELAY_TEST)){
+                                GameData.getInstance().respondAvgBtDelay(data.charAt(
+                                        data.indexOf(GameData.DELAY_TEST)
+                                                + GameData.DELAY_TEST.length() + 1) - '0');
+                            }
+                            else if(data.contains(GameData.DELAY_RESP)){
+                                GameData.getInstance().calibrateAvgBtDelay(data.charAt(
+                                        data.indexOf(GameData.DELAY_TEST)
+                                                + GameData.DELAY_TEST.length() + 1) - '0');
+                            }
                             else {
                                 DataProtocol.detokenizePosition(data);
 //                                DataProtocol.detokenizeCannonBall(data);

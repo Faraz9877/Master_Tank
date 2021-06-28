@@ -27,6 +27,10 @@ import com.afaa.tanktrouble.tank.UserTank;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @SuppressLint("ViewConstructor")
 public class BattleView extends SurfaceView implements SurfaceHolder.Callback, View.OnTouchListener {
@@ -45,8 +49,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
     private int fireButtonDiameter, fireButtonPressedDiameter;
     private float userDeg;
     private boolean fireButtonPressed;
-    private Timer battleTimer;
-    private static long startTime;
+    private ScheduledExecutorService battleScheduler;
 
     Activity activity;
 
@@ -75,7 +78,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         addEnteringTanks(activity);
         getHolder().addCallback(this);
 
-        battleTimer = new Timer("BattleTimer");
+        battleScheduler = Executors.newScheduledThreadPool(1);
         battleThread = new BattleThread(getHolder(), this);
 
         setFocusable(true);
@@ -93,9 +96,15 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
 //            battleThread.setRunning(true);
 //            battleThread.start();
 //        }
-        startTime = System.currentTimeMillis();
-        battleTimer.scheduleAtFixedRate(battleThread, 0, 30);
-
+        GameData.getInstance().setStartTime();
+        battleScheduler.scheduleWithFixedDelay(battleThread, 0, 30, TimeUnit.MILLISECONDS);
+//        Executors.newScheduledThreadPool(4).scheduleWithFixedDelay()
+//        new Timer("AvgBtDelay").scheduleAtFixedRate(new TimerTask() {
+//            @Override
+//            public void run() {
+//                GameData.getInstance().calculateAvgBtDelay();
+//            }
+//        }, 0, 5000);
     }
 
     public void finishThread() {
@@ -105,7 +114,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }
-        battleTimer.cancel();
+        battleScheduler.shutdown();
     }
 
     @Override
@@ -328,10 +337,6 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         } else {
             canvas.drawBitmap(fireBitmap, fireButtonOffsetX, fireButtonOffsetY, joystickColor);
         }
-    }
-
-    public static long getElapsedTime() {
-        return System.currentTimeMillis() - startTime;
     }
 
     private void drawExplosions(Canvas canvas) {
