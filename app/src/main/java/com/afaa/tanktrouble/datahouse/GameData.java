@@ -49,8 +49,8 @@ public class GameData {
     SoundPool shootSoundPool, explosionSoundPool;
     int shootSoundId, explosionSoundId;
     private boolean opponentTankHit;
-    private long startTime, averageBtDelay;
-    private long[] delayTimes;
+//    private long startTime, averageBtDelay;
+//    private long[] delayTimes;
 
     private GameData() {
         playerIDs = new ArrayList<>(Arrays.asList(SERVER_ID, CLIENT_ID));
@@ -67,8 +67,8 @@ public class GameData {
         userId = CLIENT_ID;
         opponentId = SERVER_ID;
         opponentTankHit = false;
-        delayTimes = new long[10];
-        averageBtDelay = 0;
+//        delayTimes = new long[10];
+//        averageBtDelay = 0;
     }
 
     public void createSoundPool(Activity activity){
@@ -128,34 +128,34 @@ public class GameData {
 //        Log.d("Shoot Time Send:", "signalTankFire send time: " + getElapsedTime());
     }
 
-    public void setStartTime() {
-        startTime = System.currentTimeMillis();
-    }
-
-    public long getElapsedTime() {
-        return System.currentTimeMillis() - startTime;
-    }
-
-    public void calculateAvgBtDelay() {
-        for(int i = 0; i < 10; i++) {
-            delayTimes[i] = System.currentTimeMillis();
-            btService.getChannel().send((DELAY_TEST + i).getBytes());
-        }
-    }
-
-    public void respondAvgBtDelay(int i) {
-        btService.getChannel().send((DELAY_RESP + i).getBytes());
-    }
-
-    public void calibrateAvgBtDelay(int i) {
-//        delayTimes[i] = (System.currentTimeMillis() - delayTimes[i]) / 2;
-        averageBtDelay += (System.currentTimeMillis() - delayTimes[i]) / 20;
-        Log.d("AvgBtDelay: ", "Average Bt Delay is: " + averageBtDelay);
-    }
-
-    public long getAverageBtDelay() {
-        return averageBtDelay;
-    }
+//    public void setStartTime() {
+//        startTime = System.currentTimeMillis();
+//    }
+//
+//    public long getElapsedTime() {
+//        return System.currentTimeMillis() - startTime;
+//    }
+//
+//    public void calculateAvgBtDelay() {
+//        for(int i = 0; i < 10; i++) {
+//            delayTimes[i] = System.currentTimeMillis();
+//            btService.getChannel().send((DELAY_TEST + i).getBytes());
+//        }
+//    }
+//
+//    public void respondAvgBtDelay(int i) {
+//        btService.getChannel().send((DELAY_RESP + i).getBytes());
+//    }
+//
+//    public void calibrateAvgBtDelay(int i) {
+////        delayTimes[i] = (System.currentTimeMillis() - delayTimes[i]) / 2;
+//        averageBtDelay += (System.currentTimeMillis() - delayTimes[i]) / 20;
+//        Log.d("AvgBtDelay: ", "Average Bt Delay is: " + averageBtDelay);
+//    }
+//
+//    public long getAverageBtDelay() {
+//        return averageBtDelay;
+//    }
 
     public String getOpponentUserName() {
         return opponentUserName;

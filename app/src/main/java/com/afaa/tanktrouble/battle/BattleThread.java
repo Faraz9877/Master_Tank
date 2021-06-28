@@ -9,8 +9,6 @@ public class BattleThread implements Runnable {
 
     private final BattleView battleView;
     private final SurfaceHolder surfaceHolder;
-    private boolean running;
-
 
     BattleThread(SurfaceHolder surfaceHolder, BattleView battleView) {
         super();
@@ -18,13 +16,8 @@ public class BattleThread implements Runnable {
         this.battleView = battleView;
     }
 
-    public void setRunning(boolean isRunning) {
-        running = isRunning;
-    }
-
     @Override
     public void run() {
-//        while (running) {
             Canvas canvas = null;
 
             try {
@@ -45,6 +38,5 @@ public class BattleThread implements Runnable {
                     e.printStackTrace();
                 }
             }
-//        }
     }
 }

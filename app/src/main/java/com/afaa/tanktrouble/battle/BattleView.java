@@ -78,7 +78,7 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
         addEnteringTanks(activity);
         getHolder().addCallback(this);
 
-        battleScheduler = Executors.newScheduledThreadPool(1);
+        battleScheduler = Executors.newScheduledThreadPool(4);
         battleThread = new BattleThread(getHolder(), this);
 
         setFocusable(true);
@@ -92,28 +92,11 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-//        if (battleThread.getState() == Thread.State.NEW) {
-//            battleThread.setRunning(true);
-//            battleThread.start();
-//        }
-        GameData.getInstance().setStartTime();
+//        GameData.getInstance().setStartTime();
         battleScheduler.scheduleWithFixedDelay(battleThread, 0, 30, TimeUnit.MILLISECONDS);
-//        Executors.newScheduledThreadPool(4).scheduleWithFixedDelay()
-//        new Timer("AvgBtDelay").scheduleAtFixedRate(new TimerTask() {
-//            @Override
-//            public void run() {
-//                GameData.getInstance().calculateAvgBtDelay();
-//            }
-//        }, 0, 5000);
     }
 
     public void finishThread() {
-//        try {
-//            battleThread.setRunning(false);
-//            battleThread.join();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
         battleScheduler.shutdown();
     }
 
