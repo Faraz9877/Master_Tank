@@ -73,10 +73,7 @@ public class BattleActivity extends AppCompatActivity {
         if (btService.getBluetoothAdapter() != null) {
             btService.getBluetoothAdapter().cancelDiscovery();
         }
-//        if (btService != null   ) {
-//            btService.stopSelf();
-//            btService = null;
-//        }
+
         unbindService(connection);
     }
 
@@ -122,9 +119,6 @@ public class BattleActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-//                            startActivity(new Intent(JoinActivity.this,
-//                                    BtGameConfigurationClientActivity.class));
-//                            JoinActivity.this.finish();
                         }
                     });
                 }
@@ -143,8 +137,6 @@ public class BattleActivity extends AppCompatActivity {
                                 endGame();
                             }
                             else if(data.contains(GameData.TANK_FIRE)){
-//                                Log.d("Shoot Time Recv:", "signalTankFire receive time: " +
-//                                    GameData.getInstance().getElapsedTime());
                                 Cannonball cannonball = GameData.getInstance().opponentTankFire();
                                 GameData.getInstance().getCannonballSet().addCannonball(cannonball);
                             }
@@ -153,7 +145,6 @@ public class BattleActivity extends AppCompatActivity {
                             }
                             else {
                                 DataProtocol.detokenizePosition(data);
-//                                DataProtocol.detokenizeCannonBall(data);
                             }
                         }
                     });
