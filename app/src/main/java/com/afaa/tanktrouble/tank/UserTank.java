@@ -30,7 +30,7 @@ public class UserTank extends Tank {
         isAlive = true;
 
         x = Math.round(GameData.getInstance().getUserPosition().x);
-        x = Math.round(GameData.getInstance().getUserPosition().y);
+        y = Math.round(GameData.getInstance().getUserPosition().y);
         deg = GameData.getInstance().getUserPosition().deg;
         cannonCounter = 0;
         this.userId = userId;

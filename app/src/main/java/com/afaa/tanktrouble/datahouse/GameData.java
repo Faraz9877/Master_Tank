@@ -274,6 +274,7 @@ public class GameData {
         status = 1;
         userId = -1;
         opponentId = -1;
+        instance = null;
     }
 
     public void addCannonball(Cannonball cannonball) {
