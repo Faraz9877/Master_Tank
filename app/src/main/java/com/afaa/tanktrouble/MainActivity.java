@@ -11,8 +11,6 @@ import com.afaa.tanktrouble.datahouse.DeviceChooserActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "WL/MainActivity";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 

@@ -111,7 +111,6 @@ public class UserTank extends Tank {
         }
 
         Position position = new Position(x, y, deg);
-//        position = position.standardizePosition();
         GameData.getInstance().setUserPosition(position);
         lastTime = nowTime;
     }

@@ -24,8 +24,6 @@ import com.afaa.tanktrouble.tank.Tank;
 
 public class BattleActivity extends AppCompatActivity {
 
-    private static final String TAG = "WL/BattleActivity";
-
     private BluetoothService btService;
     private BluetoothService.MessageChannel messageChannel;
     private View battleView;
@@ -73,10 +71,7 @@ public class BattleActivity extends AppCompatActivity {
         if (btService.getBluetoothAdapter() != null) {
             btService.getBluetoothAdapter().cancelDiscovery();
         }
-//        if (btService != null   ) {
-//            btService.stopSelf();
-//            btService = null;
-//        }
+
         unbindService(connection);
     }
 
@@ -122,9 +117,6 @@ public class BattleActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-//                            startActivity(new Intent(JoinActivity.this,
-//                                    BtGameConfigurationClientActivity.class));
-//                            JoinActivity.this.finish();
                         }
                     });
                 }
@@ -138,22 +130,18 @@ public class BattleActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             String data = new String(buffer);
-                            Log.d("Receiver data", data);
                             if (data.contains(GameData.GAME_OVER_MESSAGE)) {
                                 endGame();
                             }
-                            else if(data.contains(GameData.TANK_FIRE)){
-//                                Log.d("Shoot Time Recv:", "signalTankFire receive time: " +
-//                                    GameData.getInstance().getElapsedTime());
+                            else if(data.contains(GameData.TANK_FIRE)) {
                                 Cannonball cannonball = GameData.getInstance().opponentTankFire();
                                 GameData.getInstance().getCannonballSet().addCannonball(cannonball);
                             }
-                            else if(data.contains(GameData.TANK_DIED)){
+                            else if(data.contains(GameData.TANK_DIED)) {
                                 GameData.getInstance().setOpponentTankHit(true);
                             }
                             else {
                                 DataProtocol.detokenizePosition(data);
-//                                DataProtocol.detokenizeCannonBall(data);
                             }
                         }
                     });

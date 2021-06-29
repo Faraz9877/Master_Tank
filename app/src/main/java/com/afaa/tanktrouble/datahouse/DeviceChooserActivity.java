@@ -74,9 +74,6 @@ public class DeviceChooserActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-//        if (btService != null) {
-//            btService.registerActivity(DeviceChooserActivity.class);
-//        }
     }
 
     private final ServiceConnection connection = new ServiceConnection() {
@@ -224,11 +221,6 @@ public class DeviceChooserActivity extends AppCompatActivity {
             btService.getBluetoothAdapter().cancelDiscovery();
         }
         unregisterReceiver(broadcastReceiver);
-        if (btService != null && shouldStop) {
-//            Log.d("DeviceChooser", "onDestroy: BtService is STOPPING!");
-//            btService.stopSelf();
-//            btService = null;
-        }
         unbindService(connection);
         super.onDestroy();
     }

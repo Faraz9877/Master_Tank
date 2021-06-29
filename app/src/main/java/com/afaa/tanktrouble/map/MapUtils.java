@@ -14,8 +14,6 @@ import java.util.ArrayList;
 
 public class MapUtils {
 
-//    private static final String TRB = "TRB";
-//    private static final String LTR = "LTR";
     private static final String TR = "TR";
     private static final String LTB = "LTB";
     private static final String TB = "TB";
@@ -28,7 +26,6 @@ public class MapUtils {
     private static final String LB = "LB";
     private static final String B = "B";
     private static final String L = "L";
-//    private static final String O = "";
     private static final String TAG = "WL/MapUtils";
 
     private static final int TOP_Y =
@@ -48,13 +45,6 @@ public class MapUtils {
     private static final ArrayList<RectF> DEFAULT_MAP_WALLS = cellsToWalls(DEFAULT_MAP_CELLS);
     private static final int NUM_CELL_ROWS = DEFAULT_MAP_CELLS.length;
     private static final int NUM_CELL_COLS = DEFAULT_MAP_CELLS[0].length;
-
-
-
-
-
-
-
 
 
     private static ArrayList<RectF> cellsToWalls(MapCell[][] cellGrid) {

@@ -11,10 +11,7 @@ import java.util.ArrayList;
 public class CannonballSet {
 
     private final SparseArray<Cannonball> cannons;
-
     private static final long CANNONBALL_LIFESPAN = 10000;
-    private static final String TAG = "WL/CannonballSet";
-
 
     public CannonballSet() {
         cannons = new SparseArray<>();

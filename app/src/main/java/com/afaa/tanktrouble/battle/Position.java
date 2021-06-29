@@ -15,12 +15,6 @@ public class Position {
         this.deg = deg;
     }
 
-    public Position(Position P) {
-        this.x = P.x;
-        this.y = P.y;
-        this.deg = P.deg;
-    }
-
     public Position standardizePosition() {
         return new Position( (int) (x / SCREEN_SCALE), (int) (y / SCREEN_SCALE), deg);
     }

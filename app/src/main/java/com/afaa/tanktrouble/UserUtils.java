@@ -19,10 +19,8 @@ public class UserUtils {
     private static int screenWidth, screenHeight;
     private static float screenScale;
 
-    private static final String USERS_KEY = Constants.USERS_KEY;
     private static final String USER_ID_KEY = Constants.USER_ID_KEY;
     private static final String USERNAME_KEY = Constants.USERNAME_KEY;
-    private static final String TAG = "WL/UserUtils";
 
     public static void initialize(Activity activity) {
         adjectiveList = activity.getResources().getStringArray(R.array.adjective_list);

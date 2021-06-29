@@ -24,10 +24,6 @@ public class OpponentTank extends Tank {
         isAlive = true;
         if (opponentID > -1) {
             addPosDataRefListeners();
-
-            Log.d(TAG, "opponentId=" + opponentID);
-        } else {
-            Log.e(TAG, "Warning: no user Id");
         }
     }
 
@@ -40,11 +36,6 @@ public class OpponentTank extends Tank {
             deg = position.deg;
         }
     }
-
-//    public void kill() {
-//        mIsAlive = false;
-//    }
-
     public void respawn() {
         isAlive = true;
     }
