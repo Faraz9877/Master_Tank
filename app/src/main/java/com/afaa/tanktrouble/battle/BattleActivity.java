@@ -24,8 +24,6 @@ import com.afaa.tanktrouble.tank.Tank;
 
 public class BattleActivity extends AppCompatActivity {
 
-    private static final String TAG = "WL/BattleActivity";
-
     private BluetoothService btService;
     private BluetoothService.MessageChannel messageChannel;
     private View battleView;
@@ -132,7 +130,6 @@ public class BattleActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             String data = new String(buffer);
-                            Log.d("Receiver data", data);
                             if (data.contains(GameData.GAME_OVER_MESSAGE)) {
                                 endGame();
                             }

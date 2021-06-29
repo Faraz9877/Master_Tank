@@ -404,7 +404,6 @@ public class BattleView extends SurfaceView implements SurfaceHolder.Callback, V
                 GameData.getInstance().signalTankFire();
                 Cannonball cannonball = userTank.fire();
                 GameData.getInstance().getCannonballSet().addCannonball(cannonball);
-//                GameData.getInstance().syncCannonBall(cannonball);
                 GameData.getInstance().incrementUserAliveBulletsCount();
             }
             fireButtonPressed = true;

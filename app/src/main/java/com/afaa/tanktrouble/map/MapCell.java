@@ -2,7 +2,10 @@ package com.afaa.tanktrouble.map;
 
 public class MapCell {
 
-    private boolean topWall, rightWall, bottomWall, leftWall;
+    private final boolean topWall;
+    private final boolean rightWall;
+    private final boolean bottomWall;
+    private final boolean leftWall;
 
     MapCell(String code) {
         leftWall = code.contains("L");
